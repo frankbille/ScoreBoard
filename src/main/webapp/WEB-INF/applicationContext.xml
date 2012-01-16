@@ -24,14 +24,20 @@
 	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
 
 	<!-- Hibernate SessionFactory -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
 			p:dataSource-ref="dataSource">
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
 				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>dk.frankbille.scoreboard.domain.Player</value>
+			</list>
 		</property>
 		<property name="eventListeners">
 			<map>
@@ -68,6 +74,7 @@
 	<context:mbean-export/>
 
 	<bean id="gameDao" class="dk.frankbille.scoreboard.dao.HibernateGameDao"/>
+	<bean id="playerDao" class="dk.frankbille.scoreboard.dao.HibernatePlayerDao"/>
 
 	<!-- ScoreBoard Service -->
 	<bean id="scoreBoardService" class="dk.frankbille.scoreboard.service.DefaultScoreBoardService"/>

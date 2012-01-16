@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import dk.frankbille.scoreboard.domain.Player;
+
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
 public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
@@ -18,8 +20,9 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 
 	@Override
 	public void test() {
-
-		System.out.println("TEST");
+		Player player = new Player();
+		player.setName("Frank");
+		getHibernateTemplate().save(player);
 	}
 
 }
