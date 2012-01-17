@@ -31,11 +31,14 @@
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
 				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
 			</props>
 		</property>
 		<property name="annotatedClasses">
 			<list>
+				<value>dk.frankbille.scoreboard.domain.Game</value>
+				<value>dk.frankbille.scoreboard.domain.GameTeam</value>
+				<value>dk.frankbille.scoreboard.domain.Team</value>
 				<value>dk.frankbille.scoreboard.domain.Player</value>
 			</list>
 		</property>

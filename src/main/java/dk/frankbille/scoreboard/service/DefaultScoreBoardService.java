@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dk.frankbille.scoreboard.dao.GameDao;
 import dk.frankbille.scoreboard.dao.PlayerDao;
+import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
 
 @Repository
@@ -32,9 +33,20 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		return player;
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public List<Player> getAllPlayers() {
 		return playerDao.getAllPlayers();
+	}
+
+	@Override
+	public void saveGame(Game game) {
+		gameDao.saveGame(game);
+	}
+
+	@Override
+	public List<Game> getAllGames() {
+		return gameDao.getAllGames();
 	}
 
 }

@@ -2,14 +2,39 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title></title>
+<title>ScoreBoard</title>
+<link rel="StyleSheet" href="css/standard.css" type="text/css">
 </head>
 <body>
-<form wicket:id="form">
-	<input type="text" wicket:id="name" placeholder="Enter player name"/>
-</form>
-<ul wicket:id="playerListContainer">
-	<li wicket:id="players"><span wicket:id="name"></span></li>
-</ul>
+<div class="gamedetails">
+	<h1>New game</h1>
+
+	<span wicket:id="teams">
+		<span wicket:id="team"/>
+	</span>
+
+	<div class="buttons">
+		<a wicket:id="save">Save</a>
+	</div>
+</div>
+<div class="games">
+	<h1>Played games</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Teams</th>
+				<th>Score</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr wicket:id="games">
+				<td wicket:id="date"></td>
+				<td wicket:id="teams"></td>
+				<td wicket:id="score"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 </body>
 </html>
