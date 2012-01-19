@@ -6,7 +6,7 @@
 <link rel="StyleSheet" href="css/standard.css" type="text/css">
 </head>
 <body>
-<div class="gamedetails">
+<div class="gamedetails" wicket:id="newGameContainer">
 	<h1>New game</h1>
 
 	<span wicket:id="teams">
@@ -19,7 +19,7 @@
 </div>
 <div class="games">
 	<h1>Played games</h1>
-	<table>
+	<table wicket:id="gamesContainer">
 		<thead>
 			<tr>
 				<th>Date</th>

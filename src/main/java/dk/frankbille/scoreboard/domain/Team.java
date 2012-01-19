@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +44,7 @@ public class Team implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(cascade=CascadeType.ALL, targetEntity=Player.class)
+	@ManyToMany(cascade=CascadeType.ALL, targetEntity=Player.class, fetch=FetchType.EAGER)
 	@JoinTable(name="team_players", joinColumns=@JoinColumn(name="team_id"), inverseJoinColumns=@JoinColumn(name="player_id"))
 	public Set<Player> getPlayers() {
 		if (players == null) {

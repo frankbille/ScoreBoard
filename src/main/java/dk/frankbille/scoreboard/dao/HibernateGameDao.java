@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,7 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 		DetachedCriteria c = DetachedCriteria.forClass(Game.class);
 		c.addOrder(Order.desc("date"));
 		c.addOrder(Order.desc("id"));
+		c.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
 		@SuppressWarnings("unchecked")
 		List<Game> result = getHibernateTemplate().findByCriteria(c);
 		return result;

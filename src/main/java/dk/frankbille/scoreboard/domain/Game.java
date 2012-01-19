@@ -12,7 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -48,7 +48,7 @@ public class Game implements Serializable {
 	}
 
 	@OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@OrderColumn(name="team_index")
+	@OrderBy("id")
 	public List<GameTeam> getTeams() {
 		return teams;
 	}

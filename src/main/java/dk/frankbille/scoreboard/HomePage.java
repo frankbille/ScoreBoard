@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -13,6 +14,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -28,21 +30,20 @@ public class HomePage extends WebPage {
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
 
-    public HomePage(final PageParameters parameters) {
-    	final Game game = new Game();
-    	game.setDate(new Date());
-    	GameTeam gameTeam1 = new GameTeam();
-    	gameTeam1.setGame(game);
-    	Team team1 = new Team();
-		gameTeam1.setTeam(team1);
-		game.addTeam(gameTeam1);
-    	GameTeam gameTeam2 = new GameTeam();
-    	gameTeam2.setGame(game);
-    	Team team2 = new Team();
-		gameTeam2.setTeam(team2);
-		game.addTeam(gameTeam2);
+	private WebMarkupContainer gamesContainer;
 
-		add(new ListView<GameTeam>("teams", game.getTeams()) {
+	private Game game;
+
+	private WebMarkupContainer newGameContainer;
+
+    public HomePage(final PageParameters parameters) {
+    	game = createNewGame();
+
+    	newGameContainer = new WebMarkupContainer("newGameContainer");
+    	newGameContainer.setOutputMarkupId(true);
+    	add(newGameContainer);
+
+    	newGameContainer.add(new ListView<GameTeam>("teams", new PropertyModel<List<GameTeam>>(this, "game.teams")) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -51,12 +52,15 @@ public class HomePage extends WebPage {
 			}
 		});
 
-    	add(new AjaxLink<Void>("save") {
+    	newGameContainer.add(new AjaxLink<Void>("save") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				scoreBoardService.saveGame(game);
+				game = createNewGame();
+				target.add(gamesContainer);
+				target.add(newGameContainer);
 			}
 		});
 
@@ -72,7 +76,11 @@ public class HomePage extends WebPage {
 			}
 		};
 
-		add(new ListView<Game>("games", gamesModel) {
+		gamesContainer = new WebMarkupContainer("gamesContainer");
+		gamesContainer.setOutputMarkupId(true);
+		add(gamesContainer);
+
+		gamesContainer.add(new ListView<Game>("games", gamesModel) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -125,4 +133,24 @@ public class HomePage extends WebPage {
 			}
 		});
     }
+
+    public Game getGame() {
+		return game;
+	}
+
+	private Game createNewGame() {
+		final Game game = new Game();
+    	game.setDate(new Date());
+    	GameTeam gameTeam1 = new GameTeam();
+    	gameTeam1.setGame(game);
+    	Team team1 = new Team();
+		gameTeam1.setTeam(team1);
+		game.addTeam(gameTeam1);
+    	GameTeam gameTeam2 = new GameTeam();
+    	gameTeam2.setGame(game);
+    	Team team2 = new Team();
+		gameTeam2.setTeam(team2);
+		game.addTeam(gameTeam2);
+		return game;
+	}
 }

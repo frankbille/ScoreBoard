@@ -73,7 +73,19 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 		Form<Void> scoreForm = new Form<Void>("scoreForm");
 		add(scoreForm);
 
-		scoreForm.add(new TextField<Integer>("score", new PropertyModel<Integer>(model, "score")));
+		TextField<Integer> scoreField = new TextField<Integer>("score", new PropertyModel<Integer>(model, "score"));
+		scoreField.add(new AjaxFormSubmitBehavior("onchange") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target) {
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target) {
+			}
+		});
+		scoreForm.add(scoreField);
 
 		final IModel<Set<Player>> selectedPlayersModel = new PropertyModel<Set<Player>>(model, "team.players");
 
