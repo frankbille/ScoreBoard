@@ -1,14 +1,20 @@
 package dk.frankbille.scoreboard;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -21,6 +27,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
@@ -36,12 +43,101 @@ public class HomePage extends WebPage {
 
 	private WebMarkupContainer newGameContainer;
 
+	private WebMarkupContainer playersContainer;
+
     public HomePage(final PageParameters parameters) {
-    	game = createNewGame();
+    	addNewGame();
+
+    	addGameResults();
+
+		playersContainer = new WebMarkupContainer("playersContainer");
+		playersContainer.setOutputMarkupId(true);
+		add(playersContainer);
+
+		IModel<List<PlayerResult>> playerResultsModel = new LoadableDetachableModel<List<PlayerResult>>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected List<PlayerResult> load() {
+				List<PlayerResult> playerResults = scoreBoardService.getPlayerResults();
+
+				Collections.sort(playerResults, new Comparator<PlayerResult>() {
+					@Override
+					public int compare(PlayerResult o1, PlayerResult o2) {
+						int compare = 0;
+
+						if (o1.getGamesWonRatio() > o2.getGamesWonRatio()) {
+							compare = -1;
+						} else if (o1.getGamesWonRatio() < o2.getGamesWonRatio()) {
+							compare = 1;
+						}
+
+						if (compare == 0) {
+							if (o1.getGamesWon() > o2.getGamesWon()) {
+								compare = -1;
+							} else if (o1.getGamesWon() < o2.getGamesWon()) {
+								compare = 1;
+							}
+						}
+
+						if (compare == 0) {
+							if (o1.getGamesLost() > o2.getGamesLost()) {
+								compare = -1;
+							} else if (o1.getGamesLost() < o2.getGamesLost()) {
+								compare = 1;
+							}
+						}
+
+						return compare;
+					}
+				});
+
+				return playerResults;
+			}
+		};
+
+		playersContainer.add(new ListView<PlayerResult>("players", playerResultsModel) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void populateItem(ListItem<PlayerResult> item) {
+				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
+				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
+				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
+				item.add(new Label("winRatio", new PropertyModel<Integer>(item.getModel(), "gamesWonRatio")));
+			}
+		});
+    }
+
+	private void addNewGame() {
+		game = createNewGame();
 
     	newGameContainer = new WebMarkupContainer("newGameContainer");
     	newGameContainer.setOutputMarkupId(true);
     	add(newGameContainer);
+
+    	Form<Void> dateForm = new Form<Void>("dateForm");
+		dateForm.add(new DateField("gameDate", new PropertyModel<Date>(this, "game.date")) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected DateTextField newDateTextField(String id, PropertyModel<Date> dateFieldModel) {
+				DateTextField dateTextField = super.newDateTextField(id, dateFieldModel);
+				dateTextField.add(new AjaxFormSubmitBehavior("onchange") {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					protected void onSubmit(AjaxRequestTarget target) {
+					}
+
+					@Override
+					protected void onError(AjaxRequestTarget target) {
+					}
+				});
+				return dateTextField;
+			}
+		});
+    	newGameContainer.add(dateForm);
 
     	newGameContainer.add(new ListView<GameTeam>("teams", new PropertyModel<List<GameTeam>>(this, "game.teams")) {
 			private static final long serialVersionUID = 1L;
@@ -59,15 +155,15 @@ public class HomePage extends WebPage {
 			public void onClick(AjaxRequestTarget target) {
 				scoreBoardService.saveGame(game);
 				game = createNewGame();
-				target.add(gamesContainer);
 				target.add(newGameContainer);
+				target.add(gamesContainer);
+				target.add(playersContainer);
 			}
 		});
+	}
 
-    	/*
-    	 * Games
-    	 */
-    	IModel<List<Game>> gamesModel = new LoadableDetachableModel<List<Game>>() {
+	private void addGameResults() {
+		IModel<List<Game>> gamesModel = new LoadableDetachableModel<List<Game>>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -132,7 +228,7 @@ public class HomePage extends WebPage {
 				}));
 			}
 		});
-    }
+	}
 
     public Game getGame() {
 		return game;

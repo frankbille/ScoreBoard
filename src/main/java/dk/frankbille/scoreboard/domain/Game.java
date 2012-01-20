@@ -64,4 +64,15 @@ public class Game implements Serializable {
 	public void setTeams(List<GameTeam> teams) {
 		this.teams = teams;
 	}
+
+	public boolean didTeamWin(GameTeam team) {
+		int largestScore = -1;
+		for (GameTeam gameTeam : teams) {
+			if (gameTeam.getScore() > largestScore) {
+				largestScore = gameTeam.getScore();
+			}
+		}
+
+		return team.getScore() == largestScore;
+	}
 }

@@ -1,3 +1,32 @@
+html, body {
+	margin: 0;
+}
+
+body, table {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 9pt;
+}
+
+body {
+	background: #FCEBB6 url(../images/background.png);
+}
+
+h1, h2, h3 {
+	font-family: 'Podkova', serif;
+	margin: 0;
+}
+
+#outer {
+	background-color: white;
+	opacity: 0.95;
+	padding: 1em;
+	padding-left: 2em;
+	padding-right: 2em;
+	margin: 2em;
+	border-radius: 0.8em;
+	box-shadow: 0 0.5em 1em black;
+}
+
 .gamedetails .team {
 	float: left;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.domain.PlayerResult;
 
 public interface ScoreBoardService {
 
@@ -14,5 +15,7 @@ public interface ScoreBoardService {
 	void saveGame(Game game);
 
 	List<Game> getAllGames();
+
+	List<PlayerResult> getPlayerResults();
 
 }

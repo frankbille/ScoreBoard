@@ -3,38 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <title>ScoreBoard</title>
+<link href='http://fonts.googleapis.com/css?family=Podkova:700' rel='stylesheet' type='text/css'>
 <link rel="StyleSheet" href="css/standard.css" type="text/css">
 </head>
 <body>
-<div class="gamedetails" wicket:id="newGameContainer">
-	<h1>New game</h1>
+<div id="outer">
+	<div class="gamedetails" wicket:id="newGameContainer">
+		<h1>New game</h1>
 
-	<span wicket:id="teams">
-		<span wicket:id="team"/>
-	</span>
+		<form wicket:id="dateForm">
+			<span wicket:id="gameDate" />
+		</form>
 
-	<div class="buttons">
-		<a wicket:id="save">Save</a>
+		<span wicket:id="teams">
+			<span wicket:id="team"/>
+		</span>
+
+		<div class="buttons">
+			<a wicket:id="save">Save</a>
+		</div>
 	</div>
-</div>
-<div class="games">
-	<h1>Played games</h1>
-	<table wicket:id="gamesContainer">
-		<thead>
-			<tr>
-				<th>Date</th>
-				<th>Teams</th>
-				<th>Score</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr wicket:id="games">
-				<td wicket:id="date"></td>
-				<td wicket:id="teams"></td>
-				<td wicket:id="score"></td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="games">
+		<h1>Played games</h1>
+		<table wicket:id="gamesContainer">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Teams</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr wicket:id="games">
+					<td wicket:id="date"></td>
+					<td wicket:id="teams"></td>
+					<td wicket:id="score"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="players">
+		<h1>Players by won games</h1>
+		<table wicket:id="playersContainer">
+			<thead>
+				<tr>
+					<th>Player</th>
+					<th>Games won</th>
+					<th>Games lost</th>
+					<th>Win ratio</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr wicket:id="players">
+					<td wicket:id="name"></td>
+					<td wicket:id="gamesWon"></td>
+					<td wicket:id="gamesLost"></td>
+					<td wicket:id="winRatio"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 </body>
 </html>
