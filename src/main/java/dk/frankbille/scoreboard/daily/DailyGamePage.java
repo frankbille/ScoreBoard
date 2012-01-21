@@ -1,4 +1,4 @@
-package dk.frankbille.scoreboard;
+package dk.frankbille.scoreboard.daily;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,7 @@ import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
-public class HomePage extends WebPage {
+public class DailyGamePage extends WebPage {
 	private static final long serialVersionUID = 1L;
 
 	@SpringBean
@@ -45,7 +45,7 @@ public class HomePage extends WebPage {
 
 	private WebMarkupContainer playersContainer;
 
-    public HomePage(final PageParameters parameters) {
+    public DailyGamePage(final PageParameters parameters) {
     	addNewGame();
 
     	addGameResults();
