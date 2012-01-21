@@ -2,7 +2,6 @@ package dk.frankbille.scoreboard.dao;
 
 import java.util.List;
 
-import org.hibernate.FetchMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -38,7 +37,7 @@ public class HibernateGameDao extends HibernateDaoSupport implements GameDao {
 		DetachedCriteria c = DetachedCriteria.forClass(Game.class);
 		c.addOrder(Order.desc("date"));
 		c.addOrder(Order.desc("id"));
-		c.setFetchMode("teams.team.players", FetchMode.JOIN);
+//		c.setFetchMode("teams.team.players", FetchMode.JOIN);
 		c.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
 		@SuppressWarnings("unchecked")
 		List<Game> result = getHibernateTemplate().findByCriteria(c);
