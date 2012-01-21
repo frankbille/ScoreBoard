@@ -66,26 +66,22 @@ public class HomePage extends WebPage {
 					public int compare(PlayerResult o1, PlayerResult o2) {
 						int compare = 0;
 
-						if (o1.getGamesWonRatio() > o2.getGamesWonRatio()) {
-							compare = -1;
-						} else if (o1.getGamesWonRatio() < o2.getGamesWonRatio()) {
-							compare = 1;
+						compare = new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
+
+						if (compare == 0) {
+							compare = new Integer(o2.getGamesWon()).compareTo(o1.getGamesWon());
 						}
 
 						if (compare == 0) {
-							if (o1.getGamesWon() > o2.getGamesWon()) {
-								compare = -1;
-							} else if (o1.getGamesWon() < o2.getGamesWon()) {
-								compare = 1;
-							}
+							compare = new Integer(o1.getGamesLost()).compareTo(o2.getGamesLost());
 						}
 
 						if (compare == 0) {
-							if (o1.getGamesLost() > o2.getGamesLost()) {
-								compare = -1;
-							} else if (o1.getGamesLost() < o2.getGamesLost()) {
-								compare = 1;
-							}
+							compare = o1.getPlayer().getName().compareTo(o2.getPlayer().getName());
+						}
+
+						if (compare == 0) {
+							compare = o1.getPlayer().getId().compareTo(o2.getPlayer().getId());
 						}
 
 						return compare;
@@ -104,7 +100,7 @@ public class HomePage extends WebPage {
 				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
 				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
-				item.add(new Label("winRatio", new PropertyModel<Integer>(item.getModel(), "gamesWonRatio")));
+				item.add(new Label("winRatio", new PropertyModel<Double>(item.getModel(), "gamesWonRatio")));
 			}
 		});
     }

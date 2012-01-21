@@ -45,3 +45,7 @@ h1, h2, h3 {
 .gamedetails .buttons {
 	clear: both;
 }
+
+table thead th {
+	text-align: left;
+}
