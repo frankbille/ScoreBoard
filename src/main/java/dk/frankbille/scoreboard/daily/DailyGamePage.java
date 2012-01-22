@@ -1,8 +1,6 @@
 package dk.frankbille.scoreboard.daily;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -24,10 +22,11 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
+import dk.frankbille.scoreboard.components.RowColorModifier;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
@@ -43,67 +42,21 @@ public class DailyGamePage extends WebPage {
 
 	private WebMarkupContainer newGameContainer;
 
-	private WebMarkupContainer playersContainer;
+	private PlayerStatisticsPanel playersContainer;
 
     public DailyGamePage(final PageParameters parameters) {
     	addNewGame();
 
     	addGameResults();
 
-		playersContainer = new WebMarkupContainer("playersContainer");
+		addPlayerStatistics();
+    }
+
+	private void addPlayerStatistics() {
+		playersContainer = new PlayerStatisticsPanel("playersContainer");
 		playersContainer.setOutputMarkupId(true);
 		add(playersContainer);
-
-		IModel<List<PlayerResult>> playerResultsModel = new LoadableDetachableModel<List<PlayerResult>>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected List<PlayerResult> load() {
-				List<PlayerResult> playerResults = scoreBoardService.getPlayerResults();
-
-				Collections.sort(playerResults, new Comparator<PlayerResult>() {
-					@Override
-					public int compare(PlayerResult o1, PlayerResult o2) {
-						int compare = 0;
-
-						compare = new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
-
-						if (compare == 0) {
-							compare = new Integer(o2.getGamesWon()).compareTo(o1.getGamesWon());
-						}
-
-						if (compare == 0) {
-							compare = new Integer(o1.getGamesLost()).compareTo(o2.getGamesLost());
-						}
-
-						if (compare == 0) {
-							compare = o1.getPlayer().getName().compareTo(o2.getPlayer().getName());
-						}
-
-						if (compare == 0) {
-							compare = o1.getPlayer().getId().compareTo(o2.getPlayer().getId());
-						}
-
-						return compare;
-					}
-				});
-
-				return playerResults;
-			}
-		};
-
-		playersContainer.add(new ListView<PlayerResult>("players", playerResultsModel) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<PlayerResult> item) {
-				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
-				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
-				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
-				item.add(new Label("winRatio", new PropertyModel<Double>(item.getModel(), "gamesWonRatio")));
-			}
-		});
-    }
+	}
 
 	private void addNewGame() {
 		game = createNewGame();
@@ -177,6 +130,7 @@ public class DailyGamePage extends WebPage {
 
 			@Override
 			protected void populateItem(final ListItem<Game> item) {
+				item.add(RowColorModifier.create(item));
 				item.add(new Label("date", ""+item.getModelObject().getDate()));
 				item.add(new Label("teams", new AbstractReadOnlyModel<String>() {
 					private static final long serialVersionUID = 1L;

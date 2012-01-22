@@ -13,12 +13,11 @@ body {
 
 h1, h2, h3 {
 	font-family: 'Podkova', serif;
-	margin: 0;
 }
 
 #outer {
 	background-color: white;
-	opacity: 0.95;
+	opacity: 0.98;
 	padding: 1em;
 	padding-left: 2em;
 	padding-right: 2em;
@@ -46,6 +45,25 @@ h1, h2, h3 {
 	clear: both;
 }
 
+table {
+	border-spacing: 0;
+	border-top: 1px solid #E2D1C5;
+	border-right: 1px solid #E2D1C5;
+}
+
+table th, table td {
+	padding: 0.8em;
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+	border-left: 1px solid #E2D1C5;
+	border-bottom: 1px solid #E2D1C5;
+}
+
 table thead th {
 	text-align: left;
+	background-color: #FCEBB6;
+}
+
+table tbody tr.even td {
+	background-color: #FEF8E7;
 }
