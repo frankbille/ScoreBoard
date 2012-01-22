@@ -71,7 +71,7 @@ public class DailyGamePage extends WebPage {
 
 			@Override
 			protected DateTextField newDateTextField(String id, PropertyModel<Date> dateFieldModel) {
-				DateTextField dateTextField = super.newDateTextField(id, dateFieldModel);
+				DateTextField dateTextField = DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
 				dateTextField.add(new AjaxFormSubmitBehavior("onchange") {
 					private static final long serialVersionUID = 1L;
 
