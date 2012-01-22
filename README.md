@@ -6,7 +6,7 @@ ScoreBoard is a web based system, to keep track of game results and player stats
 Todo
 ----
 * Player management
-* The basic stuff, like ability to enter game results and which players were on it
+* ~~The basic stuff, like ability to enter game results and which players were on it~~
 * Ranking of players
 
 
