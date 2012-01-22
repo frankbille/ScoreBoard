@@ -10,7 +10,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -22,6 +21,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.RowColorModifier;
 import dk.frankbille.scoreboard.domain.Game;
@@ -30,7 +30,7 @@ import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
-public class DailyGamePage extends WebPage {
+public class DailyGamePage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
 	@SpringBean

@@ -26,6 +26,20 @@ h1, h2, h3 {
 	box-shadow: 0 0.5em 1em black;
 }
 
+#footer {
+	padding-left: 2em;
+	color: white;
+	font-family: 'Podkova', serif;
+	font-weight: bold;
+	font-size: 1.8em;
+	margin-bottom: 2em;
+	text-shadow: black 0 0.2em 0.5em;
+}
+
+#footer a {
+	color: white;
+}
+
 .gamedetails .team {
 	float: left;
 }
