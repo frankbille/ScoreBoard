@@ -15,7 +15,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<wicket.version>1.5.3</wicket.version>
+		<wicket.version>1.5.4</wicket.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<hibernate.version>3.6.9.Final</hibernate.version>
 		<jetty.version>7.5.0.v20110901</jetty.version>

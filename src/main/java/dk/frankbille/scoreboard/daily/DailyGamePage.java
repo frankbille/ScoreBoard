@@ -1,6 +1,8 @@
 package dk.frankbille.scoreboard.daily;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -117,7 +119,22 @@ public class DailyGamePage extends BasePage {
 
 			@Override
 			protected List<Game> load() {
-				return scoreBoardService.getAllGames();
+				List<Game> allGames = scoreBoardService.getAllGames();
+				Collections.sort(allGames, new Comparator<Game>() {
+					@Override
+					public int compare(Game o1, Game o2) {
+						int compare = 0;
+
+						compare = o2.getDate().compareTo(o1.getDate());
+
+						if (compare == 0) {
+							compare = o2.getId().compareTo(o1.getId());
+						}
+
+						return compare;
+					}
+				});
+				return allGames;
 			}
 		};
 
