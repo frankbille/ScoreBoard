@@ -18,12 +18,58 @@ h1, h2, h3 {
 #outer {
 	background-color: white;
 	opacity: 0.98;
+	margin: 2em;
+	border-radius: 0.8em;
+	border-top-left-radius: 1em;
+	box-shadow: 0 0.5em 1em black;
+}
+
+#inner {
 	padding: 1em;
 	padding-left: 2em;
 	padding-right: 2em;
-	margin: 2em;
-	border-radius: 0.8em;
-	box-shadow: 0 0.5em 1em black;
+	clear: both;
+}
+
+#menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	height: 3em;
+	background-color: #5E412F;
+}
+
+#menu ul li {
+	float: left;
+}
+
+#menu ul li a {
+	font-family: 'Podkova', serif;
+	font-size: 1.2em;
+	font-weight: bold;
+	letter-spacing: 0.3em;
+	color: #FCEBB6;
+	text-decoration: none;
+	background-color: #5E412F;
+	display: block;
+	height: 3em;
+	padding: 0;
+	border-right: 1px solid #E2D1C5;
+	box-shadow: 0.1em 0.1em 1em #5E412F;
+}
+
+#menu ul li:FIRST-CHILD a {
+	border-top-left-radius: 0.8em;
+}
+
+#menu ul li.last a {
+	border-bottom-right-radius: 0.8em;
+	border-right: 0;
+}
+
+#menu ul li a:HOVER {
+	color: #5E412F;
+	background-color: #FCEBB6;
 }
 
 #footer {
