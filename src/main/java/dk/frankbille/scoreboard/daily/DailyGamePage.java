@@ -26,6 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.RowColorModifier;
+import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
@@ -52,6 +53,11 @@ public class DailyGamePage extends BasePage {
     	addGameResults();
 
 		addPlayerStatistics();
+    }
+
+    @Override
+    public MenuItemType getMenuItemType() {
+    	return MenuItemType.DAILY;
     }
 
 	private void addPlayerStatistics() {

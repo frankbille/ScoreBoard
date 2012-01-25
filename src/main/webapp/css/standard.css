@@ -32,44 +32,50 @@ h1, h2, h3 {
 }
 
 #menu ul {
-	list-style: none;
-	margin: 0;
+	width: 100%;
+	float: left;
+	margin: 0 0 3em 0;
 	padding: 0;
-	height: 3em;
+	list-style: none;
 	background-color: #5E412F;
+	border-top-left-radius: 0.8em;
+	border-top-right-radius: 0.8em;
+	box-shadow: 0 0.1em 1em #5E412F;
 }
 
-#menu ul li {
+#menu li {
 	float: left;
 }
 
-#menu ul li a {
-	font-family: 'Podkova', serif;
-	font-size: 1.2em;
-	font-weight: bold;
-	letter-spacing: 0.3em;
-	color: #FCEBB6;
-	text-decoration: none;
-	background-color: #5E412F;
+#menu li a {
 	display: block;
-	height: 3em;
-	padding: 0;
+	padding: 8px 15px;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.1em;
+	letter-spacing: 0.2em;
+	color: #FCEBB6;
 	border-right: 1px solid #E2D1C5;
-	box-shadow: 0.1em 0.1em 1em #5E412F;
 }
 
-#menu ul li:FIRST-CHILD a {
+#menu li.active a {
+	color: #5E412F;
+	background-color: #FCEBB6;
+	text-decoration: underline;
+}
+
+#menu li.active:first-child a {
 	border-top-left-radius: 0.8em;
 }
 
-#menu ul li.last a {
-	border-bottom-right-radius: 0.8em;
-	border-right: 0;
+#menu li:first-child a:hover {
+	border-top-left-radius: 0.8em;
 }
 
-#menu ul li a:HOVER {
+#menu li a:hover {
 	color: #5E412F;
 	background-color: #FCEBB6;
+	text-decoration: none;
 }
 
 #footer {
