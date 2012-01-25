@@ -2,7 +2,6 @@ package dk.frankbille.scoreboard.daily;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +23,9 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
+import dk.frankbille.scoreboard.comparators.GameComparator;
+import dk.frankbille.scoreboard.comparators.GameTeamComparator;
+import dk.frankbille.scoreboard.comparators.PlayerComparator;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.RowColorModifier;
 import dk.frankbille.scoreboard.domain.Game;
@@ -120,20 +122,7 @@ public class DailyGamePage extends BasePage {
 			@Override
 			protected List<Game> load() {
 				List<Game> allGames = scoreBoardService.getAllGames();
-				Collections.sort(allGames, new Comparator<Game>() {
-					@Override
-					public int compare(Game o1, Game o2) {
-						int compare = 0;
-
-						compare = o2.getDate().compareTo(o1.getDate());
-
-						if (compare == 0) {
-							compare = o2.getId().compareTo(o1.getId());
-						}
-
-						return compare;
-					}
-				});
+				Collections.sort(allGames, new GameComparator());
 				return allGames;
 			}
 		};
@@ -157,6 +146,7 @@ public class DailyGamePage extends BasePage {
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
 						List<GameTeam> teams = game.getTeams();
+						Collections.sort(teams, new GameTeamComparator());
 						for (GameTeam gameTeam : teams) {
 							if (b.length() > 0) {
 								b.append(" vs. ");
@@ -164,6 +154,7 @@ public class DailyGamePage extends BasePage {
 
 							StringBuilder t = new StringBuilder();
 							List<Player> players = new ArrayList<Player>(gameTeam.getTeam().getPlayers());
+							Collections.sort(players, new PlayerComparator());
 							for (Player player : players) {
 								if (t.length() > 0) {
 									t.append("/");
@@ -183,6 +174,7 @@ public class DailyGamePage extends BasePage {
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
 						List<GameTeam> teams = game.getTeams();
+						Collections.sort(teams, new GameTeamComparator());
 						for (GameTeam gameTeam : teams) {
 							if (b.length() > 0) {
 								b.append(" : ");
