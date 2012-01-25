@@ -8,7 +8,12 @@
 </head>
 <body>
 <div id="outer">
-	<wicket:child />
+	<div id="menu">
+		<span wicket:id="menu"/>
+	</div>
+	<div id="inner">
+		<wicket:child />
+	</div>
 </div>
 <div id="footer">
 	&copy; <span wicket:id="copyrightDate"></span>. <a href="https://github.com/frankbille/ScoreBoard">GitHub project</a>. <a href="https://github.com/frankbille/ScoreBoard/issues">Report a bug or feature request</a>.

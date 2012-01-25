@@ -18,12 +18,64 @@ h1, h2, h3 {
 #outer {
 	background-color: white;
 	opacity: 0.98;
+	margin: 2em;
+	border-radius: 0.8em;
+	border-top-left-radius: 1em;
+	box-shadow: 0 0.5em 1em black;
+}
+
+#inner {
 	padding: 1em;
 	padding-left: 2em;
 	padding-right: 2em;
-	margin: 2em;
-	border-radius: 0.8em;
-	box-shadow: 0 0.5em 1em black;
+	clear: both;
+}
+
+#menu ul {
+	width: 100%;
+	float: left;
+	margin: 0 0 3em 0;
+	padding: 0;
+	list-style: none;
+	background-color: #5E412F;
+	border-top-left-radius: 0.8em;
+	border-top-right-radius: 0.8em;
+	box-shadow: 0 0.1em 1em #5E412F;
+}
+
+#menu li {
+	float: left;
+}
+
+#menu li a {
+	display: block;
+	padding: 8px 15px;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.1em;
+	letter-spacing: 0.2em;
+	color: #FCEBB6;
+	border-right: 1px solid #E2D1C5;
+}
+
+#menu li.active a {
+	color: #5E412F;
+	background-color: #FCEBB6;
+	text-decoration: underline;
+}
+
+#menu li.active:first-child a {
+	border-top-left-radius: 0.8em;
+}
+
+#menu li:first-child a:hover {
+	border-top-left-radius: 0.8em;
+}
+
+#menu li a:hover {
+	color: #5E412F;
+	background-color: #FCEBB6;
+	text-decoration: none;
 }
 
 #footer {
