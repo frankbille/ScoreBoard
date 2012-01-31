@@ -58,6 +58,10 @@ h1, h2, h3 {
 	border-right: 1px solid #E2D1C5;
 }
 
+#menu li a span {
+	border: 0;
+}
+
 #menu li.active a {
 	color: #5E412F;
 	background-color: #FCEBB6;
@@ -78,6 +82,10 @@ h1, h2, h3 {
 	text-decoration: none;
 }
 
+#menu li a:hover span {
+	border: 0;
+}
+
 #footer {
 	padding-left: 2em;
 	color: white;
@@ -89,7 +97,9 @@ h1, h2, h3 {
 }
 
 #footer a {
+	display: inline;
 	color: white;
+	text-decoration: underline;
 }
 
 .gamedetails .team {
@@ -133,3 +143,29 @@ table thead th {
 table tbody tr.even td {
 	background-color: #FEF8E7;
 }
+
+table tbody td.nopad {
+	padding: 0;
+}
+
+table a {
+	padding: 0.8em;
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+	display: block;
+	color: #F07818;
+	text-decoration: none;
+}
+
+table a span {
+	border-bottom: 1px dashed #78C0A8;
+}
+
+table a:hover {
+	color: #78C0A8;
+}
+
+table a:hover span {
+	border-bottom: 1px solid #F07818;
+}
+
