@@ -20,6 +20,10 @@ public class Player implements Serializable {
 
 	private String name;
 
+	private double rating;
+
+	private double ratingChange;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Long getId() {
@@ -48,4 +52,19 @@ public class Player implements Serializable {
 		return new HashCodeBuilder().append(id).append(name).toHashCode();
 	}
 
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+	
+	public double getRating() {
+		return rating;
+	}
+
+	public void setRatingChange(double change) {
+		this.ratingChange = change;
+	}
+	
+	public double getRatingChange() {
+		return ratingChange;
+	}
 }

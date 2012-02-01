@@ -10,6 +10,8 @@ public class PlayerResult implements Serializable {
 	private int gamesWon = 0;
 
 	private int gamesLost = 0;
+	
+	private double rating = 0;
 
 	public PlayerResult(Player player) {
 		this.player = player;
@@ -41,6 +43,14 @@ public class PlayerResult implements Serializable {
 
 	public double getGamesWonRatio() {
 		return gamesWon+gamesLost > 0 ? (double) gamesWon / ((double)gamesWon+(double)gamesLost) : 0.0;
+	}
+
+	public double getPlayerRating() {
+		return rating;
+	}
+
+	public void setPlayerRating(double rating) {
+		this.rating = rating;
 	}
 
 }

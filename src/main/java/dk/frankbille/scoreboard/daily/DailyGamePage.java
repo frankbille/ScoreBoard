@@ -1,5 +1,6 @@
 package dk.frankbille.scoreboard.daily;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -149,6 +150,8 @@ public class DailyGamePage extends BasePage {
 
 					@Override
 					public String getObject() {
+						DecimalFormat df = new DecimalFormat("#.#");
+						
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
 						List<GameTeam> teams = game.getTeams();
@@ -167,6 +170,9 @@ public class DailyGamePage extends BasePage {
 								}
 								t.append(player.getName());
 							}
+							t.append(" (");
+							t.append(df.format(gameTeam.getRating()));
+							t.append(")");
 							b.append(t);
 						}
 						return b.toString();
@@ -180,14 +186,21 @@ public class DailyGamePage extends BasePage {
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
 						List<GameTeam> teams = game.getTeams();
+						double ratingChange = 0;
 						Collections.sort(teams, new GameTeamComparator());
 						for (GameTeam gameTeam : teams) {
 							if (b.length() > 0) {
 								b.append(" : ");
 							}
+							else {
+								ratingChange = gameTeam.getRatingChange();
+							}
 
 							b.append(gameTeam.getScore());
 						}
+						b.append(" (+");
+						b.append(new DecimalFormat("#.#").format(ratingChange));
+						b.append(")");
 						return b.toString();
 					}
 				}));

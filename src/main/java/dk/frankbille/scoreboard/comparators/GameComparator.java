@@ -12,7 +12,7 @@ public class GameComparator implements Comparator<Game> {
 		compare = o2.getDate().compareTo(o1.getDate());
 
 		if (compare == 0) {
-			compare = o2.getId().compareTo(o1.getId());
+			compare = -o2.getId().compareTo(o1.getId());
 		}
 
 		return compare;
