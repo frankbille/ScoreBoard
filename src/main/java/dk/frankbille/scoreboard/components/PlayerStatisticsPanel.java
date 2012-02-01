@@ -48,6 +48,10 @@ public class PlayerStatisticsPanel extends Panel {
 						}
 
 						if (compare == 0) {
+							compare = new Integer(o1.getGamesCount()).compareTo(o2.getGamesCount());
+						}
+
+						if (compare == 0) {
 							compare = o1.getPlayer().getName().compareTo(o2.getPlayer().getName());
 						}
 
@@ -70,6 +74,7 @@ public class PlayerStatisticsPanel extends Panel {
 			protected void populateItem(ListItem<PlayerResult> item) {
 				item.add(RowColorModifier.create(item));
 				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
+				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
 				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
 				item.add(new Label("winRatio", new PropertyModel<Double>(item.getModel(), "gamesWonRatio")));

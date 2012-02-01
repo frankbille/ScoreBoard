@@ -6,7 +6,7 @@ public class PlayerResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Player player;
-
+	
 	private int gamesWon = 0;
 
 	private int gamesLost = 0;
@@ -25,6 +25,10 @@ public class PlayerResult implements Serializable {
 
 	public void gameLost() {
 		gamesLost++;
+	}
+
+	public int getGamesCount() {
+		return gamesWon+gamesLost;
 	}
 
 	public int getGamesWon() {
