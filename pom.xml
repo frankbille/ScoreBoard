@@ -17,7 +17,7 @@
 	<properties>
 		<wicket.version>1.5.4</wicket.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
-		<hibernate.version>3.6.9.Final</hibernate.version>
+		<mybatis.version>1.0.2</mybatis.version>
 		<jetty.version>7.5.0.v20110901</jetty.version>
 	</properties>
 	<dependencies>
@@ -53,14 +53,9 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.15.0-GA</version>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
