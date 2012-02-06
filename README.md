@@ -7,8 +7,16 @@ Todo
 ----
 * See the [issue list][issues] for details of what is needed to be done.
 
+
+License
+-------
+
+Licensed under the [GNU General Public License, Version 3.0][license]
+
+
 Build instructions (for developers using Eclipse)
-----
+-------------------------------------------------
+
 # Install [Eclipse IDE for Java Developers][eclipse]
 # Install [Eclipse EGit plugin][egit] in Eclipse
 # Install [maven]
@@ -33,3 +41,4 @@ Build instructions (for developers using Eclipse)
 [maven]: http://maven.apache.org/
 [mavensetup]: http://maven.apache.org/guides/mini/guide-ide-eclipse.html
 [issues]: https://github.com/frankbille/ScoreBoard/issues
+[license]: http://www.gnu.org/licenses/gpl.html
