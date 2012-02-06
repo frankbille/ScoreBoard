@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dk.frankbille.scoreboard.dao.mybatis.PlayerMapper">
+	<insert id="insertPlayer" parameterType="dk.frankbille.scoreboard.domain.Player">
+		INSERT INTO
+			player
+		(
+			name
+		)
+		VALUES
+		(
+			#{name}
+		)
+	</insert>
+
+	<update id="updatePlayer" parameterType="dk.frankbille.scoreboard.domain.Player">
+		UPDATE
+			player
+		SET
+			name = #{name}
+		WHERE
+			id = #{id}
+	</update>
+
+	<select id="getPlayers" resultType="dk.frankbille.scoreboard.domain.Player">
+		SELECT
+			*
+		FROM
+			player
+		ORDER BY
+			name
+	</select>
+</mapper>
