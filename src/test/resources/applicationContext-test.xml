@@ -14,4 +14,14 @@
 
 	<context:property-placeholder location="classpath:jdbc-test.properties"/>
 
+	<bean id="databaseManager" class="dk.frankbille.scoreboard.db.DatabaseManager">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="dbms" value="HSQLDB"/>
+		<property name="sqlFiles">
+			<list>
+				<value>classpath:/hsqldb/*.sql</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>

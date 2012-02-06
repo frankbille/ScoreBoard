@@ -1,0 +1,6 @@
+CREATE TABLE
+	player
+(
+	id INTEGER NOT NULL IDENTITY,
+	name VARCHAR(255)
+)

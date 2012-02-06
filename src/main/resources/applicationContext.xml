@@ -17,6 +17,16 @@
 			p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}"
 			p:username="${jdbc.username}" p:password="${jdbc.password}"/>
 
+	<bean id="databaseManager" class="dk.frankbille.scoreboard.db.DatabaseManager">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="dbms" value="MYSQL"/>
+		<property name="sqlFiles">
+			<list>
+				<value>classpath:/mysql/*.sql</value>
+			</list>
+		</property>
+	</bean>
+
 	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
 
 	<!-- MyBatis SessionFactory -->

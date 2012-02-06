@@ -1,0 +1,6 @@
+CREATE TABLE
+	game
+(
+	id INTEGER NOT NULL IDENTITY,
+	date DATE
+)
