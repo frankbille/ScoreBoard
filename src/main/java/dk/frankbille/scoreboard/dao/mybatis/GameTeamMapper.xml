@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dk.frankbille.scoreboard.dao.mybatis.GameTeamMapper">
-	<insert id="insertGameTeam" parameterType="dk.frankbille.scoreboard.domain.GameTeam">
+	<insert id="insertGameTeam" parameterType="dk.frankbille.scoreboard.domain.GameTeam" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 			game_team
 		(

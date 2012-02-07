@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dk.frankbille.scoreboard.dao.mybatis.TeamMapper">
-	<insert id="insertTeam" parameterType="dk.frankbille.scoreboard.domain.Team">
+	<insert id="insertTeam" parameterType="dk.frankbille.scoreboard.domain.Team" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 			team
 		(
@@ -42,6 +42,6 @@
 		DELETE FROM
 			team_players
 		WHERE
-			team_id = #{team_id}
+			team_id = #{id}
 	</delete>
 </mapper>

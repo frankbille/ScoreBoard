@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dk.frankbille.scoreboard.dao.mybatis.GameMapper">
-	<insert id="insertGame" parameterType="dk.frankbille.scoreboard.domain.Game">
+	<insert id="insertGame" parameterType="dk.frankbille.scoreboard.domain.Game" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 			game
 		(
@@ -19,7 +19,7 @@
 		UPDATE
 			game
 		SET
-			date = #{game}
+			date = #{date}
 		WHERE
 			id = #{id}
 	</update>

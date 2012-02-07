@@ -24,4 +24,9 @@
 		</property>
 	</bean>
 
+	<bean id="testMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.TestMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
 </beans>
