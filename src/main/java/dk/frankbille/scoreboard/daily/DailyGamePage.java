@@ -1,6 +1,7 @@
 package dk.frankbille.scoreboard.daily;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -27,6 +28,7 @@ import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.comparators.GameTeamComparator;
 import dk.frankbille.scoreboard.comparators.PlayerComparator;
+import dk.frankbille.scoreboard.components.FormatModel;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.RowColorModifier;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
@@ -144,14 +146,14 @@ public class DailyGamePage extends BasePage {
 			@Override
 			protected void populateItem(final ListItem<Game> item) {
 				item.add(RowColorModifier.create(item));
-				item.add(new Label("date", ""+item.getModelObject().getDate()));
+				item.add(new Label("date", new FormatModel(new SimpleDateFormat("yyyy-MM-dd"), new PropertyModel<Object>(item.getModel(), "date"))));
 				item.add(new Label("teams", new AbstractReadOnlyModel<String>() {
 					private static final long serialVersionUID = 1L;
 
 					@Override
 					public String getObject() {
 						DecimalFormat df = new DecimalFormat("#.#");
-						
+
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
 						List<GameTeam> teams = game.getTeams();
