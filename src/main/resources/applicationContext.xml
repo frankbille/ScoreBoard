@@ -15,7 +15,7 @@
 	<!-- DataSource configuration for Apache Commons DBCP. -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
 			p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}"
-			p:username="${jdbc.username}" p:password="${jdbc.password}"/>
+			p:username="${jdbc.username}" p:password="${jdbc.password}" p:validationQuery="SELECT 1+1" p:testOnBorrow="true"/>
 
 	<bean id="databaseManager" class="dk.frankbille.scoreboard.db.DatabaseManager">
 		<property name="dataSource" ref="dataSource"/>
