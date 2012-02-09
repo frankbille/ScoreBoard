@@ -37,11 +37,7 @@ public class PlayerStatisticsPanel extends Panel {
 					public int compare(PlayerResult o1, PlayerResult o2) {
 						int compare = 0;
 
-						compare = new Double(o2.getPlayerRating()).compareTo(o1.getPlayerRating());
-								
-						if (compare == 0) {
-							new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
-						}
+						compare = new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
 
 						if (compare == 0) {
 							compare = new Integer(o2.getGamesWon()).compareTo(o1.getGamesWon());
@@ -82,7 +78,6 @@ public class PlayerStatisticsPanel extends Panel {
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
 				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
 				item.add(new Label("winRatio", new PropertyModel<Double>(item.getModel(), "gamesWonRatio")));
-				item.add(new Label("rating", new PropertyModel<Double>(item.getModel(), "playerRating")));
 			}
 		});
 	}
