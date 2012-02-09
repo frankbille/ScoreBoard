@@ -17,7 +17,6 @@ import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
-import dk.frankbille.scoreboard.ratings.ELORating;
 
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
@@ -53,10 +52,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 
 	@Override
 	public List<Game> getAllGames() {
-		List<Game> games = gameDao.getAllGames();
-		ELORating rating = new ELORating();
-		rating.calculateRatings(games);
-		return games;
+		return gameDao.getAllGames();
 	}
 
 	@Override
@@ -83,7 +79,6 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 					} else {
 						result.gameLost();
 					}
-					result.setPlayerRating(player.getRating()+player.getRatingChange());
 				}
 			}
 		}
