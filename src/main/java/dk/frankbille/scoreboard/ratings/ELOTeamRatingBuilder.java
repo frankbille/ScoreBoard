@@ -1,31 +1,23 @@
 package dk.frankbille.scoreboard.ratings;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ELOTeamRatingBuilder {
-	private double defaultRating;
+	private double rating;
+	private int players;
 	
-	private List<Double> playerRatings;
-
-	public ELOTeamRatingBuilder(double defaultRating) {
-		this.defaultRating = defaultRating;
-		playerRatings = new ArrayList<Double>();
+	public ELOTeamRatingBuilder() {
+		this.rating = 0;
+		this.players = 0;
 	}
-
+	
 	public void addPlayer(double rating) {
-		playerRatings.add(rating);
+		this.rating += rating;
+		this.players++;
 	}
 
 	public double getTeamRating() {
-		if (playerRatings.size()==0)
-			return defaultRating;
-		
-		double teamRating = 0;
-		for (Double rating : playerRatings) {
-			teamRating += rating;
-		}
-		return teamRating/playerRatings.size();
+		if (players==0)
+			return ELOCalculator.DEFAULT_RATING;
+		else
+			return rating/players;
 	}
-
 }

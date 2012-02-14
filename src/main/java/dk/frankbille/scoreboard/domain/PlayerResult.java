@@ -2,6 +2,8 @@ package dk.frankbille.scoreboard.domain;
 
 import java.io.Serializable;
 
+import dk.frankbille.scoreboard.ratings.RatingProvider;
+
 public class PlayerResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -11,8 +13,6 @@ public class PlayerResult implements Serializable {
 
 	private int gamesLost = 0;
 	
-	private double rating = 0;
-
 	public PlayerResult(Player player) {
 		this.player = player;
 	}
@@ -46,11 +46,7 @@ public class PlayerResult implements Serializable {
 	}
 
 	public double getPlayerRating() {
-		return rating;
-	}
-
-	public void setPlayerRating(double rating) {
-		this.rating = rating;
+		return RatingProvider.getRatings().getPlayerRating(player.getId()).getRating();
 	}
 
 }

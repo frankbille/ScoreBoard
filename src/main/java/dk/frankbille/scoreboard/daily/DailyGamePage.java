@@ -1,7 +1,5 @@
 package dk.frankbille.scoreboard.daily;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +11,7 @@ import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -26,13 +25,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.comparators.GameTeamComparator;
-import dk.frankbille.scoreboard.comparators.PlayerComparator;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.RowColorModifier;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
-import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
@@ -145,39 +142,21 @@ public class DailyGamePage extends BasePage {
 			protected void populateItem(final ListItem<Game> item) {
 				item.add(RowColorModifier.create(item));
 				item.add(new Label("date", ""+item.getModelObject().getDate()));
-				item.add(new Label("teams", new AbstractReadOnlyModel<String>() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public String getObject() {
-						DecimalFormat df = new DecimalFormat("#.#");
-						
-						StringBuilder b = new StringBuilder();
-						Game game = item.getModelObject();
-						List<GameTeam> teams = game.getTeams();
-						Collections.sort(teams, new GameTeamComparator());
-						for (GameTeam gameTeam : teams) {
-							if (b.length() > 0) {
-								b.append(" vs. ");
-							}
-
-							StringBuilder t = new StringBuilder();
-							List<Player> players = new ArrayList<Player>(gameTeam.getTeam().getPlayers());
-							Collections.sort(players, new PlayerComparator());
-							for (Player player : players) {
-								if (t.length() > 0) {
-									t.append("/");
-								}
-								t.append(player.getName());
-							}
-							t.append(" (");
-							t.append(df.format(gameTeam.getRating()));
-							t.append(")");
-							b.append(t);
-						}
-						return b.toString();
+				
+				//Add the winning and losing team
+				Game game = item.getModelObject();
+				List<GameTeam> teams = game.getTeams();
+				Collections.sort(teams, new GameTeamComparator());
+				for (GameTeam gameTeam : teams) {
+					if (gameTeam.isWinner()) {
+						item.add(new MultiLineLabel("winner", new TeamReadOnlyModel(gameTeam)));
 					}
-				}));
+					else {
+						item.add(new MultiLineLabel("loser", new TeamReadOnlyModel(gameTeam)));
+					}
+				}
+				
+				//Add the game score
 				item.add(new Label("score", new AbstractReadOnlyModel<String>() {
 					private static final long serialVersionUID = 1L;
 
@@ -186,21 +165,15 @@ public class DailyGamePage extends BasePage {
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
 						List<GameTeam> teams = game.getTeams();
-						double ratingChange = 0;
 						Collections.sort(teams, new GameTeamComparator());
 						for (GameTeam gameTeam : teams) {
 							if (b.length() > 0) {
 								b.append(" : ");
 							}
-							else {
-								ratingChange = gameTeam.getRatingChange();
-							}
 
 							b.append(gameTeam.getScore());
 						}
-						b.append(" (+");
-						b.append(new DecimalFormat("#.#").format(ratingChange));
-						b.append(")");
+
 						return b.toString();
 					}
 				}));

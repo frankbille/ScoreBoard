@@ -1,31 +1,18 @@
 package dk.frankbille.scoreboard.ratings;
 
-public class ELOPlayerRating {
-	private long id;
+public class ELOPlayerRating implements PlayerRating {
 	private double rating;
-	
-	public ELOPlayerRating(long id, double rating) {
-		this.id = id;
-		this.rating = rating;
+
+	public ELOPlayerRating() {
+		this.rating = ELOCalculator.DEFAULT_RATING;
 	}
 
-	public long getId() {
-		return id;
-	}
-	
 	public double getRating() {
 		return rating;
 	}
-	
-	public int hashCode() {
-		return (int)id;
+
+	public void changeRating(double ratingChange) {
+		this.rating += ratingChange;
 	}
 
-	public boolean equals(Object obj) {
-		return (obj instanceof ELOPlayerRating) && (((ELOPlayerRating)obj).getId()==this.id); 
-	}
-
-	public void changeRating(double change) {
-		rating += change; 
-	}
 }

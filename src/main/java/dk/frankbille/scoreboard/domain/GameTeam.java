@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="game_team")
@@ -23,10 +24,6 @@ public class GameTeam implements Serializable {
 	private Team team;
 
 	private int score;
-	
-	private double rating;
-
-	private double ratingChange;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -66,20 +63,8 @@ public class GameTeam implements Serializable {
 		this.score = score;
 	}
 
-	public void setRating(double rating) {
-		this.rating = rating;		
+	@Transient
+	public boolean isWinner() {
+		return getGame().didTeamWin(this);
 	}
-
-	public double getRating() {
-		return rating;
-	}
-
-	public void setRatingChange(double ratingChange) {
-		this.ratingChange = ratingChange;
-	}
-
-	public double getRatingChange() {
-		return ratingChange;
-	}
-
 }

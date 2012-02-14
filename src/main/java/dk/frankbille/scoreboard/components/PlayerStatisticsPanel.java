@@ -14,6 +14,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.domain.PlayerResult;
+import dk.frankbille.scoreboard.ratings.RatingCalculator;
+import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class PlayerStatisticsPanel extends Panel {
@@ -31,13 +33,16 @@ public class PlayerStatisticsPanel extends Panel {
 			@Override
 			protected List<PlayerResult> load() {
 				List<PlayerResult> playerResults = scoreBoardService.getPlayerResults();
+				final RatingCalculator rating = RatingProvider.getRatings();
 
 				Collections.sort(playerResults, new Comparator<PlayerResult>() {
 					@Override
 					public int compare(PlayerResult o1, PlayerResult o2) {
 						int compare = 0;
 
-						compare = new Double(o2.getPlayerRating()).compareTo(o1.getPlayerRating());
+						double rating1 = rating.getPlayerRating(o1.getPlayer().getId()).getRating(); 
+						Double rating2 = rating.getPlayerRating(o2.getPlayer().getId()).getRating(); 
+						compare = rating2.compareTo(rating1);
 								
 						if (compare == 0) {
 							new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());

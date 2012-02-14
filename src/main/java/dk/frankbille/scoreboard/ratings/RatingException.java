@@ -1,8 +1,9 @@
 package dk.frankbille.scoreboard.ratings;
 
-public class RatingException extends Exception {
-	private static final long serialVersionUID = 1L;
+public class RatingException extends RuntimeException {
 
 	public RatingException(String string) {
+		
 	}
+
 }
