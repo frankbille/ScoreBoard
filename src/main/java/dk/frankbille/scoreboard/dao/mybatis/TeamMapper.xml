@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dk.frankbille.scoreboard.dao.mybatis.TeamMapper">
+	<insert id="insertTeam" parameterType="dk.frankbille.scoreboard.domain.Team" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+			team
+		(
+			name
+		)
+		VALUES
+		(
+			#{name}
+		)
+	</insert>
+
+	<update id="updateTeam" parameterType="dk.frankbille.scoreboard.domain.Team">
+		UPDATE
+			team
+		SET
+			name = #{name}
+		WHERE
+			id = #{id}
+	</update>
+
+	<insert id="insertTeamPlayer">
+		INSERT INTO
+			team_players
+		(
+			team_id,
+			player_id
+		)
+		VALUES
+		(
+			#{team.id},
+			#{player.id}
+		)
+	</insert>
+
+	<delete id="deleteTeamPlayers" parameterType="dk.frankbille.scoreboard.domain.Team">
+		DELETE FROM
+			team_players
+		WHERE
+			team_id = #{id}
+	</delete>
+</mapper>
