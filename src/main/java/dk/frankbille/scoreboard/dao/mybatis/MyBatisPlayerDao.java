@@ -28,8 +28,6 @@ public class MyBatisPlayerDao implements PlayerDao {
 		} else {
 			playerMapper.updatePlayer(player);
 		}
-
-		System.out.println(player.getId());
 	}
 
 	@Override
