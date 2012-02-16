@@ -4,19 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-@Entity
-@Table(name="team")
 public class Team implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +13,6 @@ public class Team implements Serializable {
 
 	private Set<Player> players;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}
@@ -44,8 +29,6 @@ public class Team implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(cascade=CascadeType.ALL, targetEntity=Player.class, fetch=FetchType.EAGER)
-	@JoinTable(name="team_players", joinColumns=@JoinColumn(name="team_id"), inverseJoinColumns=@JoinColumn(name="player_id"))
 	public Set<Player> getPlayers() {
 		if (players == null) {
 			players = new HashSet<Player>();

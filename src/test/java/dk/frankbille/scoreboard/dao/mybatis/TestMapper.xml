@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dk.frankbille.scoreboard.dao.mybatis.TestMapper">
+	<delete id="clearGames">
+		DELETE FROM
+			game
+	</delete>
+
+	<delete id="clearGameTeams">
+		DELETE FROM
+			game_team
+	</delete>
+
+	<delete id="clearTeams">
+		DELETE FROM
+			team
+	</delete>
+
+	<delete id="clearTeamPlayers">
+		DELETE FROM
+			team_players
+	</delete>
+
+	<delete id="clearPlayers">
+		DELETE FROM
+			player
+	</delete>
+</mapper>

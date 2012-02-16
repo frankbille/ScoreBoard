@@ -15,42 +15,30 @@
 	<!-- DataSource configuration for Apache Commons DBCP. -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
 			p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}"
-			p:username="${jdbc.username}" p:password="${jdbc.password}"/>
+			p:username="${jdbc.username}" p:password="${jdbc.password}" p:validationQuery="SELECT 1+1" p:testOnBorrow="true"/>
 
-	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
-
-	<!-- Hibernate SessionFactory -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
-			p:dataSource-ref="dataSource">
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
-				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
-				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-			</props>
-		</property>
-		<property name="annotatedClasses">
+	<bean id="databaseManager" class="dk.frankbille.scoreboard.db.DatabaseManager">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="dbms" value="MYSQL"/>
+		<property name="sqlFiles">
 			<list>
-				<value>dk.frankbille.scoreboard.domain.Game</value>
-				<value>dk.frankbille.scoreboard.domain.GameTeam</value>
-				<value>dk.frankbille.scoreboard.domain.Team</value>
-				<value>dk.frankbille.scoreboard.domain.Player</value>
+				<value>classpath:/mysql/*.sql</value>
 			</list>
-		</property>
-		<property name="eventListeners">
-			<map>
-				<entry key="merge">
-					<bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
-				</entry>
-			</map>
 		</property>
 	</bean>
 
-	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
-			p:sessionFactory-ref="sessionFactory"/>
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
 
+	<!-- MyBatis SessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:dk/frankbille/scoreboard/dao/mybatis/*.xml" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
 	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
 
@@ -72,13 +60,30 @@
 	-->
 	<context:mbean-export/>
 
-	<bean id="gameDao" class="dk.frankbille.scoreboard.dao.HibernateGameDao"/>
-	<bean id="playerDao" class="dk.frankbille.scoreboard.dao.HibernatePlayerDao"/>
+	<bean id="gameMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.GameMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="gameTeamMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.GameTeamMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="teamMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.TeamMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="playerMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.PlayerMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="gameDao" class="dk.frankbille.scoreboard.dao.mybatis.MyBatisGameDao"/>
+	<bean id="playerDao" class="dk.frankbille.scoreboard.dao.mybatis.MyBatisPlayerDao"/>
 
 	<!-- ScoreBoard Service -->
 	<bean id="scoreBoardService" class="dk.frankbille.scoreboard.service.DefaultScoreBoardService"/>
-
-	<!-- Hibernate's JMX statistics service -->
-	<bean name="scoreboard:type=HibernateStatistics" class="org.hibernate.jmx.StatisticsService" autowire="byName"/>
 
 </beans>

@@ -12,7 +12,7 @@ public class PlayerResult implements Serializable {
 	private int gamesWon = 0;
 
 	private int gamesLost = 0;
-	
+
 	public PlayerResult(Player player) {
 		this.player = player;
 	}

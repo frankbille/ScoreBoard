@@ -33,6 +33,7 @@ import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
+
 public class DailyGamePage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
@@ -173,7 +174,6 @@ public class DailyGamePage extends BasePage {
 
 							b.append(gameTeam.getScore());
 						}
-
 						return b.toString();
 					}
 				}));

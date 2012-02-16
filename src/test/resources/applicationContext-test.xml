@@ -12,6 +12,25 @@
 
 	<import resource="applicationContext.xml"/>
 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+			p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}"
+			p:username="${jdbc.username}" p:password="${jdbc.password}" p:testOnBorrow="true"/>
+
 	<context:property-placeholder location="classpath:jdbc-test.properties"/>
+
+	<bean id="databaseManager" class="dk.frankbille.scoreboard.db.DatabaseManager">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="dbms" value="HSQLDB"/>
+		<property name="sqlFiles">
+			<list>
+				<value>classpath:/hsqldb/*.sql</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="testMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.TestMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
 
 </beans>
