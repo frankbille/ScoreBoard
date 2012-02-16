@@ -22,11 +22,13 @@ public abstract class WicketSpringTestCase {
 
 	@BeforeClass
 	public static void setupSpring() {
-		MockServletContext servletContext = new MockServletContext(new WicketApplication(), "src/main/webapp");
-		servletContext.addInitParameter("contextConfigLocation", "classpath:applicationContext-test.xml");
-		ContextLoader loader = new ContextLoader();
-		applicationContext = loader.initWebApplicationContext(servletContext);
-		WicketSpringTestCase.servletContext = servletContext;
+		if (applicationContext == null) {
+			MockServletContext servletContext = new MockServletContext(new WicketApplication(), "src/main/webapp");
+			servletContext.addInitParameter("contextConfigLocation", "classpath:applicationContext-test.xml");
+			ContextLoader loader = new ContextLoader();
+			applicationContext = loader.initWebApplicationContext(servletContext);
+			WicketSpringTestCase.servletContext = servletContext;
+		}
 	}
 
 	@Before
