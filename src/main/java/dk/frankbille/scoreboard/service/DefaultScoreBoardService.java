@@ -39,6 +39,11 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		return player;
 	}
 
+	@Override
+	public void savePlayer(Player player) {
+		playerDao.savePlayer(player);
+	}
+
 	@Transactional(readOnly=true)
 	@Override
 	public List<Player> getAllPlayers() {
@@ -84,6 +89,11 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		}
 
 		return playerResults;
+	}
+
+	@Override
+	public Player getPlayer(Long playerId) {
+		return playerDao.getPlayer(playerId);
 	}
 
 }

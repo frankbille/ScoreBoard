@@ -37,4 +37,9 @@ public class MyBatisPlayerDao implements PlayerDao {
 		return playerMapper.getPlayers();
 	}
 
+	@Override
+	public Player getPlayer(Long playerId) {
+		return playerMapper.getPlayer(playerId);
+	}
+
 }

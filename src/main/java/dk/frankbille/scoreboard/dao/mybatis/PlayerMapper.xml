@@ -7,11 +7,15 @@
 		INSERT INTO
 			player
 		(
-			name
+			name,
+			full_name,
+			group_name
 		)
 		VALUES
 		(
-			#{name}
+			#{name},
+			#{fullName},
+			#{groupName}
 		)
 	</insert>
 
@@ -19,17 +23,34 @@
 		UPDATE
 			player
 		SET
-			name = #{name}
+			name = #{name},
+			full_name = #{fullName},
+			group_name = #{groupName}
 		WHERE
 			id = #{id}
 	</update>
 
 	<select id="getPlayers" resultType="dk.frankbille.scoreboard.domain.Player">
 		SELECT
-			*
+			id,
+			name,
+			full_name AS fullName,
+			group_name AS groupName
 		FROM
 			player
 		ORDER BY
 			name
+	</select>
+
+	<select id="getPlayer" resultType="dk.frankbille.scoreboard.domain.Player" parameterType="java.lang.Long">
+		SELECT
+			id,
+			name,
+			full_name AS fullName,
+			group_name AS groupName
+		FROM
+			player
+		WHERE
+			id = #{playerId}
 	</select>
 </mapper>

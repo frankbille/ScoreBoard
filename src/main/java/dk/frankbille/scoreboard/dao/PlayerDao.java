@@ -10,4 +10,6 @@ public interface PlayerDao {
 
 	List<Player> getAllPlayers();
 
+	Player getPlayer(Long playerId);
+
 }

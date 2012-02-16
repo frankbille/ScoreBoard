@@ -45,7 +45,7 @@ public class PlayerListPage extends BasePage {
 				item.add(link);
 
 				item.add(new Label("fullName", new PropertyModel<String>(item.getModel(), "fullName")));
-				item.add(new Label("group", new PropertyModel<String>(item.getModel(), "group")));
+				item.add(new Label("groupName", new PropertyModel<String>(item.getModel(), "groupName")));
 			}
 		});
 	}

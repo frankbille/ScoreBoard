@@ -10,6 +10,8 @@ public interface ScoreBoardService {
 
 	Player createNewPlayer(String name);
 
+	void savePlayer(Player player);
+
 	List<Player> getAllPlayers();
 
 	void saveGame(Game game);
@@ -17,5 +19,8 @@ public interface ScoreBoardService {
 	List<Game> getAllGames();
 
 	List<PlayerResult> getPlayerResults();
+
+	Player getPlayer(Long playerId);
+
 
 }
