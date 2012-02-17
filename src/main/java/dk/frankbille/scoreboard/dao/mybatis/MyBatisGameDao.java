@@ -71,6 +71,18 @@ public class MyBatisGameDao implements GameDao {
 	@Override
 	public List<Game> getAllGames() {
 		List<Game> allGames = gameMapper.getAllGames();
+		/*
+		 * The MyBatis mapper can currently not resolve circular references
+		 * (Game->GameTeam->Game), so we have to do it manually.
+		 */
+		for (Game game : allGames) {
+			List<GameTeam> teams = game.getTeams();
+			if (teams != null) {
+				for (GameTeam gameTeam : teams) {
+					gameTeam.setGame(game);
+				}
+			}
+		}
 		return allGames;
 	}
 
