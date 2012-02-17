@@ -12,4 +12,6 @@ public interface PlayerMapper {
 
 	List<Player> getPlayers();
 
+	Player getPlayer(Long playerId);
+
 }

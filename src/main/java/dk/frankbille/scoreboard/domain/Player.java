@@ -12,6 +12,10 @@ public class Player implements Serializable {
 
 	private String name;
 
+	private String fullName;
+
+	private String groupName;
+
 	public Long getId() {
 		return id;
 	}
@@ -28,6 +32,22 @@ public class Player implements Serializable {
 		this.name = name;
 	}
 
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String group) {
+		this.groupName = group;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);
@@ -35,6 +55,6 @@ public class Player implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(id).append(name).toHashCode();
+		return new HashCodeBuilder().append(id).append(name).append(fullName).append(groupName).toHashCode();
 	}
 }

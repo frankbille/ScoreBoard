@@ -28,13 +28,16 @@ public class MyBatisPlayerDao implements PlayerDao {
 		} else {
 			playerMapper.updatePlayer(player);
 		}
-
-		System.out.println(player.getId());
 	}
 
 	@Override
 	public List<Player> getAllPlayers() {
 		return playerMapper.getPlayers();
+	}
+
+	@Override
+	public Player getPlayer(Long playerId) {
+		return playerMapper.getPlayer(playerId);
 	}
 
 }

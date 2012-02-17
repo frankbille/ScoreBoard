@@ -18,6 +18,7 @@ import org.apache.wicket.model.PropertyModel;
 
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.daily.DailyGamePage;
+import dk.frankbille.scoreboard.player.PlayerListPage;
 
 public class MenuPanel extends GenericPanel<MenuItemType> {
 	private static final long serialVersionUID = 1L;
@@ -73,7 +74,7 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 
 					@Override
 					protected void onClick(AjaxRequestTarget target) {
-						target.appendJavaScript("alert('HERE BE PLAYERS!')");
+						getRequestCycle().setResponsePage(PlayerListPage.class);
 					}
 				});
 

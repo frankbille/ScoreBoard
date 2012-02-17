@@ -1,0 +1,4 @@
+ALTER TABLE
+	player
+		ADD COLUMN full_name VARCHAR(255),
+		ADD COLUMN group_name VARCHAR(255);
