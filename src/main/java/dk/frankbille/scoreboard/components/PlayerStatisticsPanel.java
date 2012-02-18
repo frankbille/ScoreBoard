@@ -87,6 +87,7 @@ public class PlayerStatisticsPanel extends Panel {
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
 				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
 				item.add(new Label("winRatio", new PropertyModel<Double>(item.getModel(), "gamesWonRatio")));
+				item.add(new Label("rating", new PropertyModel<Double>(item.getModel(), "rating")));
 			}
 		});
 	}
