@@ -149,11 +149,11 @@ public class DailyGamePage extends BasePage {
 				List<GameTeam> teams = game.getTeams();
 				Collections.sort(teams, new GameTeamComparator());
 				for (GameTeam gameTeam : teams) {
-					if (game.didTeamWin(gameTeam)) {
-						item.add(new MultiLineLabel("winner", new TeamReadOnlyModel(game, gameTeam)));
+					if (gameTeam.isWinner()) {
+						item.add(new MultiLineLabel("winner", new TeamReadOnlyModel(gameTeam)));
 					}
 					else {
-						item.add(new MultiLineLabel("loser", new TeamReadOnlyModel(game, gameTeam)));
+						item.add(new MultiLineLabel("loser", new TeamReadOnlyModel(gameTeam)));
 					}
 				}
 				

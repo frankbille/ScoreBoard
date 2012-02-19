@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
 import dk.frankbille.scoreboard.comparators.PlayerComparator;
-import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.ratings.GamePlayerRating;
@@ -19,10 +18,8 @@ import dk.frankbille.scoreboard.ratings.RatingProvider;
 public class TeamReadOnlyModel extends AbstractReadOnlyModel<String> {
 	private static final long serialVersionUID = 1L;
 	private GameTeam team;
-	private Game game;
 
-	public TeamReadOnlyModel(Game game, GameTeam team) {
-		this.game = game;
+	public TeamReadOnlyModel(GameTeam team) {
 		this.team = team;
 	}
 
@@ -41,22 +38,22 @@ public class TeamReadOnlyModel extends AbstractReadOnlyModel<String> {
 				b.append("\n");
 			}
 			b.append(player.getName());
-			playerRating= rating.getGamePlayerRating(game.getId(),player.getId());
+			playerRating= rating.getGamePlayerRating(team.getGame().getId(),player.getId());
 			b.append(" (");
 			b.append(ratingDf.format(playerRating.getRating()));
 			b.append(")");
 		}
 		
 		//Add the team rating
-		GameRating gameRating = rating.getGameRatingChange(game.getId());
+		GameRating gameRating = rating.getGameRatingChange(team.getGame().getId());
 		b.append("\nTeam: ");
-		if (game.didTeamWin(team))
+		if (team.isWinner())
 			b.append(ratingDf.format(gameRating.getWinnerRating()));
 		else
 			b.append(ratingDf.format(gameRating.getLoserRating()));
 		
 		//Add the team rating change
-		double change = game.didTeamWin(team) ? gameRating.getChange() : -gameRating.getChange();
+		double change = team.isWinner() ? gameRating.getChange() : -gameRating.getChange();
 		if (players.size()>0)
 			change /= players.size();
 		b.append(" ");

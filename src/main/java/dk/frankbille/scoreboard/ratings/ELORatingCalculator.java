@@ -71,8 +71,8 @@ public class ELORatingCalculator implements RatingCalculator {
 		
 		//Add the rating change to the game and the players
 		games.put(game.getId(), new ELOGameRating(winnerRating, loserRating, change));
-		setRatingChange(game,winner,+change);
-		setRatingChange(game,loser,-change);
+		setRatingChange(winner,+change);
+		setRatingChange(loser,-change);
 	}
 
 	private double calculateTeamRating(GameTeam team) {
@@ -97,14 +97,14 @@ public class ELORatingCalculator implements RatingCalculator {
 		return player;
 	}
 
-	private void setRatingChange(Game game, GameTeam team, double ratingChange) {
+	private void setRatingChange(GameTeam team, double ratingChange) {
 		//Find the rating change per player
 		ratingChange = ratingChange/team.getTeam().getPlayers().size();
 		
 		for (Player player : team.getTeam().getPlayers()) {
 			ELOPlayerRating playerRating = getPlayerRating(player.getId());
 			addGamePlayerRating(
-				game.getId(), player.getId(), 
+				team.getGame().getId(), player.getId(), 
 				playerRating.getRating(), ratingChange);
 			playerRating.changeRating(ratingChange);
 		}
