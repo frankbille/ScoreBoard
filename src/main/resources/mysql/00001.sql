@@ -22,19 +22,19 @@ CREATE TABLE IF NOT EXISTS `game_team` (
   `game_id` bigint(20) default NULL,
   `team_id` bigint(20) default NULL,
   PRIMARY KEY  (`id`),
-  KEY `IDX_GAME_ID` (`game_id`),
-  KEY `IDX_TEAM_ID` (`team_id`),
-  CONSTRAINT `FK_GAME_TEAM_GAME_ID` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`),
-  CONSTRAINT `FK_GAME_TEAM_TEAM_ID` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
+  KEY `FK3BAC568A59F8C5C5` (`game_id`),
+  KEY `FK3BAC568AFDDA9E5` (`team_id`),
+  CONSTRAINT `FK3BAC568A59F8C5C5` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`),
+  CONSTRAINT `FK3BAC568AFDDA9E5` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `team_players` (
   `team_id` bigint(20) NOT NULL,
   `player_id` bigint(20) NOT NULL,
   PRIMARY KEY  (`team_id`,`player_id`),
-  KEY `IDX_TEAM_ID` (`team_id`),
-  KEY `IDX_PLAYER_ID` (`player_id`),
-  CONSTRAINT `FK_TEAM_PLAYERS_PLAYER_ID` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`),
-  CONSTRAINT `FK_TEAM_PLAYERS_TEAM_ID` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
+  KEY `FK5AD4FDD0FDDA9E5` (`team_id`),
+  KEY `FK5AD4FDD0239384A5` (`player_id`),
+  CONSTRAINT `FK5AD4FDD0239384A5` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`),
+  CONSTRAINT `FK5AD4FDD0FDDA9E5` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
 ) ENGINE=InnoDB;
 

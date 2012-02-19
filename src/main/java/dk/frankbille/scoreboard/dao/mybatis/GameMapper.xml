@@ -58,7 +58,6 @@
 		<id property="id" column="gameTeamId"/>
 		<result property="score" column="gameTeamScore"/>
 		<association property="team" resultMap="TeamWithDetails"/>
-		<association property="game" resultMap="Game"/>
 	</resultMap>
 
 	<resultMap id="TeamWithDetails" type="dk.frankbille.scoreboard.domain.Team">
@@ -72,10 +71,5 @@
 	<resultMap id="Player" type="dk.frankbille.scoreboard.domain.Player">
 		<id property="id" column="playerId"/>
 		<result property="name" column="playerName"/>
-	</resultMap>
-
-	<resultMap id="Game" type="dk.frankbille.scoreboard.domain.Game">
-		<id property="id" column="id" />
-		<result property="date" column="date" jdbcType="DATE" />
 	</resultMap>
 </mapper>
