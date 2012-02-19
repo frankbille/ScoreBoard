@@ -45,7 +45,7 @@ public class PlayerResult implements Serializable {
 		return gamesWon+gamesLost > 0 ? (double) gamesWon / ((double)gamesWon+(double)gamesLost) : 0.0;
 	}
 
-	public double getPlayerRating() {
+	public double getRating() {
 		return RatingProvider.getRatings().getPlayerRating(player.getId()).getRating();
 	}
 
