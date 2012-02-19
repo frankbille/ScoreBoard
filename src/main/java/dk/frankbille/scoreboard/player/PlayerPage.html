@@ -3,19 +3,19 @@
 
 <form wicket:id="playerForm">
 	<div>
-		<label wicket:id="nameLabel">Name</label>
+		<label wicket:id="nameLabel"><wicket:message key="name"/></label>
 		<input type="text" wicket:id="nameField">
 	</div>
 	<div>
-		<label wicket:id="fullNameLabel">Full name</label>
+		<label wicket:id="fullNameLabel"><wicket:message key="fullName"/></label>
 		<input type="text" wicket:id="fullNameField">
 	</div>
 	<div>
-		<label wicket:id="groupLabel">Group</label>
+		<label wicket:id="groupLabel"><wicket:message key="group"/></label>
 		<input type="text" wicket:id="groupField">
 	</div>
 	<div>
-		<input type="submit" value="Save">
+		<input type="submit" wicket:message="value:save">
 	</div>
 </form>
 </wicket:extend>

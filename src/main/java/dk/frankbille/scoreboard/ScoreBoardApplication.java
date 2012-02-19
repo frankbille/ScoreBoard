@@ -13,7 +13,7 @@ import dk.frankbille.scoreboard.player.PlayerPage;
  *
  * @see dk.frankbille.scoreboard.Start#main(String[])
  */
-public class WicketApplication extends WebApplication {
+public class ScoreBoardApplication extends WebApplication {
 	/**
 	 * @see org.apache.wicket.Application#getHomePage()
 	 */
