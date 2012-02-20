@@ -1,5 +1,6 @@
 package dk.frankbille.scoreboard.components;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -40,10 +41,10 @@ public class PlayerStatisticsPanel extends Panel {
 					public int compare(PlayerResult o1, PlayerResult o2) {
 						int compare = 0;
 
-						double rating1 = rating.getPlayerRating(o1.getPlayer().getId()).getRating(); 
-						Double rating2 = rating.getPlayerRating(o2.getPlayer().getId()).getRating(); 
+						double rating1 = rating.getPlayerRating(o1.getPlayer().getId()).getRating();
+						Double rating2 = rating.getPlayerRating(o2.getPlayer().getId()).getRating();
 						compare = rating2.compareTo(rating1);
-								
+
 						if (compare == 0) {
 							new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
 						}
@@ -86,8 +87,8 @@ public class PlayerStatisticsPanel extends Panel {
 				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
 				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
-				item.add(new Label("winRatio", new PropertyModel<Double>(item.getModel(), "gamesWonRatio")));
-				item.add(new Label("rating", new PropertyModel<Double>(item.getModel(), "rating")));
+				item.add(new Label("winRatio", new FormatModel(new DecimalFormat("0.00"), new PropertyModel<Double>(item.getModel(), "gamesWonRatio"))));
+				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), new PropertyModel<Double>(item.getModel(), "rating"))));
 			}
 		});
 	}

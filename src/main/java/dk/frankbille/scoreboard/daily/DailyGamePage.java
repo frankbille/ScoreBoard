@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -142,8 +144,8 @@ public class DailyGamePage extends BasePage {
 			@Override
 			protected void populateItem(final ListItem<Game> item) {
 				item.add(RowColorModifier.create(item));
-				item.add(new Label("date", ""+item.getModelObject().getDate()));
-				
+				item.add(new DateLabel("date", new PropertyModel<Date>(item.getModel(), "date"), new PatternDateConverter("yyyy-MM-dd", false)));
+
 				//Add the winning and losing team
 				Game game = item.getModelObject();
 				List<GameTeam> teams = game.getTeams();
@@ -156,7 +158,7 @@ public class DailyGamePage extends BasePage {
 						item.add(new MultiLineLabel("loser", new TeamReadOnlyModel(gameTeam)));
 					}
 				}
-				
+
 				//Add the game score
 				item.add(new Label("score", new AbstractReadOnlyModel<String>() {
 					private static final long serialVersionUID = 1L;

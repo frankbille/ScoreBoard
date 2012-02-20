@@ -12,26 +12,27 @@ public class FormatModel extends AbstractReadOnlyModel<String> {
 
 	private final IModel<Object> objectModel;
 
+	@SuppressWarnings("unchecked")
 	public FormatModel(Format format, final Object object) {
 		this.format = format;
-		this.objectModel = new AbstractReadOnlyModel<Object>() {
-			private static final long serialVersionUID = 1L;
+		if (object instanceof IModel<?>) {
+			objectModel = (IModel<Object>) object;
+		} else {
+			this.objectModel = new AbstractReadOnlyModel<Object>() {
+				private static final long serialVersionUID = 1L;
 
-			@Override
-			public Object getObject() {
-				return object;
-			}
-		};
-	}
-
-	public FormatModel(Format format, IModel<Object> objectModel) {
-		this.format = format;
-		this.objectModel = objectModel;
+				@Override
+				public Object getObject() {
+					return object;
+				}
+			};
+		}
 	}
 
 	@Override
 	public String getObject() {
-		return format.format(objectModel.getObject());
+		Object object = objectModel.getObject();
+		return format.format(object);
 	}
 
 }

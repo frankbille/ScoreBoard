@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.daily.DailyGamePage;
@@ -32,14 +32,14 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 		private static final long serialVersionUID = 1L;
 
 		private MenuItemType menuItemType;
-		private String label;
+		private IModel<String> label;
 
-		public MenuItem(MenuItemType menuItemType, String label) {
+		public MenuItem(MenuItemType menuItemType, IModel<String> label) {
 			this.menuItemType = menuItemType;
 			this.label = label;
 		}
 
-		public String getLabel() {
+		public IModel<String> getLabel() {
 			return label;
 		}
 
@@ -60,7 +60,7 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 			protected List<MenuItem> load() {
 				List<MenuItem> items = new ArrayList<MenuItem>();
 
-				items.add(new MenuItem(MenuItemType.DAILY, "Daily") {
+				items.add(new MenuItem(MenuItemType.DAILY, new StringResourceModel("daily", this)) {
 					private static final long serialVersionUID = 1L;
 
 					@Override
@@ -69,7 +69,7 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 					}
 				});
 
-				items.add(new MenuItem(MenuItemType.PLAYERS, "Players") {
+				items.add(new MenuItem(MenuItemType.PLAYERS, new StringResourceModel("players", this)) {
 					private static final long serialVersionUID = 1L;
 
 					@Override
@@ -109,7 +109,7 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 				};
 				listItem.add(link);
 
-				link.add(new Label("menuLabel", new PropertyModel<String>(listItem.getModel(), "label")));
+				link.add(new Label("menuLabel", listItem.getModelObject().getLabel()));
 			}
 		});
 	}
