@@ -169,3 +169,11 @@ table a:hover span {
 	border-bottom: 1px solid #F07818;
 }
 
+.games {
+	float: left;
+	margin-right: 2em;
+}
+
+.breaker {
+	clear: both;
+}
