@@ -10,15 +10,15 @@ import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 import dk.frankbille.scoreboard.test.WicketSpringTestCase;
 
-public class TestPlayerPage extends WicketSpringTestCase {
+public class TestPlayerEditPage extends WicketSpringTestCase {
 
 	@Test
 	public void testBasicRendering() {
 		PageParameters pageParameters = new PageParameters();
 		pageParameters.set(0, 2L);
 
-		tester.startPage(PlayerPage.class, pageParameters);
-		tester.assertRenderedPage(PlayerPage.class);
+		tester.startPage(PlayerEditPage.class, pageParameters);
+		tester.assertRenderedPage(PlayerEditPage.class);
 	}
 
 	@Test
@@ -35,8 +35,8 @@ public class TestPlayerPage extends WicketSpringTestCase {
 		PageParameters pageParameters = new PageParameters();
 		pageParameters.set(0, player2.getId());
 
-		tester.startPage(PlayerPage.class, pageParameters);
-		tester.assertRenderedPage(PlayerPage.class);
+		tester.startPage(PlayerEditPage.class, pageParameters);
+		tester.assertRenderedPage(PlayerEditPage.class);
 
 		tester.assertLabel("name", player2.getName());
 		FormTester formTester = tester.newFormTester("playerForm");

@@ -40,7 +40,7 @@ public class PlayerListPage extends BasePage {
 			protected void populateItem(ListItem<Player> item) {
 				PageParameters parameters = new PageParameters();
 				parameters.set(0, item.getModelObject().getId());
-				BookmarkablePageLink<Player> link = new BookmarkablePageLink<Player>("playerLink", PlayerPage.class, parameters);
+				BookmarkablePageLink<Player> link = new BookmarkablePageLink<Player>("playerLink", PlayerEditPage.class, parameters);
 				link.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
 				item.add(link);
 

@@ -5,7 +5,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 import dk.frankbille.scoreboard.daily.DailyGamePage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
-import dk.frankbille.scoreboard.player.PlayerPage;
+import dk.frankbille.scoreboard.player.PlayerEditPage;
 
 /**
  * Application object for your web application. If you want to run this
@@ -33,7 +33,7 @@ public class ScoreBoardApplication extends WebApplication {
 				new SpringComponentInjector(this));
 
 		mountPage("/daily", DailyGamePage.class);
-		mountPage("/player", PlayerPage.class);
+		mountPage("/player/edit", PlayerEditPage.class);
 		mountPage("/players", PlayerListPage.class);
 	}
 }

@@ -15,7 +15,7 @@ import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
-public class PlayerPage extends BasePage {
+public class PlayerEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
 	private static class PlayerModel extends InjectableDetachableModel<Player> {
@@ -39,7 +39,7 @@ public class PlayerPage extends BasePage {
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
 
-	public PlayerPage(PageParameters parameters) {
+	public PlayerEditPage(PageParameters parameters) {
 		Long playerId = parameters.get(0).toLongObject();
 		IModel<Player> playerModel = new PlayerModel(playerId);
 
