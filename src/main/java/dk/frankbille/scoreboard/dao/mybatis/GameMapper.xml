@@ -33,7 +33,9 @@
 			team.id AS teamId,
 			team.name AS teamName,
 			player.id AS playerId,
-			player.name AS playerName
+			player.name AS playerName,
+			player.full_name AS playerFullName,
+			player.group_name AS playerGroupName
 		FROM
 			game
 			LEFT JOIN
@@ -71,5 +73,7 @@
 	<resultMap id="Player" type="dk.frankbille.scoreboard.domain.Player">
 		<id property="id" column="playerId"/>
 		<result property="name" column="playerName"/>
+		<result property="fullName" column="playerFullName"/>
+		<result property="groupName" column="playerGroupName"/>
 	</resultMap>
 </mapper>
