@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.domain.PlayerResult;
@@ -89,6 +90,7 @@ public class PlayerStatisticsPanel extends Panel {
 				item.add(new Label("gamesLost", new PropertyModel<Integer>(item.getModel(), "gamesLost")));
 				item.add(new Label("winRatio", new FormatModel(new DecimalFormat("0.00"), new PropertyModel<Double>(item.getModel(), "gamesWonRatio"))));
 				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), new PropertyModel<Double>(item.getModel(), "rating"))));
+				item.add(new Label("trend", new StringResourceModel(item.getModelObject().getTrend().name().toLowerCase(), null)));
 			}
 		});
 	}

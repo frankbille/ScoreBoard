@@ -56,4 +56,19 @@ public class Game implements Serializable {
 
 		return team.getScore() == largestScore;
 	}
+	
+	public GameTeam getTeamForPlayer(Player player) {
+		GameTeam foundGameTeam = null;
+		for (GameTeam gameTeam : getTeams()) {
+			if (gameTeam.hasPlayer(player)) {
+				foundGameTeam = gameTeam;
+				break;
+			}
+		}
+		return foundGameTeam;
+	}
+
+	public boolean didPlayerWin(Player player) {
+		return didTeamWin(getTeamForPlayer(player));
+	}
 }

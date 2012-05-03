@@ -48,4 +48,15 @@ public class GameTeam implements Serializable {
 	public boolean isWinner() {
 		return getGame().didTeamWin(this);
 	}
+
+	public boolean hasPlayer(Player player) {
+		boolean found = false;
+		for (Player p : team.getPlayers()) {
+			if (player.equals(p)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
 }

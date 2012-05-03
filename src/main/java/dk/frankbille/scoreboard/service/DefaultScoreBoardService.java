@@ -1,6 +1,8 @@
 package dk.frankbille.scoreboard.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
+import dk.frankbille.scoreboard.domain.PlayerResult.Trend;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 
@@ -69,6 +72,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public List<PlayerResult> getPlayerResults() {
 		List<PlayerResult> playerResults = new ArrayList<PlayerResult>();
 		Map<Player, PlayerResult> cache = new HashMap<Player, PlayerResult>();
+		Map<Player, List<Game>> playerGamesCache = new HashMap<Player, List<Game>>();
 
 		List<Game> games = gameDao.getAllGames();
 		for (Game game : games) {
@@ -82,6 +86,13 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 						cache.put(player, result);
 						playerResults.add(result);
 					}
+					
+					List<Game> playerGames = playerGamesCache.get(player);
+					if (playerGames == null) {
+						playerGames = new ArrayList<Game>();
+						playerGamesCache.put(player, playerGames);
+					}
+					playerGames.add(game);
 
 					if (game.didTeamWin(gameTeam)) {
 						result.gameWon();
@@ -89,6 +100,42 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 						result.gameLost();
 					}
 				}
+			}
+		}
+		
+		// Add trends
+		for (Player player : playerGamesCache.keySet()) {
+			List<Game> playerGames = playerGamesCache.get(player);
+			// Take the last 3 games
+			int trendPeriod = playerGames.size() < 3 ? playerGames.size() : 3;
+			if (playerGames.size() > 0) {
+				Collections.sort(playerGames, new Comparator<Game>() {
+					@Override
+					public int compare(Game o1, Game o2) {
+						return o2.getDate().compareTo(o1.getDate());
+					}
+				});
+			
+				int winCount = 0;
+				int looseCount = 0;
+				for (int i = 0; i < trendPeriod; i++) {
+					Game game = playerGames.get(i);
+					if (game.didPlayerWin(player)) {
+						winCount++;
+					} else {
+						looseCount++;
+					}
+				}
+				
+				if (winCount > looseCount) {
+					cache.get(player).setTrend(Trend.WINNING);
+				} else if (winCount < looseCount) {
+					cache.get(player).setTrend(Trend.LOOSING);
+				} else {
+					cache.get(player).setTrend(Trend.EVEN);
+				}
+			} else {
+				cache.get(player).setTrend(Trend.NOT_DEFINED);
 			}
 		}
 

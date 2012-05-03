@@ -6,12 +6,21 @@ import dk.frankbille.scoreboard.ratings.RatingProvider;
 
 public class PlayerResult implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	public static enum Trend {
+		WINNING,
+		LOOSING,
+		EVEN,
+		NOT_DEFINED
+	}
 
 	private Player player;
 	
 	private int gamesWon = 0;
 
 	private int gamesLost = 0;
+	
+	private Trend trend;
 
 	public PlayerResult(Player player) {
 		this.player = player;
@@ -47,6 +56,14 @@ public class PlayerResult implements Serializable {
 
 	public double getRating() {
 		return RatingProvider.getRatings().getPlayerRating(player.getId()).getRating();
+	}
+	
+	public Trend getTrend() {
+		return trend;
+	}
+	
+	public void setTrend(Trend trend) {
+		this.trend = trend;
 	}
 
 }
