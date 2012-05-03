@@ -16,24 +16,7 @@
 	</div>
 	<div class="games">
 		<h1><wicket:message key="playedGames"/></h1>
-		<table wicket:id="gamesContainer">
-			<thead>
-				<tr>
-					<th><wicket:message key="date"/></th>
-					<th colspan='3'><wicket:message key="teams"/></th>
-					<th><wicket:message key="score"/></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr wicket:id="games">
-					<td wicket:id="date"></td>
-					<td wicket:id="winner"></td>
-					<td><wicket:message key="vs"/></td>
-					<td wicket:id="loser"></td>
-					<td wicket:id="score"></td>
-				</tr>
-			</tbody>
-		</table>
+		<span wicket:id="playedGameList" />
 	</div>
 	<div class="players">
 		<h1><wicket:message key="playersByRating"/></h1>

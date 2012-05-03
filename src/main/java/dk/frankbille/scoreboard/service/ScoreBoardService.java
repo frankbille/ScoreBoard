@@ -22,5 +22,7 @@ public interface ScoreBoardService {
 
 	Player getPlayer(Long playerId);
 
+	List<Game> getPlayerGames(Player player);
+
 
 }

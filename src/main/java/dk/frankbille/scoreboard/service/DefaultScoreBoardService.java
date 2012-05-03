@@ -66,6 +66,27 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	}
 
 	@Override
+	public List<Game> getPlayerGames(Player player) {
+		List<Game> playerGames = new ArrayList<Game>();
+
+		List<Game> allGames = getAllGames();
+		for (Game game : allGames) {
+			List<GameTeam> teams = game.getTeams();
+			for (GameTeam gameTeam : teams) {
+				Set<Player> players = gameTeam.getTeam().getPlayers();
+				for (Player p : players) {
+					if (player.equals(p)) {
+						playerGames.add(game);
+						break;
+					}
+				}
+			}
+		}
+
+		return playerGames;
+	}
+
+	@Override
 	public List<PlayerResult> getPlayerResults() {
 		List<PlayerResult> playerResults = new ArrayList<PlayerResult>();
 		Map<Player, PlayerResult> cache = new HashMap<Player, PlayerResult>();
