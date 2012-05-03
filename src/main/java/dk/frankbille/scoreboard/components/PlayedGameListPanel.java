@@ -7,16 +7,15 @@ import java.util.List;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 import dk.frankbille.scoreboard.comparators.GameTeamComparator;
-import dk.frankbille.scoreboard.daily.TeamReadOnlyModel;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 
@@ -40,10 +39,10 @@ public class PlayedGameListPanel extends Panel {
 				Collections.sort(teams, new GameTeamComparator());
 				for (GameTeam gameTeam : teams) {
 					if (gameTeam.isWinner()) {
-						item.add(new MultiLineLabel("winner", new TeamReadOnlyModel(gameTeam)));
+						item.add(new GameTeamPanel("winner", new Model<GameTeam>(gameTeam)));
 					}
 					else {
-						item.add(new MultiLineLabel("loser", new TeamReadOnlyModel(gameTeam)));
+						item.add(new GameTeamPanel("loser", new Model<GameTeam>(gameTeam)));
 					}
 				}
 

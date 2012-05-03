@@ -15,6 +15,11 @@ h1, h2, h3 {
 	font-family: 'Podkova', serif;
 }
 
+ul.nolist {
+	padding: 0;
+	list-style: none;
+}
+
 #outer {
 	background-color: white;
 	opacity: 0.98;
@@ -146,27 +151,6 @@ table tbody tr.even td {
 
 table tbody td.nopad {
 	padding: 0;
-}
-
-table a {
-	padding: 0.8em;
-	padding-top: 0.4em;
-	padding-bottom: 0.4em;
-	display: block;
-	color: #F07818;
-	text-decoration: none;
-}
-
-table a span {
-	border-bottom: 1px dashed #78C0A8;
-}
-
-table a:hover {
-	color: #78C0A8;
-}
-
-table a:hover span {
-	border-bottom: 1px solid #F07818;
 }
 
 .games {
