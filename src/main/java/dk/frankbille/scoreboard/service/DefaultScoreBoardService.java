@@ -74,15 +74,8 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 
 		List<Game> allGames = getAllGames();
 		for (Game game : allGames) {
-			List<GameTeam> teams = game.getTeams();
-			for (GameTeam gameTeam : teams) {
-				Set<Player> players = gameTeam.getTeam().getPlayers();
-				for (Player p : players) {
-					if (player.equals(p)) {
-						playerGames.add(game);
-						break;
-					}
-				}
+			if (game.hasPlayer(player)) {
+				playerGames.add(game);
 			}
 		}
 
@@ -107,7 +100,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 						cache.put(player, result);
 						playerResults.add(result);
 					}
-					
+
 					List<Game> playerGames = playerGamesCache.get(player);
 					if (playerGames == null) {
 						playerGames = new ArrayList<Game>();
@@ -123,7 +116,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 				}
 			}
 		}
-		
+
 		// Add trends
 		for (Player player : playerGamesCache.keySet()) {
 			List<Game> playerGames = playerGamesCache.get(player);
@@ -136,7 +129,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 						return o2.getDate().compareTo(o1.getDate());
 					}
 				});
-			
+
 				int winCount = 0;
 				int looseCount = 0;
 				for (int i = 0; i < trendPeriod; i++) {
@@ -147,7 +140,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 						looseCount++;
 					}
 				}
-				
+
 				if (winCount > looseCount) {
 					cache.get(player).setTrend(Trend.WINNING);
 				} else if (winCount < looseCount) {
