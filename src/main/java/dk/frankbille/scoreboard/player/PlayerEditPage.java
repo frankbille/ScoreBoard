@@ -10,31 +10,12 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
-import dk.frankbille.scoreboard.components.InjectableDetachableModel;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class PlayerEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
-
-	private static class PlayerModel extends InjectableDetachableModel<Player> {
-		private static final long serialVersionUID = 1L;
-
-		private final Long playerId;
-
-		@SpringBean
-		private ScoreBoardService scoreBoardService;
-
-		public PlayerModel(Long playerId) {
-			this.playerId = playerId;
-		}
-
-		@Override
-		protected Player load() {
-			return scoreBoardService.getPlayer(playerId);
-		}
-	}
 
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
