@@ -126,7 +126,11 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 				Collections.sort(playerGames, new Comparator<Game>() {
 					@Override
 					public int compare(Game o1, Game o2) {
-						return o2.getDate().compareTo(o1.getDate());
+						int compare = o2.getDate().compareTo(o1.getDate());
+						if (compare == 0) {
+							compare = o2.getId().compareTo(o1.getId());
+						}
+						return compare;
 					}
 				});
 
