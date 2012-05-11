@@ -12,17 +12,36 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 import dk.frankbille.scoreboard.comparators.GameTeamComparator;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.Player;
 
 public class PlayedGameListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
+	private static IModel<Player> createNoSelectedPlayerModel() {
+		return new LoadableDetachableModel<Player>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Player load() {
+				Player player = new Player();
+				player.setId(Long.MIN_VALUE);
+				return player;
+			}
+		};
+	}
+
 	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel) {
+		this(id, gamesModel, createNoSelectedPlayerModel());
+	}
+
+	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel) {
 		super(id);
 
 		add(new ListView<Game>("games", gamesModel) {
@@ -39,10 +58,10 @@ public class PlayedGameListPanel extends Panel {
 				Collections.sort(teams, new GameTeamComparator());
 				for (GameTeam gameTeam : teams) {
 					if (gameTeam.isWinner()) {
-						item.add(new GameTeamPanel("winner", new Model<GameTeam>(gameTeam)));
+						item.add(new GameTeamPanel("winner", new Model<GameTeam>(gameTeam), selectedPlayerModel));
 					}
 					else {
-						item.add(new GameTeamPanel("loser", new Model<GameTeam>(gameTeam)));
+						item.add(new GameTeamPanel("loser", new Model<GameTeam>(gameTeam), selectedPlayerModel));
 					}
 				}
 
