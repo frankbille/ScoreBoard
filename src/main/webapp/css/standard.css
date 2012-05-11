@@ -11,6 +11,14 @@ body {
 	background: #FCEBB6 url(../images/background.png);
 }
 
+a {
+	color: #F07818;
+}
+
+a.highlighted {
+	font-weight: bold;
+}
+
 h1, h2, h3 {
 	font-family: 'Podkova', serif;
 }
