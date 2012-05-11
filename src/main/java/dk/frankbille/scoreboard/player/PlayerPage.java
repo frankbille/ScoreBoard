@@ -49,7 +49,7 @@ public class PlayerPage extends BasePage {
 			}
 		};
 
-		add(new PlayedGameListPanel("playedGameList", gamesModel));
+		add(new PlayedGameListPanel("playedGameList", gamesModel, playerModel));
 	}
 
 	@Override

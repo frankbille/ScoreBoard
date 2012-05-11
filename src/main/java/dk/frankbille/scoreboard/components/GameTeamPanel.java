@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -32,7 +34,7 @@ public class GameTeamPanel extends Panel {
 	private static final DecimalFormat RATING_VALUE = new DecimalFormat("#,##0");
 	private static final DecimalFormat RATING_CHANGE = new DecimalFormat("+0.0;-0.0");
 
-	public GameTeamPanel(String id, final IModel<GameTeam> model) {
+	public GameTeamPanel(String id, final IModel<GameTeam> model, final IModel<Player> selectedPlayerModel) {
 		super(id, model);
 
 		IModel<List<Player>> playersModel = new LoadableDetachableModel<List<Player>>() {
@@ -53,7 +55,7 @@ public class GameTeamPanel extends Panel {
 
 			@Override
 			protected void populateItem(ListItem<Player> item) {
-				Player player = item.getModelObject();
+				final Player player = item.getModelObject();
 
 				RatingCalculator rating = RatingProvider.getRatings();
 				GamePlayerRating playerRating = rating.getGamePlayerRating(model.getObject().getGame().getId(), player.getId());
@@ -61,6 +63,16 @@ public class GameTeamPanel extends Panel {
 				PageParameters pp = new PageParameters();
 				pp.set(0, player.getId());
 				BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
+				AttributeAppender highlightModifier = new AttributeAppender("class", "highlighted") {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public boolean isEnabled(Component component) {
+						return selectedPlayerModel.getObject().equals(player);
+					}
+				};
+				highlightModifier.setSeparator(" ");
+				playerLink.add(highlightModifier);
 				item.add(playerLink);
 				playerLink.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
 				item.add(new Label("rating", new FormatModel(RATING_VALUE, playerRating.getRating())));
