@@ -2,7 +2,10 @@ package dk.frankbille.scoreboard.test;
 
 import javax.servlet.ServletContext;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.mock.MockServletContext;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +14,9 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 import dk.frankbille.scoreboard.ScoreBoardApplication;
+import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.dao.mybatis.TestMapper;
+import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public abstract class WicketSpringTestCase {
@@ -33,7 +38,20 @@ public abstract class WicketSpringTestCase {
 
 	@Before
 	public void setupWicket() {
-		tester = new WicketTester(new ScoreBoardApplication(), servletContext);
+		final User user = new User();
+		user.setUsername("username1");
+		user.setPassword("password1");
+		getScoreBoardService().createUser(user);
+
+		ScoreBoardApplication application = new ScoreBoardApplication() {
+			@Override
+			public Session newSession(Request request, Response response) {
+				ScoreBoardSession session = (ScoreBoardSession) super.newSession(request, response);
+				session.authenticate(user.getUsername(), user.getPassword());
+				return session;
+			}
+		};
+		tester = new WicketTester(application, servletContext);
 	}
 
 	@After
@@ -44,6 +62,7 @@ public abstract class WicketSpringTestCase {
 		testMapper.clearTeamPlayers();
 		testMapper.clearTeams();
 		testMapper.clearPlayers();
+		testMapper.clearUsers();
 	}
 
 	protected ScoreBoardService getScoreBoardService() {

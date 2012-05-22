@@ -1,0 +1,45 @@
+<wicket:extend>
+<h1><wicket:message key="login"></wicket:message></h1>
+
+<form wicket:id="loginForm">
+	<p wicket:id="loginMessages"></p>
+
+	<p>
+		<label wicket:id="usernameLabel"><span wicket:id="label"></span></label>
+		<input type="text" wicket:id="usernameField"/>
+	</p>
+	<p>
+		<label wicket:id="passwordLabel"><span wicket:id="label"></span></label>
+		<input type="password" wicket:id="passwordField"/>
+	</p>
+
+	<p>
+		<input type="submit" wicket:message="value:login" />
+	</p>
+</form>
+
+<hr />
+<h1><wicket:message key="createUser"></wicket:message></h1>
+
+<form wicket:id="createUserForm">
+	<p wicket:id="createUserMessages"></p>
+
+	<p>
+		<label wicket:id="usernameLabel"><span wicket:id="label"></span></label>
+		<input type="text" wicket:id="usernameField"/>
+	</p>
+	<p>
+		<label wicket:id="passwordLabel"><span wicket:id="label"></span></label>
+		<input type="password" wicket:id="passwordField"/>
+	</p>
+	<p>
+		<label wicket:id="repeatPasswordLabel"><span wicket:id="label"></span></label>
+		<input type="password" wicket:id="repeatPasswordField"/>
+	</p>
+
+	<p>
+		<input type="submit" wicket:message="value:createUser" />
+	</p>
+</form>
+
+</wicket:extend>

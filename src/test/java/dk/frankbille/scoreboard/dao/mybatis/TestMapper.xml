@@ -27,4 +27,9 @@
 		DELETE FROM
 			player
 	</delete>
+
+	<delete id="clearUsers">
+		DELETE FROM
+			user
+	</delete>
 </mapper>

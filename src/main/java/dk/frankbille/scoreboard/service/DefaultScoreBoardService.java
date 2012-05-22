@@ -15,11 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dk.frankbille.scoreboard.dao.GameDao;
 import dk.frankbille.scoreboard.dao.PlayerDao;
+import dk.frankbille.scoreboard.dao.UserDao;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.domain.PlayerResult.Trend;
+import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 
@@ -27,13 +29,15 @@ import dk.frankbille.scoreboard.ratings.RatingProvider;
 @Transactional(propagation = Propagation.REQUIRED)
 public class DefaultScoreBoardService implements ScoreBoardService {
 
-	private GameDao gameDao;
-	private PlayerDao playerDao;
+	private final GameDao gameDao;
+	private final PlayerDao playerDao;
+	private final UserDao userDao;
 
 	@Autowired
-	public DefaultScoreBoardService(GameDao gameDao, PlayerDao playerDao) {
+	public DefaultScoreBoardService(GameDao gameDao, PlayerDao playerDao, UserDao userDao) {
 		this.gameDao = gameDao;
 		this.playerDao = playerDao;
+		this.userDao = userDao;
 	}
 
 	@Override
@@ -163,6 +167,21 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	@Override
 	public Player getPlayer(Long playerId) {
 		return playerDao.getPlayer(playerId);
+	}
+
+	@Override
+	public User authenticate(String username, String password) {
+		return userDao.authenticate(username, password);
+	}
+
+	@Override
+	public void createUser(User user) {
+		userDao.createUser(user);
+	}
+
+	@Override
+	public boolean hasUserWithUsername(String username) {
+		return userDao.hasUserWithUsername(username);
 	}
 
 }

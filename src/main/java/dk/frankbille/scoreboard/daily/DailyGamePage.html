@@ -1,19 +1,6 @@
 <wicket:extend>
-	<div class="gamedetails" wicket:id="newGameContainer">
-		<h1><wicket:message key="newGame"/></h1>
+	<span wicket:id="newGame" />
 
-		<form wicket:id="dateForm">
-			<span wicket:id="gameDate" />
-		</form>
-
-		<span wicket:id="teams">
-			<span wicket:id="team"/>
-		</span>
-
-		<div class="buttons">
-			<a wicket:id="save"><wicket:message key="save"/></a>
-		</div>
-	</div>
 	<div class="games">
 		<h1><wicket:message key="playedGames"/></h1>
 		<span wicket:id="playedGameList" />

@@ -12,4 +12,6 @@ public interface TestMapper {
 
 	void clearPlayers();
 
+	void clearUsers();
+
 }

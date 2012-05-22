@@ -14,18 +14,24 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 
+import dk.frankbille.scoreboard.ScoreBoardApplication;
+import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.daily.DailyGamePage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
+import dk.frankbille.scoreboard.security.LoginPage;
 
 public class MenuPanel extends GenericPanel<MenuItemType> {
 	private static final long serialVersionUID = 1L;
 
 	public static enum MenuItemType {
 		DAILY,
-		PLAYERS
+		PLAYERS,
+		SECURE,
+		LOGOUT
 	}
 
 	static abstract class MenuItem implements Serializable {
@@ -77,6 +83,36 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 						getRequestCycle().setResponsePage(PlayerListPage.class);
 					}
 				});
+
+				if (ScoreBoardSession.get().isAuthenticated()) {
+					items.add(new MenuItem(MenuItemType.SECURE, new Model<String>(ScoreBoardSession.get().getUser().getUsername())) {
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected void onClick(AjaxRequestTarget target) {
+							getRequestCycle().setResponsePage(DailyGamePage.class);
+						}
+					});
+					items.add(new MenuItem(MenuItemType.LOGOUT, new StringResourceModel("logout", this)) {
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected void onClick(AjaxRequestTarget target) {
+							ScoreBoardSession.get().logout();
+							getRequestCycle().setResponsePage(ScoreBoardApplication.get().getHomePage());
+						}
+					});
+				} else {
+					items.add(new MenuItem(MenuItemType.SECURE, new StringResourceModel("loginOrCreate", this)) {
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected void onClick(AjaxRequestTarget target) {
+							getRequestCycle().setResponsePage(LoginPage.class);
+						}
+					});
+				}
+
 
 				return items;
 			}

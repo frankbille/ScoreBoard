@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
@@ -17,6 +16,7 @@ import dk.frankbille.scoreboard.components.PlayedGameListPanel;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.security.SecureBookmarkablePageLink;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class PlayerPage extends BasePage {
@@ -35,7 +35,7 @@ public class PlayerPage extends BasePage {
 		// Edit link
 		PageParameters pp = new PageParameters();
 		pp.set(0, playerId);
-		add(new BookmarkablePageLink<Void>("editLink", PlayerEditPage.class, pp));
+		add(new SecureBookmarkablePageLink<Void>("editLink", PlayerEditPage.class, pp));
 
 		// Played game list
 		IModel<List<Game>> gamesModel = new LoadableDetachableModel<List<Game>>() {
