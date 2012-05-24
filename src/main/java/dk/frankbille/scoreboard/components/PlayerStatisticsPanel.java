@@ -98,6 +98,7 @@ public class PlayerStatisticsPanel extends Panel {
 				if (selectedPlayer != null && player.getId().equals(selectedPlayer.getId())) {
 					item.add(new AttributeAppender("class", new Model<String>("highlighted"), " "));
 				}
+				item.add(new Label("number", ""+(item.getIndex()+1)));
 				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
 				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
