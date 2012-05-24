@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import dk.frankbille.scoreboard.dao.UserDao;
+import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.utils.EncryptionUtils;
 
@@ -27,10 +28,18 @@ public class MyBatisUserDao implements UserDao {
 	}
 
 	@Override
-	public void createUser(User user) {
-		User copyUser = user.copy();
-		copyUser.setPassword(EncryptionUtils.md5Encode(copyUser.getPassword()));
-		userMapper.insertUser(copyUser);
+	public void createUser(User user, String password) {
+		userMapper.insertUser(user, EncryptionUtils.md5Encode(password));
+	}
+
+	@Override
+	public void updateUser(User user) {
+		userMapper.updateUser(user);
+	}
+
+	@Override
+	public User getUserForPlayer(Player player) {
+		return userMapper.getUserForPlayer(player);
 	}
 
 	@Override

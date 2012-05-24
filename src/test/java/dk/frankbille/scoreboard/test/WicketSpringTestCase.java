@@ -40,14 +40,13 @@ public abstract class WicketSpringTestCase {
 	public void setupWicket() {
 		final User user = new User();
 		user.setUsername("username1");
-		user.setPassword("password1");
-		getScoreBoardService().createUser(user);
+		getScoreBoardService().createUser(user, "password1");
 
 		ScoreBoardApplication application = new ScoreBoardApplication() {
 			@Override
 			public Session newSession(Request request, Response response) {
 				ScoreBoardSession session = (ScoreBoardSession) super.newSession(request, response);
-				session.authenticate(user.getUsername(), user.getPassword());
+				session.authenticate(user.getUsername(), "password1");
 				return session;
 			}
 		};

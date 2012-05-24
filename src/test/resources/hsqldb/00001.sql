@@ -45,6 +45,8 @@ CREATE TABLE
 (
 	username CHAR(30) NOT NULL,
 	password CHAR(32) NOT NULL,
-	PRIMARY KEY  (username)
+	player_id INTEGER,
+	PRIMARY KEY  (username),
+	CONSTRAINT FK_USER_PLAYER_ID FOREIGN KEY (player_id) REFERENCES player (id)
 );
 

@@ -6,7 +6,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String username;
-	private String password;
+	private Player player;
 
 	public String getUsername() {
 		return username;
@@ -16,19 +16,12 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	public String getPassword() {
-		return password;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public User copy() {
-		User user = new User();
-		user.setUsername(getUsername());
-		user.setPassword(getPassword());
-		return user;
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 }

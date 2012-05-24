@@ -12,30 +12,77 @@
 		)
 		VALUES
 		(
-			#{username},
+			#{user.username},
 			#{password}
 		)
 	</insert>
 
-	<select id="getUserWithUsername" resultType="dk.frankbille.scoreboard.domain.User">
+	<update id="updateUser" parameterType="dk.frankbille.scoreboard.domain.User">
+		UPDATE
+			user
+		SET
+			player_id = #{player.id}
+		WHERE
+			username = #{username}
+	</update>
+
+	<select id="getUserWithUsername" resultMap="User">
 		SELECT
 			username,
-			password
+			player.id AS playerId,
+			player.name AS playerName,
+			player.full_name AS playerFullName,
+			player.group_name AS playerGroupName
 		FROM
 			user
+			LEFT JOIN
+			player ON user.player_id=player.id
 		WHERE
 			username = #{username}
 	</select>
 
-	<select id="authenticate" resultType="dk.frankbille.scoreboard.domain.User">
+	<select id="getUserForPlayer" resultMap="User">
 		SELECT
 			username,
-			password
+			player.id AS playerId,
+			player.name AS playerName,
+			player.full_name AS playerFullName,
+			player.group_name AS playerGroupName
 		FROM
 			user
+			LEFT JOIN
+			player ON user.player_id=player.id
+		WHERE
+			player_id = #{id}
+	</select>
+
+	<select id="authenticate" resultMap="User">
+		SELECT
+			username,
+			player.id AS playerId,
+			player.name AS playerName,
+			player.full_name AS playerFullName,
+			player.group_name AS playerGroupName
+		FROM
+			user
+			LEFT JOIN
+			player ON user.player_id=player.id
 		WHERE
 			username = #{username}
 			AND
 			password = #{password}
 	</select>
+
+	<resultMap id="User" type="dk.frankbille.scoreboard.domain.User">
+		<result property="username" column="username"/>
+		<result property="password" column="password"/>
+		<association property="player" resultMap="Player"/>
+	</resultMap>
+
+	<resultMap id="Player" type="dk.frankbille.scoreboard.domain.Player">
+		<id property="id" column="playerId"/>
+		<result property="name" column="playerName"/>
+		<result property="fullName" column="playerFullName"/>
+		<result property="groupName" column="playerGroupName"/>
+	</resultMap>
 </mapper>

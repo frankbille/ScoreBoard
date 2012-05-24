@@ -157,6 +157,10 @@ table tbody tr.even td {
 	background-color: #FEF8E7;
 }
 
+table tbody tr.highlighted td {
+	font-weight: bold;
+}
+
 table tbody td.nopad {
 	padding: 0;
 }

@@ -16,12 +16,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import dk.frankbille.scoreboard.ScoreBoardApplication;
 import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.daily.DailyGamePage;
+import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.player.PlayerListPage;
+import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.security.LoginPage;
 
 public class MenuPanel extends GenericPanel<MenuItemType> {
@@ -85,14 +88,19 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 				});
 
 				if (ScoreBoardSession.get().isAuthenticated()) {
-					items.add(new MenuItem(MenuItemType.SECURE, new Model<String>(ScoreBoardSession.get().getUser().getUsername())) {
-						private static final long serialVersionUID = 1L;
+					final Player player = ScoreBoardSession.get().getUser().getPlayer();
+					if (player != null) {
+						items.add(new MenuItem(MenuItemType.SECURE, new Model<String>(player.getName())) {
+							private static final long serialVersionUID = 1L;
 
-						@Override
-						protected void onClick(AjaxRequestTarget target) {
-							getRequestCycle().setResponsePage(DailyGamePage.class);
-						}
-					});
+							@Override
+							protected void onClick(AjaxRequestTarget target) {
+								PageParameters pp = new PageParameters();
+								pp.set(0, player.getId());
+								getRequestCycle().setResponsePage(PlayerPage.class, pp);
+							}
+						});
+					}
 					items.add(new MenuItem(MenuItemType.LOGOUT, new StringResourceModel("logout", this)) {
 						private static final long serialVersionUID = 1L;
 

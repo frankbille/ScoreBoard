@@ -68,7 +68,7 @@ public class GameTeamPanel extends Panel {
 
 					@Override
 					public boolean isEnabled(Component component) {
-						return selectedPlayerModel.getObject().equals(player);
+						return player.equals(selectedPlayerModel.getObject());
 					}
 				};
 				highlightModifier.setSeparator(" ");

@@ -24,7 +24,7 @@ import dk.frankbille.scoreboard.domain.Player;
 public class PlayedGameListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	private static IModel<Player> createNoSelectedPlayerModel() {
+	public static IModel<Player> createNoSelectedPlayerModel() {
 		return new LoadableDetachableModel<Player>() {
 			private static final long serialVersionUID = 1L;
 

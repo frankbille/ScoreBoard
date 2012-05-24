@@ -175,8 +175,18 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	}
 
 	@Override
-	public void createUser(User user) {
-		userDao.createUser(user);
+	public void createUser(User user, String password) {
+		userDao.createUser(user, password);
+	}
+
+	@Override
+	public void updateUser(User user) {
+		userDao.updateUser(user);
+	}
+
+	@Override
+	public User getUserForPlayer(Player player) {
+		return userDao.getUserForPlayer(player);
 	}
 
 	@Override

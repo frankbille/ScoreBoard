@@ -27,9 +27,12 @@ public interface ScoreBoardService {
 
 	boolean hasUserWithUsername(String username);
 
-	void createUser(User user);
+	void createUser(User user, String password);
+
+	void updateUser(User user);
 
 	User authenticate(String username, String password);
 
+	User getUserForPlayer(Player object);
 
 }

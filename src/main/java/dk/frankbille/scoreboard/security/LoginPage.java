@@ -34,6 +34,7 @@ public class LoginPage extends BasePage {
 		private static final long serialVersionUID = 1L;
 
 		private boolean loginPersistent;
+		private String password;
 
 		public boolean isLoginPersistent() {
 			return loginPersistent;
@@ -42,12 +43,21 @@ public class LoginPage extends BasePage {
 		public void setLoginPersistent(boolean loginPersistent) {
 			this.loginPersistent = loginPersistent;
 		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
 	}
 
 	static class CreateUser extends User {
 		private static final long serialVersionUID = 1L;
 
 		private String repeatPassword;
+		private String password;
 
 		public String getRepeatPassword() {
 			return repeatPassword;
@@ -55,6 +65,14 @@ public class LoginPage extends BasePage {
 
 		public void setRepeatPassword(String repeatPassword) {
 			this.repeatPassword = repeatPassword;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
 		}
 	}
 
@@ -137,7 +155,7 @@ public class LoginPage extends BasePage {
 
 			@Override
 			protected void onSubmit() {
-				scoreBoardService.createUser(user);
+				scoreBoardService.createUser(user, user.getPassword());
 				ScoreBoardSession.get().authenticate(user.getUsername(), user.getPassword());
 				authenticated();
 			}

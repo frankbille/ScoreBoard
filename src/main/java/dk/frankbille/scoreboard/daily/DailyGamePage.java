@@ -10,11 +10,13 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
+import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
+import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 
@@ -28,7 +30,22 @@ public class DailyGamePage extends BasePage {
 
 	private PlayerStatisticsPanel playersContainer;
 
+	private IModel<Player> loggedInPlayerModel;
+
     public DailyGamePage(final PageParameters parameters) {
+		loggedInPlayerModel = new LoadableDetachableModel<Player>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Player load() {
+				ScoreBoardSession scoreBoardSession = ScoreBoardSession.get();
+				if (scoreBoardSession.isAuthenticated()) {
+					return scoreBoardSession.getUser().getPlayer();
+				}
+				return null;
+			}
+		};
+
     	addNewGame();
 
     	addGameResults();
@@ -42,7 +59,7 @@ public class DailyGamePage extends BasePage {
     }
 
 	private void addPlayerStatistics() {
-		playersContainer = new PlayerStatisticsPanel("playersContainer");
+		playersContainer = new PlayerStatisticsPanel("playersContainer", loggedInPlayerModel);
 		playersContainer.setOutputMarkupId(true);
 		add(playersContainer);
 	}
@@ -71,7 +88,7 @@ public class DailyGamePage extends BasePage {
 			}
 		};
 
-		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel);
+		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel);
 		playedGameList.setOutputMarkupId(true);
 		add(playedGameList);
 	}

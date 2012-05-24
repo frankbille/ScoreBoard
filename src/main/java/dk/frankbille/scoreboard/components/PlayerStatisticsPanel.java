@@ -5,16 +5,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
@@ -27,6 +30,10 @@ public class PlayerStatisticsPanel extends Panel {
 	private ScoreBoardService scoreBoardService;
 
 	public PlayerStatisticsPanel(String id) {
+		this(id, PlayedGameListPanel.createNoSelectedPlayerModel());
+	}
+
+	public PlayerStatisticsPanel(String id, final IModel<Player> selectedPlayerModel) {
 		super(id);
 
 		IModel<List<PlayerResult>> playerResultsModel = new LoadableDetachableModel<List<PlayerResult>>() {
@@ -83,7 +90,14 @@ public class PlayerStatisticsPanel extends Panel {
 
 			@Override
 			protected void populateItem(ListItem<PlayerResult> item) {
+				PlayerResult playerResult = item.getModelObject();
+				Player player = playerResult.getPlayer();
+				Player selectedPlayer = selectedPlayerModel.getObject();
+
 				item.add(RowColorModifier.create(item));
+				if (selectedPlayer != null && player.getId().equals(selectedPlayer.getId())) {
+					item.add(new AttributeAppender("class", new Model<String>("highlighted"), " "));
+				}
 				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
 				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("gamesWon", new PropertyModel<Integer>(item.getModel(), "gamesWon")));
