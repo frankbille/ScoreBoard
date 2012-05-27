@@ -52,7 +52,8 @@ public class PlayerPage extends BasePage {
 
 			@Override
 			public boolean isVisible() {
-				return ScoreBoardSession.get().getUser().getPlayer() == null && scoreBoardService.getUserForPlayer(playerModel.getObject()) == null;
+				User user = ScoreBoardSession.get().getUser();
+				return user != null && user.getPlayer() == null && scoreBoardService.getUserForPlayer(playerModel.getObject()) == null;
 			}
 		});
 
