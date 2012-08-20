@@ -12,4 +12,6 @@ public interface PlayerDao {
 
 	Player getPlayer(Long playerId);
 
+	List<Player> searchPlayers(String term);
+
 }

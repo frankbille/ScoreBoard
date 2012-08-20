@@ -4,8 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.form.Form;
@@ -35,30 +34,19 @@ public abstract class NewGamePanel extends Panel implements RequiresLoginToRende
 
 		game = createNewGame();
 
-    	Form<Void> dateForm = new Form<Void>("dateForm");
-		dateForm.add(new DateField("gameDate", new PropertyModel<Date>(this, "game.date")) {
+    	Form<Void> form = new Form<Void>("form");
+		form.add(new DateField("gameDate", new PropertyModel<Date>(this, "game.date")) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected DateTextField newDateTextField(String id, PropertyModel<Date> dateFieldModel) {
 				DateTextField dateTextField = DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
-				dateTextField.add(new AjaxFormSubmitBehavior("onchange") {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					protected void onSubmit(AjaxRequestTarget target) {
-					}
-
-					@Override
-					protected void onError(AjaxRequestTarget target) {
-					}
-				});
 				return dateTextField;
 			}
 		});
-    	add(dateForm);
+    	add(form);
 
-    	add(new ListView<GameTeam>("teams", new PropertyModel<List<GameTeam>>(this, "game.teams")) {
+    	form.add(new ListView<GameTeam>("teams", new PropertyModel<List<GameTeam>>(this, "game.teams")) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -67,16 +55,22 @@ public abstract class NewGamePanel extends Panel implements RequiresLoginToRende
 			}
 		});
 
-    	add(new AjaxLink<Void>("save") {
+    	form.add(new AjaxSubmitLink("save") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void onClick(AjaxRequestTarget target) {
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				scoreBoardService.saveGame(game);
 				Game addedGame = game;
 				game = createNewGame();
 				target.add(NewGamePanel.this);
 				newGameAdded(addedGame, target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}

@@ -168,6 +168,11 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public Player getPlayer(Long playerId) {
 		return playerDao.getPlayer(playerId);
 	}
+	
+	@Override
+	public List<Player> searchPlayers(String term) {
+		return playerDao.searchPlayers(term);
+	}
 
 	@Override
 	public User authenticate(String username, String password) {

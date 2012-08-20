@@ -2,16 +2,18 @@
 <div class="gamedetails">
 	<h1><wicket:message key="newGame"/></h1>
 
-	<form wicket:id="dateForm">
-		<span wicket:id="gameDate" />
+	<form wicket:id="form">
+		<div>
+			<span wicket:id="gameDate" />
+		</div>
+
+		<span wicket:id="teams">
+			<span wicket:id="team" />
+		</span>
+	
+		<div class="buttons">
+			<a wicket:id="save"><wicket:message key="save"/></a>
+		</div>
 	</form>
-
-	<span wicket:id="teams">
-		<span wicket:id="team"/>
-	</span>
-
-	<div class="buttons">
-		<a wicket:id="save"><wicket:message key="save"/></a>
-	</div>
 </div>
 </wicket:panel>

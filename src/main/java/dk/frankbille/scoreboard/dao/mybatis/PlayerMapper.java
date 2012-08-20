@@ -14,4 +14,6 @@ public interface PlayerMapper {
 
 	Player getPlayer(Long playerId);
 
+	List<Player> searchPlayers(String term);
+
 }

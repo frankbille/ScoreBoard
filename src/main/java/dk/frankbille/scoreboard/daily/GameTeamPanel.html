@@ -2,13 +2,12 @@
 	<div class="team">
 		<h2 wicket:id="teamName"></h2>
 
-		<form wicket:id="scoreForm">
+		<div>
 			<input type="text" wicket:id="score" wicket:message="placeholder:score"/>
-		</form>
+		</div>
 
-		<ul wicket:id="players">
-			<li wicket:id="possiblePlayers"><input type="checkbox" wicket:id="player"> <label wicket:id="playerName"><span wicket:id="name"></span></label></li>
-			<li><form wicket:id="newPlayerForm"><input type="text" wicket:id="newPlayerName" placeholder="New player"/></form></li>
-		</ul>
+		<div>
+			<input wicket:id="players" type="hidden" style="width: 300px;" />
+		</div>
 	</div>
 </wicket:panel>

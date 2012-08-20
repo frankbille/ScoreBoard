@@ -39,5 +39,10 @@ public class MyBatisPlayerDao implements PlayerDao {
 	public Player getPlayer(Long playerId) {
 		return playerMapper.getPlayer(playerId);
 	}
+	
+	@Override
+	public List<Player> searchPlayers(String term) {
+		return playerMapper.searchPlayers(term);
+	}
 
 }

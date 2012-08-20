@@ -35,4 +35,6 @@ public interface ScoreBoardService {
 
 	User getUserForPlayer(Player object);
 
+	List<Player> searchPlayers(String term);
+
 }

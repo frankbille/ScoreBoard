@@ -53,4 +53,22 @@
 		WHERE
 			id = #{playerId}
 	</select>
+
+	<select id="searchPlayers" resultType="dk.frankbille.scoreboard.domain.Player">
+		SELECT
+			id,
+			name,
+			full_name AS fullName,
+			group_name AS groupName
+		FROM
+			player
+		WHERE
+			name LIKE CONCAT('%',#{term},'%')
+			OR
+			full_name LIKE CONCAT('%',#{term},'%')
+			OR
+			group_name LIKE CONCAT('%',#{term},'%')
+		ORDER BY
+			name
+	</select>
 </mapper>
