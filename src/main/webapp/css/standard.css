@@ -173,3 +173,22 @@ table tbody td.nopad {
 .breaker {
 	clear: both;
 }
+
+/* Style borrowed from Select2 http://ivaynberg.github.com/select2/ */
+input.numberField {
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(1%, #EEE), color-stop(15%, white));
+	background-image: -webkit-linear-gradient(top, #EEE 1%, white 15%);
+	background-image: -moz-linear-gradient(top, #EEE 1%, white 15%);
+	background-image: -o-linear-gradient(top, #EEE 1%, white 15%);
+	background-image: -ms-linear-gradient(top, #EEE 1%, white 15%);
+	background-image: linear-gradient(top, #EEE 1%, white 15%);
+	border: 1px solid #AAA;
+	margin: 0;
+	padding: 6px;
+	min-height: 26px;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-khtml-box-sizing: border-box;
+	box-sizing: border-box;
+}
