@@ -1,22 +1,18 @@
 package dk.frankbille.scoreboard.daily;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.string.Strings;
 
 import com.vaynberg.wicket.select2.Select2MultiChoice;
 
@@ -69,8 +65,6 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 			}
 		});
 		add(scoreField);
-
-		final IModel<Set<Player>> selectedPlayersModel = new PropertyModel<Set<Player>>(model, "team.players");
 		
 		final Select2MultiChoice<Player> players = new Select2MultiChoice<Player>("players", new PlayersModel(model), new PlayersProvider());
 		players.getSettings().setMinimumInputLength(2);
@@ -81,25 +75,6 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 		locString = locString.replace("{minLength}", "'+(minLength-term.length)+'");
 		players.getSettings().setFormatInputTooShort("function(term, minLength){return "+locString+"}");
 		add(players);
-
-
-		IModel<String> newPlayerModel = new Model<String>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void setObject(String name) {
-				if (Strings.isEmpty(name) == false) {
-					Player player = scoreBoardService.createNewPlayer(name);
-					selectedPlayersModel.getObject().add(player);
-				}
-			}
-		};
-		final TextField<String> newPlayerNameField = new TextField<String>("newPlayerName", newPlayerModel);
-
-		Form<Void> newPlayerForm = new Form<Void>("newPlayerForm");
-		players.add(newPlayerForm);
-		newPlayerNameField.setOutputMarkupId(true);
-		newPlayerForm.add(newPlayerNameField);
 	}
 
 }
