@@ -2,6 +2,7 @@ package dk.frankbille.scoreboard.player;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
@@ -54,6 +55,12 @@ public class TestPlayerEditPage extends WicketSpringTestCase {
 		assertEquals("New Name", updatedPlayer.getName());
 		assertEquals("New Full Name", updatedPlayer.getFullName());
 		assertEquals("New Group", updatedPlayer.getGroupName());
+	}
+
+	@Test
+	public void testRenderWithNewPlayer() {
+		tester.startPage(new PlayerEditPage(new Model<Player>(new Player())));
+		tester.assertRenderedPage(PlayerEditPage.class);
 	}
 
 }

@@ -19,11 +19,18 @@ public class PlayerEditPage extends SecureBasePage {
 
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
-
+	
 	public PlayerEditPage(PageParameters parameters) {
 		Long playerId = parameters.get(0).toLongObject();
 		IModel<Player> playerModel = new PlayerModel(playerId);
+		initialize(playerModel);
+	}
 
+	public PlayerEditPage(IModel<Player> playerModel) {
+		initialize(playerModel);
+	}
+	
+	private void initialize(IModel<Player> playerModel) {
 		add(new Label("name", new PropertyModel<String>(playerModel, "name")));
 
 		Form<Player> playerForm = new Form<Player>("playerForm", playerModel) {
