@@ -17,6 +17,8 @@ public interface ScoreBoardService {
 
 	void saveGame(Game game);
 
+	Game getGame(Long gameId);
+
 	List<Game> getAllGames();
 
 	List<PlayerResult> getPlayerResults();

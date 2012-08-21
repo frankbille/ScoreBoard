@@ -16,7 +16,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.security.SecureLink;
+import dk.frankbille.scoreboard.security.SecureRenderingLink;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class PlayerListPage extends BasePage {
@@ -26,7 +26,7 @@ public class PlayerListPage extends BasePage {
 	private ScoreBoardService scoreBoardService;
 
 	public PlayerListPage() {
-		add(new SecureLink<Void>("addNewPlayerLink") {
+		add(new SecureRenderingLink<Void>("addNewPlayerLink") {
 			private static final long serialVersionUID = 1L;
 
 			@Override

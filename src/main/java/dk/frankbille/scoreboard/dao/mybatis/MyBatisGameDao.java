@@ -85,5 +85,10 @@ public class MyBatisGameDao implements GameDao {
 		}
 		return allGames;
 	}
+	
+	@Override
+	public Game getGame(Long gameId) {
+		return gameMapper.getGame(gameId);
+	}
 
 }

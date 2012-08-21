@@ -18,8 +18,8 @@ import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.User;
-import dk.frankbille.scoreboard.security.SecureBookmarkablePageLink;
-import dk.frankbille.scoreboard.security.SecureLink;
+import dk.frankbille.scoreboard.security.SecureRenderingBookmarkablePageLink;
+import dk.frankbille.scoreboard.security.SecureRenderingLink;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class PlayerPage extends BasePage {
@@ -38,9 +38,9 @@ public class PlayerPage extends BasePage {
 		// Edit link
 		PageParameters pp = new PageParameters();
 		pp.set(0, playerId);
-		add(new SecureBookmarkablePageLink<Void>("editLink", PlayerEditPage.class, pp));
+		add(new SecureRenderingBookmarkablePageLink<Void>("editLink", PlayerEditPage.class, pp));
 
-		add(new SecureLink<Void>("claimLink") {
+		add(new SecureRenderingLink<Void>("claimLink") {
 			private static final long serialVersionUID = 1L;
 
 			@Override

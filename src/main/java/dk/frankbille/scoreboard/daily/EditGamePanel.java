@@ -3,14 +3,18 @@ package dk.frankbille.scoreboard.daily;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateField;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -20,7 +24,7 @@ import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.security.RequiresLoginToRender;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
-public abstract class NewGamePanel extends Panel implements RequiresLoginToRender {
+public abstract class EditGamePanel extends Panel implements RequiresLoginToRender {
 	private static final long serialVersionUID = 1L;
 
 	@SpringBean
@@ -28,11 +32,33 @@ public abstract class NewGamePanel extends Panel implements RequiresLoginToRende
 
 	private Game game;
 
-	public NewGamePanel(String id) {
+	public EditGamePanel(String id) {
+		this(id, null);
+	}
+	
+	public EditGamePanel(String id, Long gameId) {
 		super(id);
 		setOutputMarkupId(true);
 
-		game = createNewGame();
+		if (gameId != null) {
+			game = scoreBoardService.getGame(gameId);
+		} else {
+			game = createNewGame();
+		}
+		
+		add(new Label("editGameTitle", new AbstractReadOnlyModel<String>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject() {
+				Localizer localizer = Application.get().getResourceSettings().getLocalizer();
+				if (game.getId() == null) {
+					return localizer.getString("newGame", EditGamePanel.this);
+				} else {
+					return localizer.getString("editGame", EditGamePanel.this);
+				}
+			}
+		}));
 
     	Form<Void> form = new Form<Void>("form");
 		form.add(new DateField("gameDate", new PropertyModel<Date>(this, "game.date")) {
@@ -63,7 +89,7 @@ public abstract class NewGamePanel extends Panel implements RequiresLoginToRende
 				scoreBoardService.saveGame(game);
 				Game addedGame = game;
 				game = createNewGame();
-				target.add(NewGamePanel.this);
+				target.add(EditGamePanel.this);
 				newGameAdded(addedGame, target);
 			}
 

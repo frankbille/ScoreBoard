@@ -63,6 +63,11 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public void saveGame(Game game) {
 		gameDao.saveGame(game);
 	}
+	
+	@Override
+	public Game getGame(Long gameId) {
+		return gameDao.getGame(gameId);
+	}
 
 	@Override
 	public List<Game> getAllGames() {

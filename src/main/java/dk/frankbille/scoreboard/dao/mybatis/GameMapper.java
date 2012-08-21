@@ -12,4 +12,6 @@ public interface GameMapper {
 
 	List<Game> getAllGames();
 
+	Game getGame(Long gameId);
+
 }

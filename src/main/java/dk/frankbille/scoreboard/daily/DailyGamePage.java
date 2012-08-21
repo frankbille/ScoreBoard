@@ -13,6 +13,7 @@ import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
+import dk.frankbille.scoreboard.components.PlayedGameListPanel.GameSelectedCallback;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
@@ -65,7 +66,11 @@ public class DailyGamePage extends BasePage {
 	}
 
 	private void addNewGame() {
-		add(new NewGamePanel("newGame") {
+		addGame(null, null);
+	}
+	
+	private void addGame(Long gameId, AjaxRequestTarget target) {
+		EditGamePanel editGamePanel = new EditGamePanel("editGame", gameId) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -73,7 +78,12 @@ public class DailyGamePage extends BasePage {
 				target.add(playedGameList);
 				target.add(playersContainer);
 			}
-		});
+		};
+		editGamePanel.setOutputMarkupId(true);
+		addOrReplace(editGamePanel);
+		if (target != null) {
+			target.add(editGamePanel);
+		}
 	}
 
 	private void addGameResults() {
@@ -88,7 +98,14 @@ public class DailyGamePage extends BasePage {
 			}
 		};
 
-		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel);
+		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel, new GameSelectedCallback() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSelection(AjaxRequestTarget target, Game game) {
+				addGame(game.getId(), target);
+			}
+		});
 		playedGameList.setOutputMarkupId(true);
 		add(playedGameList);
 	}

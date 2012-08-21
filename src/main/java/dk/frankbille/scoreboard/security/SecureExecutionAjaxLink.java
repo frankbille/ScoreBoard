@@ -3,14 +3,14 @@ package dk.frankbille.scoreboard.security;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.IModel;
 
-public abstract class SecureAjaxLink<T> extends AjaxLink<T> implements RequiresLoginToRender {
+public abstract class SecureExecutionAjaxLink<T> extends AjaxLink<T> implements RequiresLoginToBeEnabled {
 	private static final long serialVersionUID = 1L;
 
-	public SecureAjaxLink(String id) {
+	public SecureExecutionAjaxLink(String id) {
 		super(id);
 	}
 
-	public SecureAjaxLink(String id, IModel<T> model) {
+	public SecureExecutionAjaxLink(String id, IModel<T> model) {
 		super(id, model);
 	}
 

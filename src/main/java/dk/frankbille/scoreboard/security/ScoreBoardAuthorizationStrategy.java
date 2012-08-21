@@ -17,6 +17,8 @@ public class ScoreBoardAuthorizationStrategy extends SimplePageAuthorizationStra
 	public boolean isActionAuthorized(Component component, Action action) {
 		if (component instanceof RequiresLoginToRender && Component.RENDER.equals(action)) {
 			return isAuthorized();
+		} else if (component instanceof RequiresLoginToBeEnabled && Component.ENABLE.equals(action)) {
+			return isAuthorized();
 		}
 		return true;
 	}

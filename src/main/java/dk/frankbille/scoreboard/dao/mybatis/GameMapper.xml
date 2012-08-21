@@ -48,6 +48,32 @@
 			player ON team_players.player_id=player.id
 	</select>
 
+	<select id="getGame" resultMap="GameWithDetails">
+		SELECT
+			game.id AS gameId,
+			game.date AS gameDate,
+			game_team.id AS gameTeamId,
+			game_team.score AS gameTeamScore,
+			team.id AS teamId,
+			team.name AS teamName,
+			player.id AS playerId,
+			player.name AS playerName,
+			player.full_name AS playerFullName,
+			player.group_name AS playerGroupName
+		FROM
+			game
+			LEFT JOIN
+			game_team ON game.id=game_team.game_id
+			LEFT JOIN
+			team ON game_team.team_id=team.id
+			LEFT JOIN
+			team_players ON team.id=team_players.team_id
+			LEFT JOIN
+			player ON team_players.player_id=player.id
+		WHERE
+			game.id = #{gameId}
+	</select>
+
 	<resultMap id="GameWithDetails" type="dk.frankbille.scoreboard.domain.Game">
 		<id property="id" column="gameId" />
 		<result property="date" column="gameDate" jdbcType="DATE" />
