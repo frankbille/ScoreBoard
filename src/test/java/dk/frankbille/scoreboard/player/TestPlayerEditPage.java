@@ -39,7 +39,6 @@ public class TestPlayerEditPage extends WicketSpringTestCase {
 		tester.startPage(PlayerEditPage.class, pageParameters);
 		tester.assertRenderedPage(PlayerEditPage.class);
 
-		tester.assertLabel("name", player2.getName());
 		FormTester formTester = tester.newFormTester("playerForm");
 		assertEquals(player2.getName(), formTester.getTextComponentValue("nameField"));
 		assertEquals(player2.getFullName(), formTester.getTextComponentValue("fullNameField"));
