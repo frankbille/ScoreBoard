@@ -1,18 +1,14 @@
 package dk.frankbille.scoreboard.daily;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -45,8 +41,11 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 		} else {
 			game = createNewGame();
 		}
+
+    	Form<Void> form = new Form<Void>("form");
+    	add(form);
 		
-		add(new Label("editGameTitle", new AbstractReadOnlyModel<String>() {
+		form.add(new Label("editGameTitle", new AbstractReadOnlyModel<String>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -59,27 +58,11 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 				}
 			}
 		}));
+    	
+    	form.add(DateTextField.forDatePattern("gameDate", new PropertyModel<Date>(this, "game.date"), "yyyy-MM-dd"));
 
-    	Form<Void> form = new Form<Void>("form");
-		form.add(new DateField("gameDate", new PropertyModel<Date>(this, "game.date")) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected DateTextField newDateTextField(String id, PropertyModel<Date> dateFieldModel) {
-				DateTextField dateTextField = DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
-				return dateTextField;
-			}
-		});
-    	add(form);
-
-    	form.add(new ListView<GameTeam>("teams", new PropertyModel<List<GameTeam>>(this, "game.teams")) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<GameTeam> item) {
-				item.add(new GameTeamPanel("team", item.getModel()));
-			}
-		});
+    	form.add(new GameTeamPanel("team1", new PropertyModel<GameTeam>(this, "game.teams.0")));
+    	form.add(new GameTeamPanel("team2", new PropertyModel<GameTeam>(this, "game.teams.1")));
 
     	form.add(new AjaxSubmitLink("save") {
 			private static final long serialVersionUID = 1L;
@@ -95,8 +78,6 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 	}

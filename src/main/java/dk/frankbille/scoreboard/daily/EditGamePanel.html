@@ -1,19 +1,36 @@
 <wicket:panel>
-<div class="gamedetails">
-	<h1 wicket:id="editGameTitle"></h1>
-
-	<form wicket:id="form">
-		<div>
-			<span wicket:id="gameDate" />
+<form wicket:id="form" class="form-horizontal">
+	<div class="control-group">
+		<div class="controls">
+			<h1 wicket:id="editGameTitle"></h1>
 		</div>
-
-		<span wicket:id="teams">
-			<span wicket:id="team" />
-		</span>
+	</div>
 	
-		<div class="buttons">
-			<a wicket:id="save" class="btn btn-primary"><wicket:message key="save"/></a>
+	<div class="control-group">
+		<label wicket:for="gameDate" class="control-label"><wicket:message key="date" /></label>
+		<div class="controls">
+			<input type="text" wicket:id="gameDate" rel="datepicker" class="span2" />
 		</div>
-	</form>
-</div>
+	</div>
+	
+	<div class="control-group">
+		<div class="controls">
+			<h3><wicket:message key="team1"/></h3>
+		</div>
+	</div>
+	
+	<span wicket:id="team1" />
+	
+	<div class="control-group">
+		<div class="controls">
+			<h3><wicket:message key="team2"/></h3>
+		</div>
+	</div>
+	
+	<span wicket:id="team2" />
+
+	<div class="form-actions">
+		<a wicket:id="save" class="btn btn-primary"><wicket:message key="save"/></a>
+	</div>
+</form>
 </wicket:panel>

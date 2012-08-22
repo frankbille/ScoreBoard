@@ -5,20 +5,16 @@
 			<th>#</th>
 			<th><wicket:message key="player"/></th>
 			<th><wicket:message key="games"/></th>
-			<th><wicket:message key="won"/></th>
-			<th><wicket:message key="lost"/></th>
 			<th><wicket:message key="winRatio"/></th>
 			<th><wicket:message key="rating"/></th>
 			<th><wicket:message key="trend"/></th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr wicket:id="players">
+		<tr wicket:id="players" rel="tooltip-left">
 			<td wicket:id="number"></td>
 			<td wicket:id="name"></td>
 			<td wicket:id="gamesCount"></td>
-			<td wicket:id="gamesWon"></td>
-			<td wicket:id="gamesLost"></td>
 			<td wicket:id="winRatio"></td>
 			<td wicket:id="rating"></td>
 			<td wicket:id="trend"></td>

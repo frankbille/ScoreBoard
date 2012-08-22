@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:wicket="http://wicket.apache.org">
 <head>
     <meta charset="utf-8">
 	<title><wicket:message key="title" /></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/datepicker.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -16,7 +17,7 @@
     </style>
 </head>
 <body>
-	<span wicket:id="menu" />
+	<span wicket:id="menu"></span>
 
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -27,11 +28,10 @@
 
 				<footer>
 					<p>
-						&copy; <span wicket:id="copyrightDate"></span>. <a
-							href="https://github.com/frankbille/ScoreBoard"><wicket:message
-								key="gitHubProject" /></a>. <a
-							href="https://github.com/frankbille/ScoreBoard/issues"><wicket:message
-								key="gitHubIssues" /></a>.
+						&copy;
+						<span wicket:id="copyrightDate"></span>.
+						<a href="https://github.com/frankbille/ScoreBoard"><wicket:message key="gitHubProject" /></a>.
+						<a href="https://github.com/frankbille/ScoreBoard/issues"><wicket:message key="gitHubIssues" /></a>.
 					</p>
 				</footer>
 			</div>
@@ -39,5 +39,14 @@
 	</div>
 
 	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+	<script>
+	$(function() {
+		$("*[rel=tooltip-left]").tooltip({placement:"left"});
+		$("*[rel=datepicker]").datepicker({
+		    format: 'yyyy-mm-dd'
+		});
+	});
+	</script>
 </body>
 </html>

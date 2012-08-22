@@ -6,7 +6,6 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -49,8 +48,8 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 
 	public GameTeamPanel(String id, IModel<GameTeam> model) {
 		super(id, model);
-
-		add(new Label("teamName", new PropertyModel<String>(model, "team.name")));
+		
+		setRenderBodyOnly(true);
 
 		TextField<Integer> scoreField = new TextField<Integer>("score", new PropertyModel<Integer>(model, "score"));
 		scoreField.add(new AjaxFormSubmitBehavior("onchange") {
@@ -66,9 +65,12 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 		});
 		add(scoreField);
 		
+		Localizer localizer = Application.get().getResourceSettings().getLocalizer();
+
 		final Select2MultiChoice<Player> players = new Select2MultiChoice<Player>("players", new PlayersModel(model), new PlayersProvider());
 		players.getSettings().setMinimumInputLength(2);
-		Localizer localizer = Application.get().getResourceSettings().getLocalizer();
+		players.getSettings().setContainerCssClass("span3");
+		players.getSettings().setPlaceholder(localizer.getString("players", null));
 		String locString = localizer.getString("playerSearchTermTooShort", null);
 		locString = "'"+locString+"'";
 		locString = locString.replace("{term}", "'+term+'");
