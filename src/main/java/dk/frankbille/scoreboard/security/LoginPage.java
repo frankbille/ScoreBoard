@@ -1,18 +1,15 @@
 package dk.frankbille.scoreboard.security;
 
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.cookies.CookieDefaults;
 import org.apache.wicket.util.cookies.CookieUtils;
@@ -108,22 +105,12 @@ public class LoginPage extends BasePage {
 		loginForm.add(new FeedbackPanel("loginMessages", new ContainerFeedbackMessageFilter(loginForm)));
 
 		final TextField<String> usernameField = new TextField<String>("usernameField", new PropertyModel<String>(user, "username"));
-
-		FormComponentLabel usernameLabel = new FormComponentLabel("usernameLabel", usernameField);
-		usernameLabel.add(new Label("label", new StringResourceModel("username", null)));
-		loginForm.add(usernameLabel);
 		loginForm.add(usernameField);
 
 		final PasswordTextField passwordField = new PasswordTextField("passwordField", new PropertyModel<String>(user, "password"));
-		FormComponentLabel passwordLabel = new FormComponentLabel("passwordLabel", passwordField);
-		passwordLabel.add(new Label("label", new StringResourceModel("password", null)));
-		loginForm.add(passwordLabel);
 		loginForm.add(passwordField);
 
 		CheckBox persistentField = new CheckBox("persistentField", new PropertyModel<Boolean>(user, "loginPersistent"));
-		FormComponentLabel persistentLabel = new FormComponentLabel("persistentLabel", persistentField);
-		persistentLabel.add(new Label("label", new StringResourceModel("loginPersistence", null)));
-		loginForm.add(persistentLabel);
 		loginForm.add(persistentField);
 
 
@@ -178,26 +165,13 @@ public class LoginPage extends BasePage {
 			}
 		});
 		usernameField.setRequired(true);
-		FormComponentLabel usernameLabel = new FormComponentLabel("usernameLabel", usernameField);
-		usernameLabel.add(new Label("label", new StringResourceModel("username", null)));
-		createUserForm.add(usernameLabel);
 		createUserForm.add(usernameField);
 
 		final PasswordTextField passwordField = new PasswordTextField("passwordField", new PropertyModel<String>(user, "password"));
-		StringResourceModel passwordLabelModel = new StringResourceModel("password", null);
-		passwordField.setLabel(passwordLabelModel);
 		passwordField.setRequired(true);
-		FormComponentLabel passwordLabel = new FormComponentLabel("passwordLabel", passwordField);
-		passwordLabel.add(new Label("label", passwordLabelModel));
-		createUserForm.add(passwordLabel);
 		createUserForm.add(passwordField);
 
 		final PasswordTextField repeatPasswordField = new PasswordTextField("repeatPasswordField", new PropertyModel<String>(user, "repeatPassword"));
-		StringResourceModel repeatPasswordLabelModel = new StringResourceModel("passwordRepeat", null);
-		repeatPasswordField.setLabel(repeatPasswordLabelModel);
-		FormComponentLabel repeatPasswordLabel = new FormComponentLabel("repeatPasswordLabel", repeatPasswordField);
-		repeatPasswordLabel.add(new Label("label", repeatPasswordLabelModel));
-		createUserForm.add(repeatPasswordLabel);
 		createUserForm.add(repeatPasswordField);
 
 		createUserForm.add(new EqualPasswordInputValidator(passwordField, repeatPasswordField));

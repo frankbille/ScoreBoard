@@ -2,7 +2,6 @@ package dk.frankbille.scoreboard.player;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -31,11 +30,9 @@ public class PlayerEditPage extends SecureBasePage {
 	}
 	
 	private void initialize(IModel<Player> playerModel) {
-		add(new Label("name", new PropertyModel<String>(playerModel, "name")));
-
 		Form<Player> playerForm = new Form<Player>("playerForm", playerModel) {
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			protected void onSubmit() {
 				scoreBoardService.savePlayer(getModelObject());
@@ -44,25 +41,21 @@ public class PlayerEditPage extends SecureBasePage {
 		};
 		add(playerForm);
 
+		playerForm.add(new Label("name", new PropertyModel<String>(playerModel, "name")));
+
 		{
 			TextField<String> nameField = new TextField<String>("nameField", new PropertyModel<String>(playerModel, "name"));
 			playerForm.add(nameField);
-			FormComponentLabel nameLabel = new FormComponentLabel("nameLabel", nameField);
-			playerForm.add(nameLabel);
 		}
 
 		{
 			TextField<String> fullNameField = new TextField<String>("fullNameField", new PropertyModel<String>(playerModel, "fullName"));
 			playerForm.add(fullNameField);
-			FormComponentLabel fullNameLabel = new FormComponentLabel("fullNameLabel", fullNameField);
-			playerForm.add(fullNameLabel);
 		}
 
 		{
 			TextField<String> groupField = new TextField<String>("groupField", new PropertyModel<String>(playerModel, "groupName"));
 			playerForm.add(groupField);
-			FormComponentLabel groupLabel = new FormComponentLabel("groupLabel", groupField);
-			playerForm.add(groupLabel);
 		}
 	}
 

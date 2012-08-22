@@ -1,13 +1,14 @@
 <wicket:extend>
 	<span wicket:id="editGame" />
 
-	<div class="games">
-		<h1><wicket:message key="playedGames"/></h1>
-		<span wicket:id="playedGameList" />
+	<div class="row-fluid">
+		<div class="span7">
+			<h1><wicket:message key="playedGames"/></h1>
+			<span wicket:id="playedGameList" />
+		</div>
+		<div class="span5">
+			<h1><wicket:message key="playersByRating"/></h1>
+			<span wicket:id="playersContainer"/>
+		</div>
 	</div>
-	<div class="players">
-		<h1><wicket:message key="playersByRating"/></h1>
-		<span wicket:id="playersContainer"/>
-	</div>
-	<div class="breaker"></div>
 </wicket:extend>

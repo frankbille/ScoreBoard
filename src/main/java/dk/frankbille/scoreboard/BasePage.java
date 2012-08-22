@@ -13,7 +13,9 @@ public abstract class BasePage extends WebPage {
 	private static final long serialVersionUID = 1L;
 
 	public BasePage() {
-		add(new MenuPanel("menu", new PropertyModel<MenuPanel.MenuItemType>(this, "menuItemType")));
+		MenuPanel menuPanel = new MenuPanel("menu", new PropertyModel<MenuPanel.MenuItemType>(this, "menuItemType"));
+		menuPanel.setRenderBodyOnly(true);
+		add(menuPanel);
 
 		add(new Label("copyrightDate", new AbstractReadOnlyModel<CharSequence>() {
 			private static final long serialVersionUID = 1L;
