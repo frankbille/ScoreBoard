@@ -6,6 +6,8 @@ import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
+import com.vaynberg.wicket.select2.ApplicationSettings;
+
 import dk.frankbille.scoreboard.daily.DailyGamePage;
 import dk.frankbille.scoreboard.player.PlayerEditPage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
@@ -35,6 +37,8 @@ public class ScoreBoardApplication extends WebApplication {
 	public void init() {
 		super.init();
 
+		ApplicationSettings.get().setIncludeJquery(false);
+		
 		getComponentInstantiationListeners().add(
 				new SpringComponentInjector(this));
 
