@@ -1,7 +1,6 @@
 package dk.frankbille.scoreboard.components;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
-import dk.frankbille.scoreboard.comparators.GameTeamComparator;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
@@ -81,16 +79,9 @@ public class PlayedGameListPanel extends Panel {
 
 				//Add the winning and losing team
 				Game game = item.getModelObject();
-				List<GameTeam> teams = game.getTeams();
-				Collections.sort(teams, new GameTeamComparator());
-				for (GameTeam gameTeam : teams) {
-					if (gameTeam.isWinner()) {
-						item.add(new GameTeamPanel("winner", new Model<GameTeam>(gameTeam), selectedPlayerModel));
-					}
-					else {
-						item.add(new GameTeamPanel("loser", new Model<GameTeam>(gameTeam), selectedPlayerModel));
-					}
-				}
+				List<GameTeam> teamsSortedByScore = game.getTeamsSortedByScore();
+				item.add(new GameTeamPanel("team1", new Model<GameTeam>(teamsSortedByScore.get(0)), selectedPlayerModel));
+				item.add(new GameTeamPanel("team2", new Model<GameTeam>(teamsSortedByScore.get(1)), selectedPlayerModel));
 
 				//Add the game score
 				item.add(new Label("score", new AbstractReadOnlyModel<String>() {
@@ -100,15 +91,10 @@ public class PlayedGameListPanel extends Panel {
 					public String getObject() {
 						StringBuilder b = new StringBuilder();
 						Game game = item.getModelObject();
-						List<GameTeam> teams = game.getTeams();
-						Collections.sort(teams, new GameTeamComparator());
-						for (GameTeam gameTeam : teams) {
-							if (b.length() > 0) {
-								b.append(" : ");
-							}
-
-							b.append(gameTeam.getScore());
-						}
+						List<GameTeam> teamsSortedByScore = game.getTeamsSortedByScore();
+						b.append(teamsSortedByScore.get(0).getScore());
+						b.append(" : ");
+						b.append(teamsSortedByScore.get(1).getScore());
 						return b.toString();
 					}
 				}));

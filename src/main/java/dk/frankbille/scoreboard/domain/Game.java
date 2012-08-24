@@ -12,7 +12,9 @@ public class Game implements Serializable {
 
 	private Date date;
 
-	private List<GameTeam> teams;
+	private GameTeam team1;
+	
+	private GameTeam team2;
 
 	public Long getId() {
 		return id;
@@ -29,32 +31,33 @@ public class Game implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-
-	public List<GameTeam> getTeams() {
-		return teams;
+	
+	public GameTeam getTeam1() {
+		return team1;
 	}
-
-	public void addTeam(GameTeam gameTeam) {
-		if (teams == null) {
-			teams = new ArrayList<GameTeam>();
-		}
-
-		teams.add(gameTeam);
+	
+	public void setTeam1(GameTeam team1) {
+		this.team1 = team1;
 	}
-
-	public void setTeams(List<GameTeam> teams) {
-		this.teams = teams;
+	
+	public GameTeam getTeam2() {
+		return team2;
+	}
+	
+	public void setTeam2(GameTeam team2) {
+		this.team2 = team2;
 	}
 
 	public boolean didTeamWin(GameTeam team) {
-		int largestScore = -1;
-		for (GameTeam gameTeam : teams) {
-			if (gameTeam.getScore() > largestScore) {
-				largestScore = gameTeam.getScore();
-			}
+		if (team.getId() != team1.getId() && team.getId() != team2.getId()) {
+			throw new IllegalArgumentException("The team was not one of the 2 teams in the game: "+team.getId());
 		}
-
-		return team.getScore() == largestScore;
+		
+		return team.getScore() == getLargestScore();
+	}
+	
+	public int getLargestScore() {
+		return Math.max(team1.getScore(), team2.getScore());
 	}
 
 	public boolean hasPlayer(Player player) {
@@ -62,17 +65,44 @@ public class Game implements Serializable {
 	}
 
 	public GameTeam getTeamForPlayer(Player player) {
-		GameTeam foundGameTeam = null;
-		for (GameTeam gameTeam : getTeams()) {
-			if (gameTeam.hasPlayer(player)) {
-				foundGameTeam = gameTeam;
-				break;
-			}
-		}
-		return foundGameTeam;
+		if (team1.hasPlayer(player)) {
+			return team1;
+		} else if (team2.hasPlayer(player)) {
+			return team2;
+		} 
+		return null;
 	}
 
 	public boolean didPlayerWin(Player player) {
 		return didTeamWin(getTeamForPlayer(player));
+	}
+	
+	public List<GameTeam> getTeamsSortedByScore() {
+		List<GameTeam> teams = new ArrayList<GameTeam>();
+		GameTeam firstTeam = getWinnerTeam();
+		GameTeam secondTeam = getLoserTeam();
+		if (firstTeam == null) {
+			firstTeam = team1;
+			secondTeam = team2;
+		}
+		teams.add(firstTeam);
+		teams.add(secondTeam);
+		return teams;
+	}
+
+	public GameTeam getWinnerTeam() {
+		if (team1.getScore() == team2.getScore()) {
+			return null;
+		}
+		
+		return team1.getScore() > team2.getScore() ? team1 : team2;
+	}
+
+	public GameTeam getLoserTeam() {
+		if (team1.getScore() == team2.getScore()) {
+			return null;
+		}
+		
+		return team1.getScore() < team2.getScore() ? team1 : team2;
 	}
 }

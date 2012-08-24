@@ -18,6 +18,8 @@ public class TestPlayerListPage extends WicketSpringTestCase {
 
 	@Test
 	public void testRenderWithData() {
+		clearData();
+		
 		ScoreBoardService scoreBoardService = getScoreBoardService();
 		Player player1 = scoreBoardService.createNewPlayer("Player 1");
 		Player player2 = scoreBoardService.createNewPlayer("Player 2");

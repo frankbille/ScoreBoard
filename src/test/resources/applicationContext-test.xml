@@ -27,6 +27,11 @@
 			</list>
 		</property>
 	</bean>
+	
+	
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
 
 	<bean id="testMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.TestMapper" />

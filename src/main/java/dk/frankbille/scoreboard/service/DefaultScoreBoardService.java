@@ -99,31 +99,8 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 
 		List<Game> games = gameDao.getAllGames();
 		for (Game game : games) {
-			List<GameTeam> gameTeams = game.getTeams();
-			for (GameTeam gameTeam : gameTeams) {
-				Set<Player> players = gameTeam.getTeam().getPlayers();
-				for (Player player : players) {
-					PlayerResult result = cache.get(player);
-					if (result == null) {
-						result = new PlayerResult(player);
-						cache.put(player, result);
-						playerResults.add(result);
-					}
-
-					List<Game> playerGames = playerGamesCache.get(player);
-					if (playerGames == null) {
-						playerGames = new ArrayList<Game>();
-						playerGamesCache.put(player, playerGames);
-					}
-					playerGames.add(game);
-
-					if (game.didTeamWin(gameTeam)) {
-						result.gameWon();
-					} else {
-						result.gameLost();
-					}
-				}
-			}
+			extractPlayerStatistics(game.getTeam1(), game, playerResults, cache, playerGamesCache);
+			extractPlayerStatistics(game.getTeam2(), game, playerResults, cache, playerGamesCache);
 		}
 
 		// Add trends
@@ -167,6 +144,33 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		}
 
 		return playerResults;
+	}
+
+	private void extractPlayerStatistics(GameTeam gameTeam, Game game,
+			List<PlayerResult> playerResults, Map<Player, PlayerResult> cache,
+			Map<Player, List<Game>> playerGamesCache) {
+		Set<Player> players = gameTeam.getTeam().getPlayers();
+		for (Player player : players) {
+			PlayerResult result = cache.get(player);
+			if (result == null) {
+				result = new PlayerResult(player);
+				cache.put(player, result);
+				playerResults.add(result);
+			}
+
+			List<Game> playerGames = playerGamesCache.get(player);
+			if (playerGames == null) {
+				playerGames = new ArrayList<Game>();
+				playerGamesCache.put(player, playerGames);
+			}
+			playerGames.add(game);
+
+			if (game.didTeamWin(gameTeam)) {
+				result.gameWon();
+			} else {
+				result.gameLost();
+			}
+		}
 	}
 
 	@Override

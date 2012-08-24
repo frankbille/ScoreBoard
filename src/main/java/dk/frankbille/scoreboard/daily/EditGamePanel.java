@@ -61,8 +61,8 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
     	
     	form.add(DateTextField.forDatePattern("gameDate", new PropertyModel<Date>(this, "game.date"), "yyyy-MM-dd"));
 
-    	form.add(new GameTeamPanel("team1", new PropertyModel<GameTeam>(this, "game.teams.0")));
-    	form.add(new GameTeamPanel("team2", new PropertyModel<GameTeam>(this, "game.teams.1")));
+    	form.add(new GameTeamPanel("team1", new PropertyModel<GameTeam>(this, "game.team1")));
+    	form.add(new GameTeamPanel("team2", new PropertyModel<GameTeam>(this, "game.team2")));
 
     	form.add(new AjaxSubmitLink("save") {
 			private static final long serialVersionUID = 1L;
@@ -93,12 +93,12 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
     	gameTeam1.setGame(game);
     	Team team1 = new Team();
 		gameTeam1.setTeam(team1);
-		game.addTeam(gameTeam1);
+		game.setTeam1(gameTeam1);
     	GameTeam gameTeam2 = new GameTeam();
     	gameTeam2.setGame(game);
     	Team team2 = new Team();
 		gameTeam2.setTeam(team2);
-		game.addTeam(gameTeam2);
+		game.setTeam2(gameTeam2);
 		return game;
 	}
 

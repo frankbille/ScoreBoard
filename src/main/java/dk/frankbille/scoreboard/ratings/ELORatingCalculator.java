@@ -49,31 +49,14 @@ public class ELORatingCalculator implements RatingCalculator {
 		}
 	}
 	private void addTeamRatings(Game game) throws RatingException {
-		//Find the teams
-		List<GameTeam> teams = game.getTeams();
-		if (teams.size()!=2)
-			throw new RatingException("ELORatingCalculator currently only support 2 team matches");
-		
 		//Calculate the teams before-ratings
-		GameTeam winner = null;
-		int winnerScore = 0;
-		double winnerRating = ELOCalculator.DEFAULT_RATING;
+		GameTeam winner = game.getWinnerTeam();
+		int winnerScore = winner.getScore();
+		double winnerRating = calculateTeamRating(winner);
 		
-		GameTeam loser = null;
-		int loserScore = 0;
-		double loserRating = ELOCalculator.DEFAULT_RATING;
-
-		for (GameTeam team:teams)
-			if (game.didTeamWin(team)) {
-				winner = team;
-				winnerRating = calculateTeamRating(team);
-				winnerScore = team.getScore();
-			}
-			else {
-				loser = team;
-				loserRating = calculateTeamRating(team);
-				loserScore = team.getScore();
-			}
+		GameTeam loser = game.getLoserTeam();
+		int loserScore = loser.getScore();
+		double loserRating = calculateTeamRating(loser);
 		
 		//Check that we have 2 teams
 		if (winner==null ||loser==null)

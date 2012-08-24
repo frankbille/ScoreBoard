@@ -31,28 +31,30 @@ public class TestDailyGamePage extends WicketSpringTestCase {
 
 		Game game = new Game();
 		game.setDate(new Date());
-		addGameTeam(game, 10, "Team 1", player1, player2);
-		scoreBoardService.saveGame(game);
-		addGameTeam(game, 7, "Team 2", player3, player4);
+		GameTeam gameTeam1 = createGameTeam(10, "Team 1", player1, player2);
+		game.setTeam1(gameTeam1);
+		gameTeam1.setGame(game);
+		GameTeam gameTeam2 = createGameTeam(7, "Team 2", player3, player4);
+		game.setTeam2(gameTeam2);
+		gameTeam2.setGame(game);
 		scoreBoardService.saveGame(game);
 
 		tester.startPage(DailyGamePage.class);
 		tester.assertRenderedPage(DailyGamePage.class);
 	}
 
-	private void addGameTeam(Game game, int score, String teamName, Player... players) {
-		GameTeam gameTeam1 = new GameTeam();
-		gameTeam1.setScore(score);
-		gameTeam1.setGame(game);
-		Team team1 = new Team();
-		team1.setName(teamName);
-		Set<Player> team1Players = new HashSet<Player>();
+	private GameTeam createGameTeam(int score, String teamName, Player... players) {
+		GameTeam gameTeam = new GameTeam();
+		gameTeam.setScore(score);
+		Team team = new Team();
+		team.setName(teamName);
+		Set<Player> teamPlayers = new HashSet<Player>();
 		for (Player player : players) {
-			team1Players.add(player);
+			teamPlayers.add(player);
 		}
-		team1.setPlayers(team1Players);
-		gameTeam1.setTeam(team1);
-		game.addTeam(gameTeam1);
+		team.setPlayers(teamPlayers);
+		gameTeam.setTeam(team);
+		return gameTeam;
 	}
 
 }

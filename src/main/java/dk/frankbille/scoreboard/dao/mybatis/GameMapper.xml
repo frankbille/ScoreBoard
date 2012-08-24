@@ -7,11 +7,15 @@
 		INSERT INTO
 			game
 		(
-			date
+			date,
+			team1_id,
+			team2_id
 		)
 		VALUES
 		(
-			#{date}
+			#{date},
+			#{team1.id},
+			#{team2.id}
 		)
 	</insert>
 
@@ -19,7 +23,9 @@
 		UPDATE
 			game
 		SET
-			date = #{date}
+			date = #{date},
+			team1_id = #{team1.id},
+			team2_id = #{team2.id}
 		WHERE
 			id = #{id}
 	</update>
@@ -28,48 +34,88 @@
 		SELECT
 			game.id AS gameId,
 			game.date AS gameDate,
-			game_team.id AS gameTeamId,
-			game_team.score AS gameTeamScore,
-			team.id AS teamId,
-			team.name AS teamName,
-			player.id AS playerId,
-			player.name AS playerName,
-			player.full_name AS playerFullName,
-			player.group_name AS playerGroupName
+			/* Team 1 */
+			game_team1.id AS team1gameTeamId,
+			game_team1.score AS team1gameTeamScore,
+			team1.id AS team1teamId,
+			team1.name AS team1teamName,
+			player1.id AS team1playerId,
+			player1.name AS team1playerName,
+			player1.full_name AS team1playerFullName,
+			player1.group_name AS team1playerGroupName,
+			/* Team 2 */
+			game_team2.id AS team2gameTeamId,
+			game_team2.score AS team2gameTeamScore,
+			team2.id AS team2teamId,
+			team2.name AS team2teamName,
+			player2.id AS team2playerId,
+			player2.name AS team2playerName,
+			player2.full_name AS team2playerFullName,
+			player2.group_name AS team2playerGroupName
 		FROM
 			game
+			/* Team 1 */
 			LEFT JOIN
-			game_team ON game.id=game_team.game_id
+			game_team AS game_team1 ON game.team1_id=game_team1.id
 			LEFT JOIN
-			team ON game_team.team_id=team.id
+			team AS team1 ON game_team1.team_id=team1.id
 			LEFT JOIN
-			team_players ON team.id=team_players.team_id
+			team_players AS team_players1 ON team1.id=team_players1.team_id
 			LEFT JOIN
-			player ON team_players.player_id=player.id
+			player AS player1 ON team_players1.player_id=player1.id
+			/* Team 2 */
+			LEFT JOIN
+			game_team AS game_team2 ON game.team2_id=game_team2.id
+			LEFT JOIN
+			team AS team2 ON game_team2.team_id=team2.id
+			LEFT JOIN
+			team_players AS team_players2 ON team2.id=team_players2.team_id
+			LEFT JOIN
+			player AS player2 ON team_players2.player_id=player2.id
 	</select>
 
 	<select id="getGame" resultMap="GameWithDetails">
 		SELECT
 			game.id AS gameId,
 			game.date AS gameDate,
-			game_team.id AS gameTeamId,
-			game_team.score AS gameTeamScore,
-			team.id AS teamId,
-			team.name AS teamName,
-			player.id AS playerId,
-			player.name AS playerName,
-			player.full_name AS playerFullName,
-			player.group_name AS playerGroupName
+			/* Team 1 */
+			game_team1.id AS team1gameTeamId,
+			game_team1.score AS team1gameTeamScore,
+			team1.id AS team1teamId,
+			team1.name AS team1teamName,
+			player1.id AS team1playerId,
+			player1.name AS team1playerName,
+			player1.full_name AS team1playerFullName,
+			player1.group_name AS team1playerGroupName,
+			/* Team 2 */
+			game_team2.id AS team2gameTeamId,
+			game_team2.score AS team2gameTeamScore,
+			team2.id AS team2teamId,
+			team2.name AS team2teamName,
+			player2.id AS team2playerId,
+			player2.name AS team2playerName,
+			player2.full_name AS team2playerFullName,
+			player2.group_name AS team2playerGroupName
 		FROM
 			game
+			/* Team 1 */
 			LEFT JOIN
-			game_team ON game.id=game_team.game_id
+			game_team AS game_team1 ON game.team1_id=game_team1.id
 			LEFT JOIN
-			team ON game_team.team_id=team.id
+			team AS team1 ON game_team1.team_id=team1.id
 			LEFT JOIN
-			team_players ON team.id=team_players.team_id
+			team_players AS team_players1 ON team1.id=team_players1.team_id
 			LEFT JOIN
-			player ON team_players.player_id=player.id
+			player AS player1 ON team_players1.player_id=player1.id
+			/* Team 2 */
+			LEFT JOIN
+			game_team AS game_team2 ON game.team2_id=game_team2.id
+			LEFT JOIN
+			team AS team2 ON game_team2.team_id=team2.id
+			LEFT JOIN
+			team_players AS team_players2 ON team2.id=team_players2.team_id
+			LEFT JOIN
+			player AS player2 ON team_players2.player_id=player2.id
 		WHERE
 			game.id = #{gameId}
 	</select>
@@ -77,9 +123,8 @@
 	<resultMap id="GameWithDetails" type="dk.frankbille.scoreboard.domain.Game">
 		<id property="id" column="gameId" />
 		<result property="date" column="gameDate" jdbcType="DATE" />
-		<collection property="teams" column="gameId"
-			ofType="dk.frankbille.scoreboard.domain.GameTeam" javaType="ArrayList"
-			resultMap="GameTeamWithDetails" />
+		<association property="team1" columnPrefix="team1" resultMap="GameTeamWithDetails"/>
+		<association property="team2" columnPrefix="team2" resultMap="GameTeamWithDetails"/>
 	</resultMap>
 
 	<resultMap id="GameTeamWithDetails" type="dk.frankbille.scoreboard.domain.GameTeam">

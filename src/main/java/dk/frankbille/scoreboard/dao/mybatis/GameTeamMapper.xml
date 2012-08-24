@@ -8,13 +8,11 @@
 			game_team
 		(
 			score,
-			game_id,
 			team_id
 		)
 		VALUES
 		(
 			#{score},
-			#{game.id},
 			#{team.id}
 		)
 	</insert>

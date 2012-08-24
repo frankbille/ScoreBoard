@@ -36,6 +36,10 @@ public class Team implements Serializable {
 
 		return players;
 	}
+	
+	public void addPlayer(Player player) {
+		getPlayers().add(player);
+	}
 
 	public void setPlayers(Set<Player> players) {
 		this.players = players;

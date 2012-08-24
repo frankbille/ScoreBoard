@@ -32,39 +32,39 @@ public class MyBatisGameDao implements GameDao {
 
 	@Override
 	public void saveGame(Game game) {
+		saveGameTeam(game.getTeam1());
+		saveGameTeam(game.getTeam2());
+
 		if (game.getId() == null) {
 			gameMapper.insertGame(game);
 		} else {
 			gameMapper.updateGame(game);
 		}
+	}
 
-		List<GameTeam> teams = game.getTeams();
-		if (teams != null) {
-			for (GameTeam gameTeam : teams) {
-				Team team = gameTeam.getTeam();
-				if (team != null) {
-					if (team.getId() == null) {
-						teamMapper.insertTeam(team);
-					} else {
-						teamMapper.updateTeam(team);
-					}
+	private void saveGameTeam(GameTeam gameTeam) {
+		Team team = gameTeam.getTeam();
+		if (team != null) {
+			if (team.getId() == null) {
+				teamMapper.insertTeam(team);
+			} else {
+				teamMapper.updateTeam(team);
+			}
 
-					teamMapper.deleteTeamPlayers(team);
+			teamMapper.deleteTeamPlayers(team);
 
-					Set<Player> players = team.getPlayers();
-					if (players != null) {
-						for (Player player : players) {
-							teamMapper.insertTeamPlayer(team, player);
-						}
-					}
-				}
-
-				if (gameTeam.getId() == null) {
-					gameTeamMapper.insertGameTeam(gameTeam);
-				} else {
-					gameTeamMapper.updateGameTeam(gameTeam);
+			Set<Player> players = team.getPlayers();
+			if (players != null) {
+				for (Player player : players) {
+					teamMapper.insertTeamPlayer(team, player);
 				}
 			}
+		}
+
+		if (gameTeam.getId() == null) {
+			gameTeamMapper.insertGameTeam(gameTeam);
+		} else {
+			gameTeamMapper.updateGameTeam(gameTeam);
 		}
 	}
 
@@ -76,12 +76,8 @@ public class MyBatisGameDao implements GameDao {
 		 * (Game->GameTeam->Game), so we have to do it manually.
 		 */
 		for (Game game : allGames) {
-			List<GameTeam> teams = game.getTeams();
-			if (teams != null) {
-				for (GameTeam gameTeam : teams) {
-					gameTeam.setGame(game);
-				}
-			}
+			game.getTeam1().setGame(game);
+			game.getTeam2().setGame(game);
 		}
 		return allGames;
 	}

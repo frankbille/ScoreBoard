@@ -1,12 +1,20 @@
 package dk.frankbille.scoreboard.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.mock.MockServletContext;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.util.tester.WicketTester;
+import org.joda.time.DateMidnight;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,6 +24,10 @@ import org.springframework.web.context.WebApplicationContext;
 import dk.frankbille.scoreboard.ScoreBoardApplication;
 import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.dao.mybatis.TestMapper;
+import dk.frankbille.scoreboard.domain.Game;
+import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
@@ -52,12 +64,86 @@ public abstract class WicketSpringTestCase {
 		};
 		tester = new WicketTester(application, servletContext);
 	}
+	
+	@Before
+	public void insertTestData() {
+		/*
+		 * Players
+		 */
+		List<Player> players = new ArrayList<Player>();
+		for (int i = 1; i <= 10; i++) {
+			Player player = new Player();
+			player.setName("Player "+i);
+			player.setFullName("Player Full Name "+i);
+			getScoreBoardService().savePlayer(player);
+			players.add(player);
+		}
+		
+		/*
+		 * Games
+		 */
+		DateMidnight date = new DateMidnight().minusMonths(1);
+		DateMidnight today = new DateMidnight();
+		while (date.isBefore(today)) {
+			Game game = new Game();
+			game.setDate(date.toDate());
+			
+			GameTeam gameTeam1 = new GameTeam();
+			gameTeam1.setScore(getRandomScore(-1));
+			gameTeam1.setGame(game);
+			Team team1 = new Team();
+			team1.setName("Team 1 "+date);
+			Player player1 = getRandomPlayer(players, (Player[]) null);
+			team1.addPlayer(player1);
+			Player player2 = getRandomPlayer(players, player1);
+			team1.addPlayer(player2);
+			gameTeam1.setTeam(team1);
+			game.setTeam1(gameTeam1);
+			
+			GameTeam gameTeam2 = new GameTeam();
+			gameTeam2.setScore(getRandomScore(gameTeam1.getScore()));
+			gameTeam2.setGame(game);
+			Team team2 = new Team();
+			team2.setName("Team 1 "+date);
+			Player player3 = getRandomPlayer(players, player1, player2);
+			team2.addPlayer(player3);
+			Player player4 = getRandomPlayer(players, player1, player2, player3);
+			team2.addPlayer(player4);
+			gameTeam2.setTeam(team2);
+			game.setTeam2(gameTeam2);
+			
+			getScoreBoardService().saveGame(game);
+			
+			date = date.plusDays(1);
+		}
+	}
+	
+	private int getRandomScore(int disallowedScore) {
+		int score = -1;
+		do {
+			score = RandomUtils.nextInt(10)+1;
+		} while(score == disallowedScore);
+		return score;
+	}
+	
+	private Player getRandomPlayer(List<Player> players, Player... disallowedPlayers) {
+		Player player = null;
+		Set<Player> disallowedPlayerSet = new HashSet<Player>();
+		if (disallowedPlayers != null) {
+			player = disallowedPlayers[0];
+			disallowedPlayerSet.addAll(Arrays.asList(disallowedPlayers));
+		}
+		do {
+			player = players.get(RandomUtils.nextInt(players.size()));
+		} while(disallowedPlayerSet.contains(player));
+		return player;
+	}
 
 	@After
 	public void clearData() {
 		TestMapper testMapper = applicationContext.getBean("testMapper", TestMapper.class);
-		testMapper.clearGameTeams();
 		testMapper.clearGames();
+		testMapper.clearGameTeams();
 		testMapper.clearTeamPlayers();
 		testMapper.clearTeams();
 		testMapper.clearPlayers();
