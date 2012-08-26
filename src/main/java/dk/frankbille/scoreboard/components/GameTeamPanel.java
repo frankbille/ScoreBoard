@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.Application;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Localizer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -16,7 +17,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.Strings;
 
 import dk.frankbille.scoreboard.comparators.PlayerComparator;
 import dk.frankbille.scoreboard.domain.GameTeam;
@@ -36,8 +39,8 @@ public class GameTeamPanel extends Panel {
 
 	public GameTeamPanel(String id, final IModel<GameTeam> model, final IModel<Player> selectedPlayerModel) {
 		super(id, model);
-
-		IModel<List<Player>> playersModel = new LoadableDetachableModel<List<Player>>() {
+		
+		final IModel<List<Player>> playersModel = new LoadableDetachableModel<List<Player>>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -49,89 +52,85 @@ public class GameTeamPanel extends Panel {
 				return players;
 			}
 		};
-
-		add(new ListView<Player>("players", playersModel) {
+		
+		// Popover
+		add(AttributeModifier.replace("rel", "popover-top"));
+		add(AttributeModifier.replace("title", new StringResourceModel("rating", null)));
+		add(AttributeModifier.replace("data-content", new AbstractReadOnlyModel<CharSequence>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void populateItem(ListItem<Player> item) {
-				final Player player = item.getModelObject();
-
-				RatingCalculator rating = RatingProvider.getRatings();
-				GamePlayerRating playerRating = rating.getGamePlayerRating(model.getObject().getGame().getId(), player.getId());
-
-				PageParameters pp = new PageParameters();
-				pp.set(0, player.getId());
-				BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
-				AttributeAppender highlightModifier = new AttributeAppender("class", "highlighted") {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public boolean isEnabled(Component component) {
-						return player.equals(selectedPlayerModel.getObject());
-					}
-				};
-				highlightModifier.setSeparator(" ");
-				playerLink.add(highlightModifier);
-				item.add(playerLink);
-				playerLink.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
-				item.add(new Label("rating", new FormatModel(RATING_VALUE, playerRating.getRating())));
-			}
-		});
-
-		final IModel<GameRating> gameRatingModel = new LoadableDetachableModel<GameRating>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected GameRating load() {
+			public CharSequence getObject() {
+				StringBuilder b = new StringBuilder();
+				
+				b.append("<small>");
+				
 				GameTeam gameTeam = model.getObject();
+				List<Player> players = playersModel.getObject();
+				
 				RatingCalculator rating = RatingProvider.getRatings();
-				return rating.getGameRatingChange(gameTeam.getGame().getId());
-			}
-		};
+				Localizer localizer = Application.get().getResourceSettings().getLocalizer();
+				
+				// Player ratings
+				for (Player player : players) {
+					b.append(player.getName()).append(" (");
 
-		IModel<Double> teamRatingModel = new AbstractReadOnlyModel<Double>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Double getObject() {
-				GameTeam gameTeam = model.getObject();
-
-				GameRating gameRating = gameRatingModel.getObject();
-
-				if (gameTeam.isWinner()) {
-					return gameRating.getWinnerRating();
-				} else {
-					return gameRating.getLoserRating();
+					GamePlayerRating playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
+					b.append(RATING_VALUE.format(playerRating.getRating()));
+					
+					b.append(")<br>");
 				}
-			}
-		};
-
-		IModel<Double> teamRatingChangeModel = new AbstractReadOnlyModel<Double>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Double getObject() {
-				GameTeam gameTeam = model.getObject();
-
-				GameRating gameRating = gameRatingModel.getObject();
-
-				double change = gameRating.getChange();
+				
+				// Team rating
+				GameRating gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
+				b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
+				if (gameTeam.isWinner()) {
+					b.append(RATING_VALUE.format(gameRatingChange.getWinnerRating()));
+				} else {
+					b.append(RATING_VALUE.format(gameRatingChange.getLoserRating()));
+				}
+				b.append(" ");
+				double change = gameRatingChange.getChange();
 				if (false == gameTeam.isWinner()) {
 					change = 0 - change;
 				}
 
-				int playerCount = gameTeam.getTeam().getPlayers().size();
+				int playerCount = players.size();
 				if (playerCount > 0) {
 					change /= playerCount;
 				}
-
-				return change;
+				b.append(RATING_CHANGE.format(change));
+				
+				b.append("</small>");
+				
+				return Strings.escapeMarkup(b);
 			}
-		};
+		}));
+		
+		// Players
+		add(new ListView<Player>("players", playersModel) {
+			private static final long serialVersionUID = 1L;
 
-		add(new Label("teamRating", new FormatModel(RATING_VALUE, teamRatingModel)));
-		add(new Label("teamRatingChange", new FormatModel(RATING_CHANGE, teamRatingChangeModel)));
+			@Override
+			protected void populateItem(final ListItem<Player> item) {
+				final Player player = item.getModelObject();
+				
+				PageParameters pp = new PageParameters();
+				pp.set(0, player.getId());
+				BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
+				item.add(playerLink);
+				playerLink.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
+				
+				item.add(new Label("plus", "+") {
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					public boolean isVisible() {
+						return item.getIndex() < getViewSize()-1;
+					}
+				});
+			}
+		});
 	}
 
 }
