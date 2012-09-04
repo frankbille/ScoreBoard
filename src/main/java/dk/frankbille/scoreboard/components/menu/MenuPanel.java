@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.GenericPanel;
@@ -61,6 +63,8 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 
 	public MenuPanel(String id, IModel<MenuItemType> activeMenuItemModel) {
 		super(id, activeMenuItemModel);
+		
+		add(new BookmarkablePageLink<Void>("homeLink", Application.get().getHomePage()));
 
 		IModel<List<MenuItem>> itemsModel = new LoadableDetachableModel<List<MenuItem>>() {
 			private static final long serialVersionUID = 1L;
