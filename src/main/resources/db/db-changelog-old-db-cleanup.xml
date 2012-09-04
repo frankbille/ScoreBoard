@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="migrate_old_user_table" author="Frank Bille &lt;github@frankbille.dk&gt;" runOnChange="true">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="user" />
+		</preConditions>
+		<comment>
+			Rename user table to systemuser
+		</comment>
+		<dropTable tableName="systemuser"/>
+		<renameTable newTableName="systemuser" oldTableName="user"/>
+	</changeSet>
+
+	<changeSet id="add_team1_and_team2_to_game_table" author="Frank Bille &lt;github@frankbille.dk&gt;" runOnChange="true">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="game" columnName="team1_id"/>
+			</not>
+		</preConditions>
+		<comment>
+			Add team1 and team2 columns to game table, pointing to the game_team table.
+		</comment>
+		<addColumn tableName="game">
+			<column name="team1_id" type="bigint" />
+			<column name="team2_id" type="bigint" />
+		</addColumn>
+		<createIndex tableName="game" indexName="IDX_GAME_TEAM1_GAME_TEAM_ID">
+			<column name="team1_id"></column>
+		</createIndex>
+		<createIndex tableName="game" indexName="IDX_GAME_TEAM2_GAME_TEAM_ID">
+			<column name="team2_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_GAME_TEAM1_GAME_TEAM_ID" baseTableName="game"
+			baseColumnNames="team1_id" referencedTableName="game_team" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="FK_GAME_TEAM2_GAME_TEAM_ID" baseTableName="game"
+			baseColumnNames="team2_id" referencedTableName="game_team" referencedColumnNames="id" />
+			
+		<sql>
+			UPDATE
+				game
+			SET
+				team1_id = (SELECT id FROM game_team WHERE game_id=game.id LIMIT 1),
+				team2_id = (SELECT id FROM game_team WHERE game_id=game.id LIMIT 1,1)
+		</sql>
+		
+		<dropForeignKeyConstraint baseTableName="game_team" constraintName="FK_GAME_TEAM_GAME_ID"/>
+		<dropIndex tableName="game_team" indexName="IDX_GAME_ID"/>
+		<dropColumn tableName="game_team" columnName="game_id"/>
+	</changeSet>
+
+	<changeSet id="rename_date_to_game_date_in_game_table" author="Frank Bille &lt;github@frankbille.dk&gt;" runOnChange="true">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="game" columnName="game_date"/>
+			</not>
+		</preConditions>
+		<comment>
+			Rename the column game.date to game.game_date
+		</comment>
+		<renameColumn tableName="game" oldColumnName="date" newColumnName="game_date" columnDataType="date"/>
+	</changeSet>
+
+	<changeSet id="old_dbtool_cleanup" author="Frank Bille &lt;github@frankbille.dk&gt;" runOnChange="true">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="database_version" />
+		</preConditions>
+		<comment>
+			We used a custom built database versioning tool before.
+			This changeset is to clean up after that.
+		</comment>
+		<dropTable tableName="database_version" />
+	</changeSet>
+
+</databaseChangeLog>

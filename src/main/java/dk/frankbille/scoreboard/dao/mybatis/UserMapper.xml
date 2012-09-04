@@ -5,7 +5,7 @@
 <mapper namespace="dk.frankbille.scoreboard.dao.mybatis.UserMapper">
 	<insert id="insertUser" parameterType="dk.frankbille.scoreboard.domain.User">
 		INSERT INTO
-			user
+			systemuser
 		(
 			username,
 			password
@@ -19,7 +19,7 @@
 
 	<update id="updateUser" parameterType="dk.frankbille.scoreboard.domain.User">
 		UPDATE
-			user
+			systemuser
 		SET
 			player_id = #{player.id}
 		WHERE
@@ -34,9 +34,9 @@
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName
 		FROM
-			user
+			systemuser
 			LEFT JOIN
-			player ON user.player_id=player.id
+			player ON systemuser.player_id=player.id
 		WHERE
 			username = #{username}
 	</select>
@@ -49,9 +49,9 @@
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName
 		FROM
-			user
+			systemuser
 			LEFT JOIN
-			player ON user.player_id=player.id
+			player ON systemuser.player_id=player.id
 		WHERE
 			player_id = #{id}
 	</select>
@@ -64,9 +64,9 @@
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName
 		FROM
-			user
+			systemuser
 			LEFT JOIN
-			player ON user.player_id=player.id
+			player ON systemuser.player_id=player.id
 		WHERE
 			username = #{username}
 			AND

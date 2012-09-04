@@ -30,6 +30,6 @@
 
 	<delete id="clearUsers">
 		DELETE FROM
-			user
+			systemuser
 	</delete>
 </mapper>

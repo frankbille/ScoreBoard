@@ -7,7 +7,7 @@
 		INSERT INTO
 			game
 		(
-			date,
+			game_date,
 			team1_id,
 			team2_id
 		)
@@ -23,7 +23,7 @@
 		UPDATE
 			game
 		SET
-			date = #{date},
+			game_date = #{date},
 			team1_id = #{team1.id},
 			team2_id = #{team2.id}
 		WHERE
@@ -33,7 +33,7 @@
 	<select id="getAllGames" resultMap="GameWithDetails">
 		SELECT
 			game.id AS gameId,
-			game.date AS gameDate,
+			game.game_date AS gameDate,
 			/* Team 1 */
 			game_team1.id AS team1gameTeamId,
 			game_team1.score AS team1gameTeamScore,
@@ -77,7 +77,7 @@
 	<select id="getGame" resultMap="GameWithDetails">
 		SELECT
 			game.id AS gameId,
-			game.date AS gameDate,
+			game.game_date AS gameDate,
 			/* Team 1 */
 			game_team1.id AS team1gameTeamId,
 			game_team1.score AS team1gameTeamScore,

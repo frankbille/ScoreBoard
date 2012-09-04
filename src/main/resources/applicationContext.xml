@@ -17,14 +17,9 @@
 			p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}"
 			p:username="${jdbc.username}" p:password="${jdbc.password}" p:validationQuery="SELECT 1+1" p:testOnBorrow="true"/>
 
-	<bean id="databaseManager" class="dk.frankbille.scoreboard.db.DatabaseManager">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="dbms" value="MYSQL"/>
-		<property name="sqlFiles">
-			<list>
-				<value>classpath:/mysql/*.sql</value>
-			</list>
-		</property>
+	<bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+		<property name="dataSource" ref="dataSource" />
+		<property name="changeLog" value="classpath:db/db-changelog-master.xml" />
 	</bean>
 
 	<!-- ========================= RESOURCE DEFINITIONS ========================= -->

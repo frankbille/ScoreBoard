@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="baseline_table_player" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="player" />
+			</not>
+		</preConditions>
+		<createTable tableName="player">
+			<column name="id" autoIncrement="true" type="bigint">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+			<column name="full_name" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+			<column name="group_name" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="baseline_table_team" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="team" />
+			</not>
+		</preConditions>
+		<createTable tableName="team">
+			<column name="id" autoIncrement="true" type="bigint">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="baseline_table_game_team" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="game_team" />
+			</not>
+		</preConditions>
+		<createTable tableName="game_team">
+			<column name="id" autoIncrement="true" type="BIGINT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="score" type="int" />
+			<column name="team_id" type="bigint" />
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="baseline_table_game_team_indexes" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FK_GAME_TEAM_TEAM_ID" />
+			</not>
+		</preConditions>
+		<createIndex tableName="game_team" indexName="IDX_GAME_TEAM_TEAM_ID">
+			<column name="team_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_GAME_TEAM_TEAM_ID" baseTableName="game_team"
+			baseColumnNames="team_id" referencedTableName="team" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="baseline_table_game" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="game" />
+			</not>
+		</preConditions>
+		<createTable tableName="game">
+			<column name="id" autoIncrement="true" type="bigint">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="game_date" type="date" />
+			<column name="team1_id" type="bigint" />
+			<column name="team2_id" type="bigint" />
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="baseline_table_game_indexes" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyTableName="game" foreignKeyName="FK_GAME_TEAM1_GAME_TEAM_ID" />
+			</not>
+			<columnExists tableName="game" columnName="team1_id" />
+		</preConditions>
+		<createIndex tableName="game" indexName="IDX_GAME_TEAM1_GAME_TEAM_ID">
+			<column name="team1_id"></column>
+		</createIndex>
+		<createIndex tableName="game" indexName="IDX_GAME_TEAM2_GAME_TEAM_ID">
+			<column name="team2_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_GAME_TEAM1_GAME_TEAM_ID" baseTableName="game"
+			baseColumnNames="team1_id" referencedTableName="game_team" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="FK_GAME_TEAM2_GAME_TEAM_ID" baseTableName="game"
+			baseColumnNames="team2_id" referencedTableName="game_team" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="baseline_table_team_players" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="team_players" />
+			</not>
+		</preConditions>
+		<createTable tableName="team_players">
+			<column name="team_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="player_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="baseline_table_team_player_indexes" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FK_TEAM_PLAYERS_TEAM_ID" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="team_players" columnNames="team_id,player_id" />
+		<createIndex tableName="team_players" indexName="IDX_TEAM_PLAYERS_TEAM_ID">
+			<column name="team_id"></column>
+		</createIndex>
+		<createIndex tableName="team_players" indexName="IDX_TEAM_PLAYERS_PLAYER_ID">
+			<column name="player_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_TEAM_PLAYERS_TEAM_ID" baseTableName="team_players"
+			baseColumnNames="team_id" referencedTableName="team" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="FK_TEAM_PLAYERS_PLAYER_ID" baseTableName="team_players"
+			baseColumnNames="player_id" referencedTableName="player" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="baseline_table_systemuser" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="systemuser" />
+			</not>
+		</preConditions>
+		<createTable tableName="systemuser">
+			<column name="username" type="varchar(30)">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="password" type="varchar(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="player_id" type="bigint">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="baseline_table_systemuser_indexes" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FK_USER_PLAYER_ID" />
+			</not>
+		</preConditions>
+		<createIndex tableName="systemuser" indexName="IDX_USER_PLAYER_ID">
+			<column name="player_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_USER_PLAYER_ID" baseTableName="systemuser"
+			baseColumnNames="player_id" referencedTableName="player" referencedColumnNames="id" />
+	</changeSet>
+
+</databaseChangeLog>
