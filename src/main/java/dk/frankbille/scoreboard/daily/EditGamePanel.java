@@ -9,6 +9,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -58,6 +59,8 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 				}
 			}
 		}));
+		
+		form.add(new FeedbackPanel("feedback"));
     	
     	form.add(DateTextField.forDatePattern("gameDate", new PropertyModel<Date>(this, "game.date"), "yyyy-MM-dd"));
 
@@ -78,6 +81,7 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(EditGamePanel.this);
 			}
 		});
 	}
