@@ -16,26 +16,18 @@ Licensed under the [GNU General Public License, Version 3.0][license]
 Build instructions (for developers using Eclipse)
 -------------------------------------------------
 
-1. Install [Eclipse IDE for Java Developers][eclipse]
-2. Install [Eclipse EGit plugin][egit] in Eclipse
-3. Install [Eclipse Maven integration][maven]
-5. Start Eclipse
-6. Select File -> Import -> Git -> Projects from Git and click Next
-7. Click Clone
-8. Paste the URI https://\<username\>@github.com/frankbille/ScoreBoard.git
-9. Enter your GitHub password and click Next
-10. Select "master" and click Next and Finish
-11. Select the ScoreBoard repository and click Next
-12. Select "Import existing projects" and click Next and Finish
-13. Open a commandline at the git/ScoreBoard dir
-14. Run the command "mvn eclipse:eclipse -DdownloadSources=true"
-15. Refresh the project in Eclipse
+ 1. Install [Eclipse IDE for Java Developers][eclipse]
+ 2. Start Eclipse
+ 3. Select File -> Import -> Git -> Projects from Git and click Next
+ 4. Select URI and Next
+ 5. Paste the URI git@github.com:frankbille/ScoreBoard.git
+ 7. Select the branches you want (normally just all of them) and click Next
+ 8. Select where the local clone should be stored and click Next
+ 9. Select "Import existing projects" and Finish
+10. Since it is a maven project, dependencies will be downloaded and
+    it will be automatically built,
 
 [foosball]: http://en.wikipedia.org/wiki/Table_football
-[ranking]: https://github.com/frankbille/ScoreBoard/issues/2
-[nplusone]: https://github.com/frankbille/ScoreBoard/issues/4
 [eclipse]: http://www.eclipse.org/downloads/
-[egit]: http://eclipse.org/egit/download/
-[maven]: http://www.eclipse.org/m2e/
 [issues]: https://github.com/frankbille/ScoreBoard/issues
 [license]: http://www.gnu.org/licenses/gpl.html
