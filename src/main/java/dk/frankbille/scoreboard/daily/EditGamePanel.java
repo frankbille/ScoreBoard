@@ -6,14 +6,15 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import dk.frankbille.scoreboard.components.DateField;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Team;
@@ -58,8 +59,10 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 				}
 			}
 		}));
+		
+		form.add(new FeedbackPanel("feedback"));
     	
-    	form.add(DateTextField.forDatePattern("gameDate", new PropertyModel<Date>(this, "game.date"), "yyyy-MM-dd"));
+    	form.add(new DateField("gameDate", new PropertyModel<Date>(this, "game.date")));
 
     	form.add(new GameTeamPanel("team1", new PropertyModel<GameTeam>(this, "game.team1")));
     	form.add(new GameTeamPanel("team2", new PropertyModel<GameTeam>(this, "game.team2")));
@@ -78,6 +81,7 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(EditGamePanel.this);
 			}
 		});
 	}

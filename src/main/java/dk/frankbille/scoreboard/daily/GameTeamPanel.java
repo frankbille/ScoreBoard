@@ -12,6 +12,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.ValidationError;
 
 import com.vaynberg.wicket.select2.Select2MultiChoice;
 
@@ -76,6 +79,17 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 		locString = locString.replace("{term}", "'+term+'");
 		locString = locString.replace("{minLength}", "'+(minLength-term.length)+'");
 		players.getSettings().setFormatInputTooShort("function(term, minLength){return "+locString+"}");
+		players.add(new IValidator<Collection<Player>>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void validate(IValidatable<Collection<Player>> validatable) {
+				Collection<Player> value = validatable.getValue();
+				if (value.isEmpty()) {
+					validatable.error(new ValidationError().addMessageKey("teamMustHaveAtLeastOnePlayer"));
+				}
+			}
+		});
 		add(players);
 	}
 

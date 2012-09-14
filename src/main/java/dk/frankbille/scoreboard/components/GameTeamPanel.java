@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -54,9 +53,7 @@ public class GameTeamPanel extends Panel {
 		};
 		
 		// Popover
-		add(AttributeModifier.replace("rel", "popover-top"));
-		add(AttributeModifier.replace("title", new StringResourceModel("rating", null)));
-		add(AttributeModifier.replace("data-content", new AbstractReadOnlyModel<CharSequence>() {
+		add(new PopoverBehavior(new StringResourceModel("rating", null), new AbstractReadOnlyModel<CharSequence>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
