@@ -6,5 +6,6 @@
 
 	<include file="db/db-changelog-baseline.xml"/>
 	<include file="db/db-changelog-old-db-cleanup.xml"/>
+	<include file="db/db-changelog-league.xml"/>
 
 </databaseChangeLog>
