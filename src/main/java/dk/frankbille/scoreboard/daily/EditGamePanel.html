@@ -1,4 +1,4 @@
-<wicket:panel>
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
 <form wicket:id="form" class="form-horizontal">
 	<div class="control-group">
 		<div class="controls">
@@ -7,9 +7,15 @@
 	</div>
 	
 	<div class="control-group">
+		<div class="controls">
+			<span wicket:id="feedback"></span>
+		</div>
+	</div>
+	
+	<div class="control-group">
 		<label wicket:for="gameDate" class="control-label"><wicket:message key="date" /></label>
 		<div class="controls">
-			<input type="text" wicket:id="gameDate" rel="datepicker" class="span2" />
+			<input type="text" wicket:id="gameDate" class="span2" />
 		</div>
 	</div>
 	

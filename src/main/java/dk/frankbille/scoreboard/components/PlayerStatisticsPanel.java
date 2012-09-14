@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
@@ -98,7 +97,7 @@ public class PlayerStatisticsPanel extends Panel {
 				Player player = playerResult.getPlayer();
 				Player selectedPlayer = selectedPlayerModel.getObject();
 
-				item.add(AttributeModifier.replace("title", new AbstractReadOnlyModel<CharSequence>() {
+				item.add(new TooltipBehavior(new AbstractReadOnlyModel<CharSequence>() {
 					private static final long serialVersionUID = 1L;
 
 					@Override
