@@ -9,13 +9,15 @@
 		(
 			game_date,
 			team1_id,
-			team2_id
+			team2_id,
+			league_id
 		)
 		VALUES
 		(
 			#{date},
 			#{team1.id},
-			#{team2.id}
+			#{team2.id},
+			#{league.id}
 		)
 	</insert>
 
@@ -25,7 +27,8 @@
 		SET
 			game_date = #{date},
 			team1_id = #{team1.id},
-			team2_id = #{team2.id}
+			team2_id = #{team2.id},
+			league_id = #{league.id}
 		WHERE
 			id = #{id}
 	</update>
@@ -34,6 +37,8 @@
 		SELECT
 			game.id AS gameId,
 			game.game_date AS gameDate,
+			league.id AS leagueId,
+			league.name AS leagueName,
 			/* Team 1 */
 			game_team1.id AS team1gameTeamId,
 			game_team1.score AS team1gameTeamScore,
@@ -54,6 +59,8 @@
 			player2.group_name AS team2playerGroupName
 		FROM
 			game
+			LEFT JOIN
+			league ON game.league_id=league.id
 			/* Team 1 */
 			LEFT JOIN
 			game_team AS game_team1 ON game.team1_id=game_team1.id
@@ -78,6 +85,8 @@
 		SELECT
 			game.id AS gameId,
 			game.game_date AS gameDate,
+			league.id AS leagueId,
+			league.name AS leagueName,
 			/* Team 1 */
 			game_team1.id AS team1gameTeamId,
 			game_team1.score AS team1gameTeamScore,
@@ -98,6 +107,8 @@
 			player2.group_name AS team2playerGroupName
 		FROM
 			game
+			LEFT JOIN
+			league ON game.league_id=league.id
 			/* Team 1 */
 			LEFT JOIN
 			game_team AS game_team1 ON game.team1_id=game_team1.id
@@ -125,6 +136,7 @@
 		<result property="date" column="gameDate" jdbcType="DATE" />
 		<association property="team1" columnPrefix="team1" resultMap="GameTeamWithDetails"/>
 		<association property="team2" columnPrefix="team2" resultMap="GameTeamWithDetails"/>
+		<association property="league" resultMap="League"/>
 	</resultMap>
 
 	<resultMap id="GameTeamWithDetails" type="dk.frankbille.scoreboard.domain.GameTeam">
@@ -146,5 +158,10 @@
 		<result property="name" column="playerName"/>
 		<result property="fullName" column="playerFullName"/>
 		<result property="groupName" column="playerGroupName"/>
+	</resultMap>
+
+	<resultMap id="League" type="dk.frankbille.scoreboard.domain.League">
+		<id property="id" column="leagueId"/>
+		<result property="name" column="leagueName"/>
 	</resultMap>
 </mapper>
