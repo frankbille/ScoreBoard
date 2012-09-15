@@ -3,6 +3,7 @@ package dk.frankbille.scoreboard.service;
 import java.util.List;
 
 import dk.frankbille.scoreboard.domain.Game;
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.domain.User;
@@ -38,5 +39,11 @@ public interface ScoreBoardService {
 	User getUserForPlayer(Player object);
 
 	List<Player> searchPlayers(String term);
+
+	List<League> getAllLeagues();
+
+	void saveLeague(League league);
+
+	League getLeague(Long leagueId);
 
 }

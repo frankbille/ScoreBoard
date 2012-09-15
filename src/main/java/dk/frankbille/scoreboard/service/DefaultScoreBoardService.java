@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import dk.frankbille.scoreboard.dao.GameDao;
+import dk.frankbille.scoreboard.dao.LeagueDao;
 import dk.frankbille.scoreboard.dao.PlayerDao;
 import dk.frankbille.scoreboard.dao.UserDao;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.domain.PlayerResult.Trend;
@@ -32,12 +34,14 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	private final GameDao gameDao;
 	private final PlayerDao playerDao;
 	private final UserDao userDao;
+	private final LeagueDao leagueDao;
 
 	@Autowired
-	public DefaultScoreBoardService(GameDao gameDao, PlayerDao playerDao, UserDao userDao) {
+	public DefaultScoreBoardService(GameDao gameDao, PlayerDao playerDao, UserDao userDao, LeagueDao leagueDao) {
 		this.gameDao = gameDao;
 		this.playerDao = playerDao;
 		this.userDao = userDao;
+		this.leagueDao = leagueDao;
 	}
 
 	@Override
@@ -64,11 +68,13 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		gameDao.saveGame(game);
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Game getGame(Long gameId) {
 		return gameDao.getGame(gameId);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Game> getAllGames() {
 		List<Game> games = gameDao.getAllGames();
@@ -77,6 +83,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		return games;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Game> getPlayerGames(Player player) {
 		List<Game> playerGames = new ArrayList<Game>();
@@ -91,6 +98,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		return playerGames;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<PlayerResult> getPlayerResults() {
 		List<PlayerResult> playerResults = new ArrayList<PlayerResult>();
@@ -173,16 +181,19 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Player getPlayer(Long playerId) {
 		return playerDao.getPlayer(playerId);
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public List<Player> searchPlayers(String term) {
 		return playerDao.searchPlayers(term);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public User authenticate(String username, String password) {
 		return userDao.authenticate(username, password);
@@ -198,14 +209,33 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		userDao.updateUser(user);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public User getUserForPlayer(Player player) {
 		return userDao.getUserForPlayer(player);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public boolean hasUserWithUsername(String username) {
 		return userDao.hasUserWithUsername(username);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<League> getAllLeagues() {
+		return leagueDao.getAllLeagues();
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public League getLeague(Long leagueId) {
+		return leagueDao.getLeague(leagueId);
+	}
+	
+	@Override
+	public void saveLeague(League league) {
+		leagueDao.saveLeague(league);
 	}
 
 }

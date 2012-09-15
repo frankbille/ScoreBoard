@@ -9,6 +9,8 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import com.vaynberg.wicket.select2.ApplicationSettings;
 
 import dk.frankbille.scoreboard.daily.DailyGamePage;
+import dk.frankbille.scoreboard.league.LeagueEditPage;
+import dk.frankbille.scoreboard.league.LeagueListPage;
 import dk.frankbille.scoreboard.player.PlayerEditPage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
 import dk.frankbille.scoreboard.player.PlayerPage;
@@ -49,6 +51,8 @@ public class ScoreBoardApplication extends WebApplication {
 		mountPage("/player", PlayerPage.class);
 		mountPage("/players", PlayerListPage.class);
 		mountPage("/login", LoginPage.class);
+		mountPage("/leagues", LeagueListPage.class);
+		mountPage("/league/edit", LeagueEditPage.class);
 	}
 
 	@Override

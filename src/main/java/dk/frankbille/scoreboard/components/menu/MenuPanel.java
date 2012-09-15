@@ -25,6 +25,7 @@ import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 import dk.frankbille.scoreboard.daily.DailyGamePage;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.league.LeagueListPage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
 import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.security.LoginPage;
@@ -35,8 +36,9 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 	public static enum MenuItemType {
 		DAILY,
 		PLAYERS,
+		LEAGUES,
 		SECURE,
-		LOGOUT
+		LOGOUT,
 	}
 
 	static abstract class MenuItem implements Serializable {
@@ -88,6 +90,15 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 					@Override
 					protected void onClick(AjaxRequestTarget target) {
 						getRequestCycle().setResponsePage(PlayerListPage.class);
+					}
+				});
+
+				items.add(new MenuItem(MenuItemType.LEAGUES, new StringResourceModel("leagues", this)) {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					protected void onClick(AjaxRequestTarget target) {
+						getRequestCycle().setResponsePage(LeagueListPage.class);
 					}
 				});
 

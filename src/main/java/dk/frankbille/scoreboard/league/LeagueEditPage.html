@@ -1,0 +1,20 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+<form wicket:id="leagueForm" class="form-horizontal">
+	<div class="control-group">
+		<div class="controls">
+			<h1 wicket:id="name"></h1>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label wicket:for="nameField" class="control-label"><wicket:message key="name"/></label>
+		<div class="controls">
+			<input type="text" wicket:id="nameField" wicket:message="placeholder:name"/>
+		</div>
+	</div>
+		
+	<div class="form-actions">
+		<input type="submit" wicket:message="value:save" class="btn btn-primary"/>
+	</div>
+</form>
+</wicket:extend>
