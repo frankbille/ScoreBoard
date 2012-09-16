@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="table_league" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<createTable tableName="league">
+			<column name="id" autoIncrement="true" type="bigint">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<modifySql dbms="mysql">
+			<append value=" engine innodb" />
+		</modifySql>
+	</changeSet>
+
+	<changeSet id="add_league_support_to_game_table" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<addColumn tableName="game">
+			<column name="league_id" type="bigint">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+		<createIndex tableName="game" indexName="IDX_GAME_LEAGUE_ID">
+			<column name="league_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_GAME_LEAGUE_ID" baseTableName="game"
+			baseColumnNames="league_id" referencedTableName="league" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="create_default_league_for_all_existing_games" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<insert tableName="league">
+			<column name="name" value="League 1" />
+		</insert>
+		<sql>UPDATE game SET league_id=(SELECT id FROM league WHERE name='League 1')</sql>
+	</changeSet>
+
+	<changeSet id="add_default_league_to_systemuser_table" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<addColumn tableName="systemuser">
+			<column name="default_league_id" type="bigint">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+		<createIndex tableName="systemuser" indexName="IDX_SYSTEMUSER_LEAGUE_ID">
+			<column name="default_league_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_USER_LEAGUE_ID" baseTableName="systemuser"
+			baseColumnNames="default_league_id" referencedTableName="league" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="set_default_league_for_all_existing_users" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<sql>UPDATE systemuser SET default_league_id=(SELECT id FROM league WHERE name='League 1')</sql>
+	</changeSet>
+
+</databaseChangeLog>

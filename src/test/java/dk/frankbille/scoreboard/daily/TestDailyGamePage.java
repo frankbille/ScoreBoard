@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Test;
 
 import dk.frankbille.scoreboard.domain.Game;
@@ -17,7 +18,9 @@ public class TestDailyGamePage extends WicketSpringTestCase {
 
 	@Test
 	public void testBasicRendering() {
-		tester.startPage(DailyGamePage.class);
+		PageParameters pp = new PageParameters();
+		pp.add("league", 1);
+		tester.startPage(DailyGamePage.class, pp);
 		tester.assertRenderedPage(DailyGamePage.class);
 	}
 

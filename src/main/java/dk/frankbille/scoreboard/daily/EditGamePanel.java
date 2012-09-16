@@ -17,6 +17,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import dk.frankbille.scoreboard.components.DateField;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.security.RequiresLoginToRender;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
@@ -28,19 +29,15 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 	private ScoreBoardService scoreBoardService;
 
 	private Game game;
-
-	public EditGamePanel(String id) {
-		this(id, null);
-	}
 	
-	public EditGamePanel(String id, Long gameId) {
+	public EditGamePanel(String id, Long gameId, final League league) {
 		super(id);
 		setOutputMarkupId(true);
 
 		if (gameId != null) {
 			game = scoreBoardService.getGame(gameId);
 		} else {
-			game = createNewGame();
+			game = createNewGame(league);
 		}
 
     	Form<Void> form = new Form<Void>("form");
@@ -74,7 +71,7 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				scoreBoardService.saveGame(game);
 				Game addedGame = game;
-				game = createNewGame();
+				game = createNewGame(league);
 				target.add(EditGamePanel.this);
 				newGameAdded(addedGame, target);
 			}
@@ -90,7 +87,7 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 		return game;
 	}
 
-	private Game createNewGame() {
+	private Game createNewGame(League league) {
 		final Game game = new Game();
     	game.setDate(new Date());
     	GameTeam gameTeam1 = new GameTeam();
@@ -103,6 +100,7 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
     	Team team2 = new Team();
 		gameTeam2.setTeam(team2);
 		game.setTeam2(gameTeam2);
+		game.setLeague(league);
 		return game;
 	}
 

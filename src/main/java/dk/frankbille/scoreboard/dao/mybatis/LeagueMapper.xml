@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dk.frankbille.scoreboard.dao.mybatis.LeagueMapper">
+	<insert id="insertLeague" parameterType="dk.frankbille.scoreboard.domain.League" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+			league
+		(
+			name
+		)
+		VALUES
+		(
+			#{name}
+		)
+	</insert>
+
+	<update id="updateLeague" parameterType="dk.frankbille.scoreboard.domain.League">
+		UPDATE
+			league
+		SET
+			name = #{name}
+		WHERE
+			id = #{id}
+	</update>
+
+	<select id="getLeagues" resultType="dk.frankbille.scoreboard.domain.League">
+		SELECT
+			id,
+			name
+		FROM
+			league
+		ORDER BY
+			name
+	</select>
+
+	<select id="getLeague" resultType="dk.frankbille.scoreboard.domain.League" parameterType="java.lang.Long">
+		SELECT
+			id,
+			name
+		FROM
+			league
+		WHERE
+			id = #{leagueId}
+	</select>
+</mapper>

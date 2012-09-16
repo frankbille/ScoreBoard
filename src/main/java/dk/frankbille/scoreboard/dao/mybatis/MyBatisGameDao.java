@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import dk.frankbille.scoreboard.dao.GameDao;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.Team;
 
@@ -71,6 +72,20 @@ public class MyBatisGameDao implements GameDao {
 	@Override
 	public List<Game> getAllGames() {
 		List<Game> allGames = gameMapper.getAllGames();
+		/*
+		 * The MyBatis mapper can currently not resolve circular references
+		 * (Game->GameTeam->Game), so we have to do it manually.
+		 */
+		for (Game game : allGames) {
+			game.getTeam1().setGame(game);
+			game.getTeam2().setGame(game);
+		}
+		return allGames;
+	}
+	
+	@Override
+	public List<Game> getAllGames(League league) {
+		List<Game> allGames = gameMapper.getAllGamesByLeague(league);
 		/*
 		 * The MyBatis mapper can currently not resolve circular references
 		 * (Game->GameTeam->Game), so we have to do it manually.
