@@ -26,6 +26,7 @@ import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.dao.mybatis.TestMapper;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.domain.User;
@@ -50,23 +51,31 @@ public abstract class WicketSpringTestCase {
 
 	@Before
 	public void setupWicket() {
-		final User user = new User();
-		user.setUsername("username1");
-		getScoreBoardService().createUser(user, "password1");
-
+		insertTestData();
+		
 		ScoreBoardApplication application = new ScoreBoardApplication() {
 			@Override
 			public Session newSession(Request request, Response response) {
 				ScoreBoardSession session = (ScoreBoardSession) super.newSession(request, response);
-				session.authenticate(user.getUsername(), "password1");
+				session.authenticate("username1", "password1");
 				return session;
 			}
 		};
 		tester = new WicketTester(application, servletContext);
 	}
 	
-	@Before
-	public void insertTestData() {
+	private void insertTestData() {
+		/*
+		 * Leagues
+		 */
+		List<League> leagues = new ArrayList<League>();
+		for (int i = 1; i <= 5; i++) {
+			League league = new League();
+			league.setName("League "+i);
+			getScoreBoardService().saveLeague(league);
+			leagues.add(league);
+		}
+		
 		/*
 		 * Players
 		 */
@@ -77,6 +86,11 @@ public abstract class WicketSpringTestCase {
 			player.setFullName("Player Full Name "+i);
 			getScoreBoardService().savePlayer(player);
 			players.add(player);
+			
+			User user = new User();
+			user.setUsername("username"+i);
+			user.setDefaultLeague(getRandomLeague(leagues));
+			getScoreBoardService().createUser(user, "password"+i);
 		}
 		
 		/*
@@ -85,34 +99,37 @@ public abstract class WicketSpringTestCase {
 		DateMidnight date = new DateMidnight().minusMonths(1);
 		DateMidnight today = new DateMidnight();
 		while (date.isBefore(today)) {
-			Game game = new Game();
-			game.setDate(date.toDate());
-			
-			GameTeam gameTeam1 = new GameTeam();
-			gameTeam1.setScore(getRandomScore(-1));
-			gameTeam1.setGame(game);
-			Team team1 = new Team();
-			team1.setName("Team 1 "+date);
-			Player player1 = getRandomPlayer(players, (Player[]) null);
-			team1.addPlayer(player1);
-			Player player2 = getRandomPlayer(players, player1);
-			team1.addPlayer(player2);
-			gameTeam1.setTeam(team1);
-			game.setTeam1(gameTeam1);
-			
-			GameTeam gameTeam2 = new GameTeam();
-			gameTeam2.setScore(getRandomScore(gameTeam1.getScore()));
-			gameTeam2.setGame(game);
-			Team team2 = new Team();
-			team2.setName("Team 1 "+date);
-			Player player3 = getRandomPlayer(players, player1, player2);
-			team2.addPlayer(player3);
-			Player player4 = getRandomPlayer(players, player1, player2, player3);
-			team2.addPlayer(player4);
-			gameTeam2.setTeam(team2);
-			game.setTeam2(gameTeam2);
-			
-			getScoreBoardService().saveGame(game);
+			for (League league : leagues) {
+				Game game = new Game();
+				game.setDate(date.toDate());
+				
+				GameTeam gameTeam1 = new GameTeam();
+				gameTeam1.setScore(getRandomScore(-1));
+				gameTeam1.setGame(game);
+				Team team1 = new Team();
+				team1.setName("Team 1 "+date);
+				Player player1 = getRandomPlayer(players, (Player[]) null);
+				team1.addPlayer(player1);
+				Player player2 = getRandomPlayer(players, player1);
+				team1.addPlayer(player2);
+				gameTeam1.setTeam(team1);
+				game.setTeam1(gameTeam1);
+				
+				GameTeam gameTeam2 = new GameTeam();
+				gameTeam2.setScore(getRandomScore(gameTeam1.getScore()));
+				gameTeam2.setGame(game);
+				Team team2 = new Team();
+				team2.setName("Team 2 "+date);
+				Player player3 = getRandomPlayer(players, player1, player2);
+				team2.addPlayer(player3);
+				Player player4 = getRandomPlayer(players, player1, player2, player3);
+				team2.addPlayer(player4);
+				gameTeam2.setTeam(team2);
+				game.setTeam2(gameTeam2);
+				game.setLeague(league);
+				
+				getScoreBoardService().saveGame(game);
+			}
 			
 			date = date.plusDays(1);
 		}
@@ -137,6 +154,10 @@ public abstract class WicketSpringTestCase {
 			player = players.get(RandomUtils.nextInt(players.size()));
 		} while(disallowedPlayerSet.contains(player));
 		return player;
+	}
+	
+	private League getRandomLeague(List<League> leagues) {
+		return leagues.get(RandomUtils.nextInt(leagues.size()));
 	}
 
 	@After

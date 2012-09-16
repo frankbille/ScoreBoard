@@ -7,6 +7,7 @@ public class User implements Serializable {
 
 	private String username;
 	private Player player;
+	private League defaultLeague;
 
 	public String getUsername() {
 		return username;
@@ -22,6 +23,14 @@ public class User implements Serializable {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+	
+	public League getDefaultLeague() {
+		return defaultLeague;
+	}
+	
+	public void setDefaultLeague(League defaultLeague) {
+		this.defaultLeague = defaultLeague;
 	}
 
 }

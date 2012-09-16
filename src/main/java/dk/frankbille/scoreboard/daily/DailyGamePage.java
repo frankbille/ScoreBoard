@@ -21,6 +21,7 @@ import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 
@@ -72,9 +73,16 @@ public class DailyGamePage extends BasePage {
     }
 
 	private void goToDefaultLeague() {
-		// TODO Add a default to the user, so we always show the favorite league
+		long leagueId = 1;
+		if (ScoreBoardSession.get().isAuthenticated()) {
+			User user = ScoreBoardSession.get().getUser();
+			League defaultLeague = user.getDefaultLeague();
+			if (defaultLeague != null) {
+				leagueId = defaultLeague.getId();
+			}
+		}
 		PageParameters pp = new PageParameters();
-		pp.add("league", 1);
+		pp.add("league", leagueId);
 		throw new RestartResponseException(DailyGamePage.class, pp);
 	}
 

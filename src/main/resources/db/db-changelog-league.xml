@@ -38,4 +38,21 @@
 		<sql>UPDATE game SET league_id=(SELECT id FROM league WHERE name='League 1')</sql>
 	</changeSet>
 
+	<changeSet id="add_default_league_to_systemuser_table" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<addColumn tableName="systemuser">
+			<column name="default_league_id" type="bigint">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+		<createIndex tableName="systemuser" indexName="IDX_SYSTEMUSER_LEAGUE_ID">
+			<column name="default_league_id"></column>
+		</createIndex>
+		<addForeignKeyConstraint constraintName="FK_USER_LEAGUE_ID" baseTableName="systemuser"
+			baseColumnNames="default_league_id" referencedTableName="league" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="set_default_league_for_all_existing_users" author="Frank Bille &lt;github@frankbille.dk&gt;">
+		<sql>UPDATE systemuser SET default_league_id=(SELECT id FROM league WHERE name='League 1')</sql>
+	</changeSet>
+
 </databaseChangeLog>
