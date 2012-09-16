@@ -15,7 +15,7 @@ import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel.GameSelectedCallback;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
-import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.service.ScoreBoardService;

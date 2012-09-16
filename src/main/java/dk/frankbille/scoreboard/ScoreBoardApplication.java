@@ -4,6 +4,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.apache.wicket.request.mapper.MountedMapper;
+import org.apache.wicket.request.mapper.parameter.UrlPathPageParametersEncoder;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 import com.vaynberg.wicket.select2.ApplicationSettings;
@@ -46,7 +48,7 @@ public class ScoreBoardApplication extends WebApplication {
 
 		getSecuritySettings().setAuthorizationStrategy(new ScoreBoardAuthorizationStrategy());
 
-		mountPage("/daily", DailyGamePage.class);
+		mount(new MountedMapper("/daily", DailyGamePage.class, new UrlPathPageParametersEncoder()));
 		mountPage("/player/edit", PlayerEditPage.class);
 		mountPage("/player", PlayerPage.class);
 		mountPage("/players", PlayerListPage.class);

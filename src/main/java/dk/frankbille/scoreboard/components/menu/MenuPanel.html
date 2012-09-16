@@ -1,4 +1,4 @@
-<wicket:panel>
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container-fluid">
@@ -10,7 +10,7 @@
 				<a class="brand" wicket:id="homeLink"><wicket:message key="title" /></a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li wicket:id="menuItems"><a wicket:id="menuLink"><span wicket:id="menuLabel"></span></a></li>
+						<span wicket:id="menuItems"></span>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->

@@ -20,7 +20,7 @@ import org.apache.wicket.validation.ValidationError;
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardApplication;
 import dk.frankbille.scoreboard.ScoreBoardSession;
-import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 

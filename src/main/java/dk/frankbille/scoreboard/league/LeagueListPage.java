@@ -13,7 +13,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
-import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.security.SecureExecutionBookmarkablePageLink;
 import dk.frankbille.scoreboard.security.SecureRenderingBookmarkablePageLink;
