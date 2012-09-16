@@ -51,6 +51,7 @@ public class MenuItemsPanel extends Panel {
 					listItem.add(link);
 
 					link.add(new Label("menuLabel", menuItemLink.getLabel()).setRenderBodyOnly(true));
+					link.add(new WebMarkupContainer("downIcon").setVisible(false));
 					
 					listItem.add(new WebComponent("subMenu").setVisible(false));
 				} else if (menuItem instanceof MenuItemContainer) {
@@ -67,6 +68,7 @@ public class MenuItemsPanel extends Panel {
 					listItem.add(dropdownLink);
 					
 					dropdownLink.add(new Label("menuLabel", menuItemContainer.getLabel()).setRenderBodyOnly(true));
+					dropdownLink.add(new WebMarkupContainer("downIcon").setRenderBodyOnly(true));
 					
 					MenuItemsPanel subMenu = new MenuItemsPanel("subMenu", new PropertyModel<List<MenuItem>>(menuItemContainer, "subMenuItems"), new Model<MenuItemType>());
 					subMenu.add(AttributeModifier.replace("class", "dropdown-menu"));
