@@ -1,0 +1,20 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+<h1><wicket:message key="leagues"/></h1>
+
+<div style="margin-bottom:15px">
+	<a href="#" wicket:id="addNewLeagueLink" class="btn"><wicket:message key="addNewLeague"/></a>
+</div>
+
+<table class="table table-hover table-striped table-bordered">
+	<thead>
+		<tr>
+			<th><wicket:message key="name"/></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr wicket:id="leagues">
+			<td><a wicket:id="leagueLink"><span wicket:id="name"></span></a></td>
+		</tr>
+	</tbody>
+</table>
+</wicket:extend>

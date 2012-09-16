@@ -8,12 +8,14 @@
 			systemuser
 		(
 			username,
-			password
+			password,
+			default_league_id
 		)
 		VALUES
 		(
 			#{user.username},
-			#{password}
+			#{password},
+			#{user.defaultLeague.id}
 		)
 	</insert>
 
@@ -21,7 +23,8 @@
 		UPDATE
 			systemuser
 		SET
-			player_id = #{player.id}
+			player_id = #{player.id},
+			default_league_id = #{defaultLeague.id}
 		WHERE
 			username = #{username}
 	</update>
@@ -32,11 +35,15 @@
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
-			player.group_name AS playerGroupName
+			player.group_name AS playerGroupName,
+			league.id AS leagueId,
+			league.name AS leagueName
 		FROM
 			systemuser
 			LEFT JOIN
 			player ON systemuser.player_id=player.id
+			LEFT JOIN
+			league ON systemuser.default_league_id=league.id
 		WHERE
 			username = #{username}
 	</select>
@@ -47,11 +54,15 @@
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
-			player.group_name AS playerGroupName
+			player.group_name AS playerGroupName,
+			league.id AS leagueId,
+			league.name AS leagueName
 		FROM
 			systemuser
 			LEFT JOIN
 			player ON systemuser.player_id=player.id
+			LEFT JOIN
+			league ON systemuser.default_league_id=league.id
 		WHERE
 			player_id = #{id}
 	</select>
@@ -62,11 +73,15 @@
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
-			player.group_name AS playerGroupName
+			player.group_name AS playerGroupName,
+			league.id AS leagueId,
+			league.name AS leagueName
 		FROM
 			systemuser
 			LEFT JOIN
 			player ON systemuser.player_id=player.id
+			LEFT JOIN
+			league ON systemuser.default_league_id=league.id
 		WHERE
 			username = #{username}
 			AND
@@ -77,6 +92,7 @@
 		<result property="username" column="username"/>
 		<result property="password" column="password"/>
 		<association property="player" resultMap="Player"/>
+		<association property="defaultLeague" resultMap="League"/>
 	</resultMap>
 
 	<resultMap id="Player" type="dk.frankbille.scoreboard.domain.Player">
@@ -84,5 +100,10 @@
 		<result property="name" column="playerName"/>
 		<result property="fullName" column="playerFullName"/>
 		<result property="groupName" column="playerGroupName"/>
+	</resultMap>
+
+	<resultMap id="League" type="dk.frankbille.scoreboard.domain.League">
+		<id property="id" column="leagueId"/>
+		<result property="name" column="leagueName"/>
 	</resultMap>
 </mapper>

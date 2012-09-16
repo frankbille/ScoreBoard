@@ -15,6 +15,8 @@ public class Game implements Serializable {
 	private GameTeam team1;
 	
 	private GameTeam team2;
+	
+	private League league;
 
 	public Long getId() {
 		return id;
@@ -46,6 +48,14 @@ public class Game implements Serializable {
 	
 	public void setTeam2(GameTeam team2) {
 		this.team2 = team2;
+	}
+	
+	public League getLeague() {
+		return league;
+	}
+	
+	public void setLeague(League league) {
+		this.league = league;
 	}
 
 	public boolean didTeamWin(GameTeam team) {

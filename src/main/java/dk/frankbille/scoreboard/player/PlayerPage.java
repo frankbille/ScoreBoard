@@ -14,7 +14,7 @@ import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
-import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.User;
@@ -28,9 +28,11 @@ public class PlayerPage extends BasePage {
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
 
+	private IModel<Player> playerModel;
+
 	public PlayerPage(PageParameters parameters) {
 		Long playerId = parameters.get(0).toLongObject();
-		final IModel<Player> playerModel = new PlayerModel(playerId);
+		playerModel = new PlayerModel(playerId);
 
 		// Name
 		add(new Label("name", new PropertyModel<String>(playerModel, "name")));
@@ -74,6 +76,15 @@ public class PlayerPage extends BasePage {
 
 	@Override
 	public MenuItemType getMenuItemType() {
+		if (ScoreBoardSession.get().isAuthenticated()) {
+			Player player = playerModel.getObject();
+			User user = ScoreBoardSession.get().getUser();
+			Player userPlayer = user.getPlayer();
+			if (userPlayer != null && userPlayer.equals(player)) {
+				return MenuItemType.SECURE;
+			}
+		}
+		
 		return MenuItemType.PLAYERS;
 	}
 

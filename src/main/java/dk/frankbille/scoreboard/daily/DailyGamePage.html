@@ -1,14 +1,16 @@
-<wicket:extend>
-	<span wicket:id="editGame" />
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+	<h1 wicket:id="leagueName"></h1>
+
+	<span wicket:id="editGame"></span>
 
 	<div class="row-fluid">
 		<div class="span7">
-			<h1><wicket:message key="playedGames"/></h1>
-			<span wicket:id="playedGameList" />
+			<h2><wicket:message key="playedGames"/></h2>
+			<span wicket:id="playedGameList"></span>
 		</div>
 		<div class="span5">
-			<h1><wicket:message key="playersByRating"/></h1>
-			<span wicket:id="playersContainer"/>
+			<h2><wicket:message key="playersByRating"/></h2>
+			<span wicket:id="playersContainer"></span>
 		</div>
 	</div>
 </wicket:extend>

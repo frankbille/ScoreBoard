@@ -80,9 +80,15 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
+	<bean id="leagueMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="dk.frankbille.scoreboard.dao.mybatis.LeagueMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
 	<bean id="gameDao" class="dk.frankbille.scoreboard.dao.mybatis.MyBatisGameDao"/>
 	<bean id="playerDao" class="dk.frankbille.scoreboard.dao.mybatis.MyBatisPlayerDao"/>
 	<bean id="userDao" class="dk.frankbille.scoreboard.dao.mybatis.MyBatisUserDao"/>
+	<bean id="leagueDao" class="dk.frankbille.scoreboard.dao.mybatis.MyBatisLeagueDao"/>
 
 	<!-- ScoreBoard Service -->
 	<bean id="scoreBoardService" class="dk.frankbille.scoreboard.service.DefaultScoreBoardService"/>

@@ -6,14 +6,14 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.joda.time.DateMidnight;
 
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.components.menu.MenuPanel;
-import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
 
 public abstract class BasePage extends WebPage {
 	private static final long serialVersionUID = 1L;
 
 	public BasePage() {
-		MenuPanel menuPanel = new MenuPanel("menu", new PropertyModel<MenuPanel.MenuItemType>(this, "menuItemType"));
+		MenuPanel menuPanel = new MenuPanel("menu", new PropertyModel<MenuItemType>(this, "menuItemType"));
 		menuPanel.setRenderBodyOnly(true);
 		add(menuPanel);
 
