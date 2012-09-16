@@ -81,6 +81,56 @@
 			player AS player2 ON team_players2.player_id=player2.id
 	</select>
 
+	<select id="getAllGamesByLeague" resultMap="GameWithDetails" parameterType="dk.frankbille.scoreboard.domain.League">
+		SELECT
+			game.id AS gameId,
+			game.game_date AS gameDate,
+			league.id AS leagueId,
+			league.name AS leagueName,
+			/* Team 1 */
+			game_team1.id AS team1gameTeamId,
+			game_team1.score AS team1gameTeamScore,
+			team1.id AS team1teamId,
+			team1.name AS team1teamName,
+			player1.id AS team1playerId,
+			player1.name AS team1playerName,
+			player1.full_name AS team1playerFullName,
+			player1.group_name AS team1playerGroupName,
+			/* Team 2 */
+			game_team2.id AS team2gameTeamId,
+			game_team2.score AS team2gameTeamScore,
+			team2.id AS team2teamId,
+			team2.name AS team2teamName,
+			player2.id AS team2playerId,
+			player2.name AS team2playerName,
+			player2.full_name AS team2playerFullName,
+			player2.group_name AS team2playerGroupName
+		FROM
+			game
+			LEFT JOIN
+			league ON game.league_id=league.id
+			/* Team 1 */
+			LEFT JOIN
+			game_team AS game_team1 ON game.team1_id=game_team1.id
+			LEFT JOIN
+			team AS team1 ON game_team1.team_id=team1.id
+			LEFT JOIN
+			team_players AS team_players1 ON team1.id=team_players1.team_id
+			LEFT JOIN
+			player AS player1 ON team_players1.player_id=player1.id
+			/* Team 2 */
+			LEFT JOIN
+			game_team AS game_team2 ON game.team2_id=game_team2.id
+			LEFT JOIN
+			team AS team2 ON game_team2.team_id=team2.id
+			LEFT JOIN
+			team_players AS team_players2 ON team2.id=team_players2.team_id
+			LEFT JOIN
+			player AS player2 ON team_players2.player_id=player2.id
+		WHERE
+			league.id = #{id}
+	</select>
+
 	<select id="getGame" resultMap="GameWithDetails">
 		SELECT
 			game.id AS gameId,

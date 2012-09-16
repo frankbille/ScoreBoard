@@ -85,6 +85,15 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 
 	@Transactional(readOnly = true)
 	@Override
+	public List<Game> getAllGames(League league) {
+		List<Game> games = gameDao.getAllGames(league);
+		RatingCalculator rating = RatingProvider.getRatings();
+		rating.setGames(games);
+		return games;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
 	public List<Game> getPlayerGames(Player player) {
 		List<Game> playerGames = new ArrayList<Game>();
 
@@ -101,11 +110,22 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<PlayerResult> getPlayerResults() {
+		return getPlayerResults(null);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<PlayerResult> getPlayerResults(League league) {
 		List<PlayerResult> playerResults = new ArrayList<PlayerResult>();
 		Map<Player, PlayerResult> cache = new HashMap<Player, PlayerResult>();
 		Map<Player, List<Game>> playerGamesCache = new HashMap<Player, List<Game>>();
 
-		List<Game> games = gameDao.getAllGames();
+		List<Game> games;
+		if (league != null) {
+			games = gameDao.getAllGames(league);
+		} else {
+			games = gameDao.getAllGames();
+		}
 		for (Game game : games) {
 			extractPlayerStatistics(game.getTeam1(), game, playerResults, cache, playerGamesCache);
 			extractPlayerStatistics(game.getTeam2(), game, playerResults, cache, playerGamesCache);

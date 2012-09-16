@@ -22,28 +22,32 @@ public interface ScoreBoardService {
 
 	List<Game> getAllGames();
 
+	List<Game> getAllGames(League league);
+	
 	List<PlayerResult> getPlayerResults();
 
+	List<PlayerResult> getPlayerResults(League league);
+	
 	Player getPlayer(Long playerId);
-
+	
 	List<Game> getPlayerGames(Player player);
-
+	
 	boolean hasUserWithUsername(String username);
-
+	
 	void createUser(User user, String password);
-
+	
 	void updateUser(User user);
-
+	
 	User authenticate(String username, String password);
-
+	
 	User getUserForPlayer(Player object);
-
+	
 	List<Player> searchPlayers(String term);
-
+	
 	List<League> getAllLeagues();
-
+	
 	void saveLeague(League league);
-
+	
 	League getLeague(Long leagueId);
 
 }
