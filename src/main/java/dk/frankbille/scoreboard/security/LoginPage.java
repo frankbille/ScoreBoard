@@ -9,13 +9,11 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.cookies.CookieDefaults;
 import org.apache.wicket.util.cookies.CookieUtils;
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.ValidationError;
 
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardApplication;
@@ -23,6 +21,7 @@ import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
+import dk.frankbille.scoreboard.user.UsernameValidator;
 
 public class LoginPage extends BasePage {
 	private static final long serialVersionUID = 1L;
@@ -152,18 +151,7 @@ public class LoginPage extends BasePage {
 		createUserForm.add(new FeedbackPanel("createUserMessages", new ContainerFeedbackMessageFilter(createUserForm)));
 
 		final TextField<String> usernameField = new TextField<String>("usernameField", new PropertyModel<String>(user, "username"));
-		usernameField.add(new IValidator<String>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(IValidatable<String> validatable) {
-				if (scoreBoardService.hasUserWithUsername(validatable.getValue())) {
-					ValidationError error = new ValidationError();
-					error.addMessageKey("duplicateUsername");
-					validatable.error(error);
-				}
-			}
-		});
+		usernameField.add(new UsernameValidator(new Model<User>(user)));
 		usernameField.setRequired(true);
 		createUserForm.add(usernameField);
 

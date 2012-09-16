@@ -25,7 +25,10 @@ public class UserPanel extends Panel {
 	public UserPanel(String id, IModel<User> model) {
 		super(id, model);
 		
-		add(new TextField<String>("usernameField", new PropertyModel<String>(model, "username")));
+		TextField<String> usernameField = new TextField<String>("usernameField", new PropertyModel<String>(model, "username"));
+		usernameField.add(new UsernameValidator(model));
+		usernameField.setRequired(true);
+		add(usernameField);
 
 		IModel<League> defaultLeagueModel = new PropertyModel<League>(model, "defaultLeague");
 		IModel<List<League>> possibleLeaguesModel = new LoadableDetachableModel<List<League>>() {

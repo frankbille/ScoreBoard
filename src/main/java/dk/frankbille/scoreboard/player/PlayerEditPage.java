@@ -3,6 +3,7 @@ package dk.frankbille.scoreboard.player;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
@@ -55,6 +56,8 @@ public class PlayerEditPage extends SecureBasePage {
 		add(playerForm);
 
 		playerForm.add(new Label("name", new PropertyModel<String>(playerModel, "name")));
+		
+		playerForm.add(new FeedbackPanel("feedback"));
 
 		{
 			TextField<String> nameField = new TextField<String>("nameField", new PropertyModel<String>(playerModel, "name"));
