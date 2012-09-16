@@ -21,6 +21,7 @@ import dk.frankbille.scoreboard.league.LeagueListPage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
 import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.security.LoginPage;
+import dk.frankbille.scoreboard.security.LogoutPage;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class MenuPanel extends GenericPanel<MenuItemType> {
@@ -61,9 +62,7 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 						pp.set(0, player.getId());
 						items.add(new MenuItemPageLink(MenuItemType.SECURE, new Model<String>(player.getName()), PlayerPage.class, pp));
 					}
-					PageParameters pp = new PageParameters();
-					pp.set(0, "logout");
-					items.add(new MenuItemPageLink(MenuItemType.LOGOUT, new StringResourceModel("logout", this), LoginPage.class, pp));
+					items.add(new MenuItemPageLink(MenuItemType.LOGOUT, new StringResourceModel("logout", this), LogoutPage.class));
 				} else {
 					items.add(new MenuItemPageLink(MenuItemType.SECURE, new StringResourceModel("loginOrCreate", this), LoginPage.class));
 				}

@@ -17,6 +17,7 @@ import dk.frankbille.scoreboard.player.PlayerEditPage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
 import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.security.LoginPage;
+import dk.frankbille.scoreboard.security.LogoutPage;
 import dk.frankbille.scoreboard.security.ScoreBoardAuthorizationStrategy;
 
 /**
@@ -52,9 +53,10 @@ public class ScoreBoardApplication extends WebApplication {
 		mountPage("/player/edit", PlayerEditPage.class);
 		mountPage("/player", PlayerPage.class);
 		mountPage("/players", PlayerListPage.class);
-		mountPage("/login", LoginPage.class);
 		mountPage("/leagues", LeagueListPage.class);
 		mountPage("/league/edit", LeagueEditPage.class);
+		mountPage("/login", LoginPage.class);
+		mountPage("/logout", LogoutPage.class);
 	}
 
 	@Override
