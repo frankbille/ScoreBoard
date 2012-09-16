@@ -20,6 +20,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
@@ -32,11 +33,7 @@ public class PlayerStatisticsPanel extends Panel {
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
 
-	public PlayerStatisticsPanel(String id) {
-		this(id, PlayedGameListPanel.createNoSelectedPlayerModel());
-	}
-
-	public PlayerStatisticsPanel(String id, final IModel<Player> selectedPlayerModel) {
+	public PlayerStatisticsPanel(String id, final IModel<Player> selectedPlayerModel, final League league) {
 		super(id);
 
 		IModel<List<PlayerResult>> playerResultsModel = new LoadableDetachableModel<List<PlayerResult>>() {
@@ -44,7 +41,7 @@ public class PlayerStatisticsPanel extends Panel {
 
 			@Override
 			protected List<PlayerResult> load() {
-				List<PlayerResult> playerResults = scoreBoardService.getPlayerResults();
+				List<PlayerResult> playerResults = scoreBoardService.getPlayerResults(league);
 				final RatingCalculator rating = RatingProvider.getRatings();
 
 				Collections.sort(playerResults, new Comparator<PlayerResult>() {

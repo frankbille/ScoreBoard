@@ -14,7 +14,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
-import dk.frankbille.scoreboard.components.menu.MenuPanel.MenuItemType;
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.security.SecureRenderingLink;
 import dk.frankbille.scoreboard.service.ScoreBoardService;

@@ -9,13 +9,15 @@
 		(
 			game_date,
 			team1_id,
-			team2_id
+			team2_id,
+			league_id
 		)
 		VALUES
 		(
 			#{date},
 			#{team1.id},
-			#{team2.id}
+			#{team2.id},
+			#{league.id}
 		)
 	</insert>
 
@@ -25,7 +27,8 @@
 		SET
 			game_date = #{date},
 			team1_id = #{team1.id},
-			team2_id = #{team2.id}
+			team2_id = #{team2.id},
+			league_id = #{league.id}
 		WHERE
 			id = #{id}
 	</update>
@@ -34,6 +37,8 @@
 		SELECT
 			game.id AS gameId,
 			game.game_date AS gameDate,
+			league.id AS leagueId,
+			league.name AS leagueName,
 			/* Team 1 */
 			game_team1.id AS team1gameTeamId,
 			game_team1.score AS team1gameTeamScore,
@@ -54,6 +59,8 @@
 			player2.group_name AS team2playerGroupName
 		FROM
 			game
+			LEFT JOIN
+			league ON game.league_id=league.id
 			/* Team 1 */
 			LEFT JOIN
 			game_team AS game_team1 ON game.team1_id=game_team1.id
@@ -74,10 +81,12 @@
 			player AS player2 ON team_players2.player_id=player2.id
 	</select>
 
-	<select id="getGame" resultMap="GameWithDetails">
+	<select id="getAllGamesByLeague" resultMap="GameWithDetails" parameterType="dk.frankbille.scoreboard.domain.League">
 		SELECT
 			game.id AS gameId,
 			game.game_date AS gameDate,
+			league.id AS leagueId,
+			league.name AS leagueName,
 			/* Team 1 */
 			game_team1.id AS team1gameTeamId,
 			game_team1.score AS team1gameTeamScore,
@@ -98,6 +107,58 @@
 			player2.group_name AS team2playerGroupName
 		FROM
 			game
+			LEFT JOIN
+			league ON game.league_id=league.id
+			/* Team 1 */
+			LEFT JOIN
+			game_team AS game_team1 ON game.team1_id=game_team1.id
+			LEFT JOIN
+			team AS team1 ON game_team1.team_id=team1.id
+			LEFT JOIN
+			team_players AS team_players1 ON team1.id=team_players1.team_id
+			LEFT JOIN
+			player AS player1 ON team_players1.player_id=player1.id
+			/* Team 2 */
+			LEFT JOIN
+			game_team AS game_team2 ON game.team2_id=game_team2.id
+			LEFT JOIN
+			team AS team2 ON game_team2.team_id=team2.id
+			LEFT JOIN
+			team_players AS team_players2 ON team2.id=team_players2.team_id
+			LEFT JOIN
+			player AS player2 ON team_players2.player_id=player2.id
+		WHERE
+			league.id = #{id}
+	</select>
+
+	<select id="getGame" resultMap="GameWithDetails">
+		SELECT
+			game.id AS gameId,
+			game.game_date AS gameDate,
+			league.id AS leagueId,
+			league.name AS leagueName,
+			/* Team 1 */
+			game_team1.id AS team1gameTeamId,
+			game_team1.score AS team1gameTeamScore,
+			team1.id AS team1teamId,
+			team1.name AS team1teamName,
+			player1.id AS team1playerId,
+			player1.name AS team1playerName,
+			player1.full_name AS team1playerFullName,
+			player1.group_name AS team1playerGroupName,
+			/* Team 2 */
+			game_team2.id AS team2gameTeamId,
+			game_team2.score AS team2gameTeamScore,
+			team2.id AS team2teamId,
+			team2.name AS team2teamName,
+			player2.id AS team2playerId,
+			player2.name AS team2playerName,
+			player2.full_name AS team2playerFullName,
+			player2.group_name AS team2playerGroupName
+		FROM
+			game
+			LEFT JOIN
+			league ON game.league_id=league.id
 			/* Team 1 */
 			LEFT JOIN
 			game_team AS game_team1 ON game.team1_id=game_team1.id
@@ -125,6 +186,7 @@
 		<result property="date" column="gameDate" jdbcType="DATE" />
 		<association property="team1" columnPrefix="team1" resultMap="GameTeamWithDetails"/>
 		<association property="team2" columnPrefix="team2" resultMap="GameTeamWithDetails"/>
+		<association property="league" resultMap="League"/>
 	</resultMap>
 
 	<resultMap id="GameTeamWithDetails" type="dk.frankbille.scoreboard.domain.GameTeam">
@@ -146,5 +208,10 @@
 		<result property="name" column="playerName"/>
 		<result property="fullName" column="playerFullName"/>
 		<result property="groupName" column="playerGroupName"/>
+	</resultMap>
+
+	<resultMap id="League" type="dk.frankbille.scoreboard.domain.League">
+		<id property="id" column="leagueId"/>
+		<result property="name" column="leagueName"/>
 	</resultMap>
 </mapper>

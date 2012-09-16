@@ -1,31 +1,39 @@
-<wicket:extend>
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
 <form wicket:id="playerForm" class="form-horizontal">
 	<div class="control-group">
 		<div class="controls">
 			<h1 wicket:id="name"></h1>
 		</div>
 	</div>
+	
+	<div class="control-group">
+		<div class="controls">
+			<ul wicket:id="feedback"></ul>
+		</div>
+	</div>
 
 	<div class="control-group">
 		<label wicket:for="nameField" class="control-label"><wicket:message key="name"/></label>
 		<div class="controls">
-			<input type="text" wicket:id="nameField" wicket:message="placeholder:name"/>
+			<input type="text" wicket:id="nameField" class="span4" wicket:message="placeholder:name"/>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label wicket:for="fullNameField" class="control-label"><wicket:message key="fullName"/></label>
 		<div class="controls">
-			<input type="text" wicket:id="fullNameField" wicket:message="placeholder:fullName"/>
+			<input type="text" wicket:id="fullNameField" class="span4" wicket:message="placeholder:fullName"/>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label wicket:for=groupField class="control-label"><wicket:message key="group"/></label>
 		<div class="controls">
-			<input type="text" wicket:id="groupField" wicket:message="placeholder:group"/>
+			<input type="text" wicket:id="groupField" class="span4" wicket:message="placeholder:group"/>
 		</div>
 	</div>
+	
+	<span wicket:id="userFields"></span>
 		
 	<div class="form-actions">
 		<input type="submit" wicket:message="value:save" class="btn btn-primary"/>
