@@ -4,6 +4,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -14,6 +15,7 @@ import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.security.SecureBasePage;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
+import dk.frankbille.scoreboard.user.UserPanel;
 
 public class PlayerEditPage extends SecureBasePage {
 	private static final long serialVersionUID = 1L;
@@ -22,6 +24,8 @@ public class PlayerEditPage extends SecureBasePage {
 	private ScoreBoardService scoreBoardService;
 
 	private IModel<Player> playerModel;
+
+	private IModel<User> userModel;
 	
 	public PlayerEditPage(PageParameters parameters) {
 		Long playerId = parameters.get(0).toLongObject();
@@ -41,6 +45,10 @@ public class PlayerEditPage extends SecureBasePage {
 			@Override
 			protected void onSubmit() {
 				scoreBoardService.savePlayer(getModelObject());
+				User user = userModel.getObject();
+				if (user != null) {
+					scoreBoardService.updateUser(user);
+				}
 				getRequestCycle().setResponsePage(PlayerListPage.class);
 			}
 		};
@@ -62,6 +70,29 @@ public class PlayerEditPage extends SecureBasePage {
 			TextField<String> groupField = new TextField<String>("groupField", new PropertyModel<String>(playerModel, "groupName"));
 			playerForm.add(groupField);
 		}
+		
+		userModel = new LoadableDetachableModel<User>() {
+			private static final long serialVersionUID = 1L;
+
+			private User user = null;
+			
+			@Override
+			protected User load() {
+				if (user == null) {
+					user = scoreBoardService.getUserForPlayer(PlayerEditPage.this.playerModel.getObject());
+				}
+				
+				return user;
+			}
+		};
+		playerForm.add(new UserPanel("userFields", userModel) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible() {
+				return userModel.getObject() != null;
+			}
+		});
 	}
 
 	@Override
