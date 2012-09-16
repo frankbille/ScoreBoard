@@ -1,5 +1,6 @@
 package dk.frankbille.scoreboard;
 
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.util.time.Duration;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -7,6 +8,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Start {
     public static void main(String[] args) throws Exception {
+    	System.setProperty("wicket.configuration", RuntimeConfigurationType.DEVELOPMENT.name());
+    	
     	int timeout = (int) Duration.ONE_HOUR.getMilliseconds();
 
         Server server = new Server();

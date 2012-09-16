@@ -35,6 +35,9 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 		
 		add(new BookmarkablePageLink<Void>("homeLink", Application.get().getHomePage()));
 
+		/*
+		 * STANDARD MENU
+		 */
 		IModel<List<MenuItem>> itemsModel = new LoadableDetachableModel<List<MenuItem>>() {
 			private static final long serialVersionUID = 1L;
 
@@ -55,6 +58,22 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 
 				items.add(new MenuItemPageLink(MenuItemType.LEAGUES, new StringResourceModel("leagues", this), LeagueListPage.class));
 
+				return items;
+			}
+		};
+
+		add(new MenuItemsPanel("menuItems", itemsModel, activeMenuItemModel).setRenderBodyOnly(true));
+		
+		/*
+		 * RIGHT MENU
+		 */
+		itemsModel = new LoadableDetachableModel<List<MenuItem>>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected List<MenuItem> load() {
+				List<MenuItem> items = new ArrayList<MenuItem>();
+
 				if (ScoreBoardSession.get().isAuthenticated()) {
 					final Player player = ScoreBoardSession.get().getUser().getPlayer();
 					if (player != null) {
@@ -71,8 +90,8 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 				return items;
 			}
 		};
-
-		add(new MenuItemsPanel("menuItems", itemsModel, activeMenuItemModel).setRenderBodyOnly(true));
+		
+		add(new MenuItemsPanel("rightMenuItems", itemsModel, activeMenuItemModel).setRenderBodyOnly(true));
 	}
 
 }

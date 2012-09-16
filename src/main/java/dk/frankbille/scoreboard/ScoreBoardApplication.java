@@ -41,6 +41,9 @@ public class ScoreBoardApplication extends WebApplication {
 	@Override
 	public void init() {
 		super.init();
+		
+		// Always strip Wicket tags
+		getMarkupSettings().setStripWicketTags(true);
 
 		ApplicationSettings.get().setIncludeJquery(false);
 		
