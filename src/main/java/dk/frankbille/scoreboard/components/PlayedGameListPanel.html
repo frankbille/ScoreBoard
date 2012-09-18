@@ -1,4 +1,4 @@
-<wicket:panel>
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
 <table class="table table-hover table-striped table-bordered">
 	<thead>
 		<tr>
@@ -16,5 +16,10 @@
 			<td wicket:id="score"></td>
 		</tr>
 	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="5" wicket:id="footer"><span wicket:id="navigation"></span></td>
+		</tr>
+	</tfoot>
 </table>
 </wicket:panel>

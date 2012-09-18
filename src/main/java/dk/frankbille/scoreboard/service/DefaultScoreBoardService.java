@@ -94,6 +94,14 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 
 	@Transactional(readOnly = true)
 	@Override
+	public List<Game> getAllGames(League league, int numberOfGames) {
+		List<Game> allGames = getAllGames(league);
+		numberOfGames = Math.min(numberOfGames, allGames.size());
+		return allGames.subList(0, numberOfGames-1);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
 	public List<Game> getPlayerGames(Player player) {
 		List<Game> playerGames = new ArrayList<Game>();
 

@@ -1,5 +1,6 @@
 package dk.frankbille.scoreboard.dao.mybatis;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.dao.GameDao;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
@@ -80,6 +82,7 @@ public class MyBatisGameDao implements GameDao {
 			game.getTeam1().setGame(game);
 			game.getTeam2().setGame(game);
 		}
+		Collections.sort(allGames, new GameComparator());
 		return allGames;
 	}
 	
@@ -94,6 +97,7 @@ public class MyBatisGameDao implements GameDao {
 			game.getTeam1().setGame(game);
 			game.getTeam2().setGame(game);
 		}
+		Collections.sort(allGames, new GameComparator());
 		return allGames;
 	}
 	

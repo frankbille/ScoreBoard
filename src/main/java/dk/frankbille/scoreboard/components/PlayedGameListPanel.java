@@ -35,8 +35,12 @@ public class PlayedGameListPanel extends Panel {
 	
 	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel, final GameSelectedCallback gameSelectedCallback) {
 		super(id);
+		
+		setOutputMarkupId(true);
+		
+		final PaginationModel<Game> paginationModel = new PaginationModel<Game>(gamesModel, 0, 20);
 
-		add(new ListView<Game>("games", gamesModel) {
+		add(new ListView<Game>("games", paginationModel) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -81,6 +85,25 @@ public class PlayedGameListPanel extends Panel {
 						return b.toString();
 					}
 				}));
+			}
+		});
+		
+		WebMarkupContainer footer = new WebMarkupContainer("footer") {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public boolean isVisible() {
+				return paginationModel.isPaginationNeeded();
+			}
+		};
+		add(footer);
+		
+		footer.add(new NavigationPanel<Game>("navigation", paginationModel) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onPageChanged(AjaxRequestTarget target, int selectedPage) {
+				target.add(PlayedGameListPanel.this);
 			}
 		});
 	}
