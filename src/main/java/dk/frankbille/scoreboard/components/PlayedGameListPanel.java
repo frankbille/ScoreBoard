@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
@@ -28,23 +27,6 @@ public class PlayedGameListPanel extends Panel {
 	
 	public static interface GameSelectedCallback extends Serializable {
 		void onSelection(AjaxRequestTarget target, Game game);
-	}
-
-	public static IModel<Player> createNoSelectedPlayerModel() {
-		return new LoadableDetachableModel<Player>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Player load() {
-				Player player = new Player();
-				player.setId(Long.MIN_VALUE);
-				return player;
-			}
-		};
-	}
-
-	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel) {
-		this(id, gamesModel, createNoSelectedPlayerModel());
 	}
 
 	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel) {
@@ -72,6 +54,7 @@ public class PlayedGameListPanel extends Panel {
 					};
 				} else {
 					link = new WebMarkupContainer("gameLink");
+					link.setRenderBodyOnly(true);
 				}
 				item.add(link);
 				
