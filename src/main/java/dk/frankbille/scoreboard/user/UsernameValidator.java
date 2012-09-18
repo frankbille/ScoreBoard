@@ -41,7 +41,7 @@ public class UsernameValidator implements IValidator<String> {
 		} 
 		
 		User user = userModel.getObject();
-		if (user.getUsername().equals(username) == false) {
+		if (username.equals(user.getUsername()) == false) {
 			if (scoreBoardService.hasUserWithUsername(username)) {
 				validatable.error(new ValidationError().addMessageKey("duplicateUsername"));
 				return;
