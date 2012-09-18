@@ -1,20 +1,26 @@
 package dk.frankbille.scoreboard.daily;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.components.DateField;
+import dk.frankbille.scoreboard.components.Select2Enabler;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.League;
@@ -64,6 +70,20 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
     	form.add(new GameTeamPanel("team1", new PropertyModel<GameTeam>(this, "game.team1")));
     	form.add(new GameTeamPanel("team2", new PropertyModel<GameTeam>(this, "game.team2")));
 
+    	IModel<League> defaultLeagueModel = new PropertyModel<League>(this, "game.league");
+		IModel<List<League>> possibleLeaguesModel = new LoadableDetachableModel<List<League>>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected List<League> load() {
+				return scoreBoardService.getAllLeagues();
+			}
+		};
+		ChoiceRenderer<League> renderer = new ChoiceRenderer<League>("name", "id");
+		DropDownChoice<League> leagueField = new DropDownChoice<League>("leagueField", defaultLeagueModel, possibleLeaguesModel, renderer);
+		leagueField.add(new Select2Enabler());
+		form.add(leagueField);
+    	
     	form.add(new AjaxSubmitLink("save") {
 			private static final long serialVersionUID = 1L;
 

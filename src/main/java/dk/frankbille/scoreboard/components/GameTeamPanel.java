@@ -18,7 +18,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.util.string.Strings;
 
 import dk.frankbille.scoreboard.comparators.PlayerComparator;
 import dk.frankbille.scoreboard.domain.GameTeam;
@@ -100,7 +99,7 @@ public class GameTeamPanel extends Panel {
 				
 				b.append("</small>");
 				
-				return Strings.escapeMarkup(b);
+				return b;
 			}
 		}));
 		

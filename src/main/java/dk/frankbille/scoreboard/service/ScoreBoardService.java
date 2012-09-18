@@ -23,6 +23,8 @@ public interface ScoreBoardService {
 	List<Game> getAllGames();
 
 	List<Game> getAllGames(League league);
+
+	List<Game> getAllGames(League league, int numberOfGames);
 	
 	List<PlayerResult> getPlayerResults();
 

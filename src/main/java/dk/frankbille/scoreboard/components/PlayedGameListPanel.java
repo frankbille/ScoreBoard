@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
@@ -30,31 +29,18 @@ public class PlayedGameListPanel extends Panel {
 		void onSelection(AjaxRequestTarget target, Game game);
 	}
 
-	public static IModel<Player> createNoSelectedPlayerModel() {
-		return new LoadableDetachableModel<Player>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Player load() {
-				Player player = new Player();
-				player.setId(Long.MIN_VALUE);
-				return player;
-			}
-		};
-	}
-
-	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel) {
-		this(id, gamesModel, createNoSelectedPlayerModel());
-	}
-
 	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel) {
 		this(id, gamesModel, selectedPlayerModel, null);
 	}
 	
 	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel, final GameSelectedCallback gameSelectedCallback) {
 		super(id);
+		
+		setOutputMarkupId(true);
+		
+		final PaginationModel<Game> paginationModel = new PaginationModel<Game>(gamesModel, 0, 20);
 
-		add(new ListView<Game>("games", gamesModel) {
+		add(new ListView<Game>("games", paginationModel) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -72,6 +58,7 @@ public class PlayedGameListPanel extends Panel {
 					};
 				} else {
 					link = new WebMarkupContainer("gameLink");
+					link.setRenderBodyOnly(true);
 				}
 				item.add(link);
 				
@@ -98,6 +85,25 @@ public class PlayedGameListPanel extends Panel {
 						return b.toString();
 					}
 				}));
+			}
+		});
+		
+		WebMarkupContainer footer = new WebMarkupContainer("footer") {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public boolean isVisible() {
+				return paginationModel.isPaginationNeeded();
+			}
+		};
+		add(footer);
+		
+		footer.add(new NavigationPanel<Game>("navigation", paginationModel) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onPageChanged(AjaxRequestTarget target, int selectedPage) {
+				target.add(PlayedGameListPanel.this);
 			}
 		});
 	}
