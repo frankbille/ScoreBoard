@@ -1,0 +1,15 @@
+table td.align-right,table th.align-right {
+	text-align: right;
+}
+
+.gold {
+	color: #C98910;
+}
+
+.silver {
+	color: #A8A8A8;
+}
+
+.bronze {
+	color: #965A38;
+}

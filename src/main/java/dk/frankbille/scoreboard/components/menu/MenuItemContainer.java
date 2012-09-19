@@ -12,6 +12,7 @@ public class MenuItemContainer implements MenuItem, Serializable {
 	private MenuItemType menuItemType;
 	private IModel<String> label;
 	private List<MenuItem> subMenuItems = new ArrayList<MenuItem>();
+	private String icon;
 
 	public MenuItemContainer(MenuItemType menuItemType, IModel<String> label) {
 		this.menuItemType = menuItemType;
@@ -34,6 +35,14 @@ public class MenuItemContainer implements MenuItem, Serializable {
 
 	public List<MenuItem> getSubMenuItems() {
 		return subMenuItems;
+	}
+	
+	public String getIconName() {
+		return icon;
+	}
+	
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 }

@@ -79,9 +79,13 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 					if (player != null) {
 						PageParameters pp = new PageParameters();
 						pp.set(0, player.getId());
-						items.add(new MenuItemPageLink(MenuItemType.SECURE, new Model<String>(player.getName()), PlayerPage.class, pp));
+						MenuItemPageLink userItem = new MenuItemPageLink(MenuItemType.SECURE, new Model<String>(player.getName()), PlayerPage.class, pp);
+						userItem.setIcon("user");
+						items.add(userItem);
 					}
-					items.add(new MenuItemPageLink(MenuItemType.LOGOUT, new StringResourceModel("logout", this), LogoutPage.class));
+					MenuItemPageLink logoutItem = new MenuItemPageLink(MenuItemType.LOGOUT, new StringResourceModel("logout", this), LogoutPage.class);
+					logoutItem.setIcon("signout");
+					items.add(logoutItem);
 				} else {
 					items.add(new MenuItemPageLink(MenuItemType.SECURE, new StringResourceModel("loginOrCreate", this), LoginPage.class));
 				}

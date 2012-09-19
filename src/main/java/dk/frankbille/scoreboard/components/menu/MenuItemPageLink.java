@@ -13,6 +13,7 @@ class MenuItemPageLink implements Serializable, MenuItem {
 	private IModel<String> label;
 	private Class<? extends Page> pageClass;
 	private PageParameters pageParameters;
+	private String icon;
 
 	public MenuItemPageLink(MenuItemType menuItemType, IModel<String> label, Class<? extends Page> pageClass) {
 		this(menuItemType, label, pageClass, null);
@@ -41,6 +42,14 @@ class MenuItemPageLink implements Serializable, MenuItem {
 	
 	public PageParameters getPageParameters() {
 		return pageParameters;
+	}
+	
+	public String getIconName() {
+		return icon;
+	}
+	
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 	
 }
