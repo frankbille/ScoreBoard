@@ -9,7 +9,6 @@ import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -43,11 +42,13 @@ public class MenuItemsPanel extends Panel {
 					}
 				}));
 
-				MenuItem menuItem = listItem.getModelObject();
+				final WebMarkupContainer link;
+				
+				final MenuItem menuItem = listItem.getModelObject();
 				if (menuItem instanceof MenuItemPageLink) {
 					final MenuItemPageLink menuItemLink = (MenuItemPageLink) menuItem;
 
-					Link<Void> link = new BookmarkablePageLink<Void>("menuLink", menuItemLink.getPageClass(), menuItemLink.getPageParameters());
+					link = new BookmarkablePageLink<Void>("menuLink", menuItemLink.getPageClass(), menuItemLink.getPageParameters());
 					listItem.add(link);
 
 					link.add(new Label("menuLabel", menuItemLink.getLabel()).setRenderBodyOnly(true));
@@ -59,16 +60,16 @@ public class MenuItemsPanel extends Panel {
 					
 					listItem.add(AttributeModifier.append("class", "dropdown"));
 					
-					final WebMarkupContainer dropdownLink = new WebMarkupContainer("menuLink");
-					dropdownLink.setOutputMarkupId(true);
-					dropdownLink.add(AttributeModifier.replace("href", "#"));
-					dropdownLink.add(AttributeModifier.replace("class", "dropdown-toggle"));
-					dropdownLink.add(AttributeModifier.replace("data-toggle", "dropdown"));
-					dropdownLink.add(AttributeModifier.replace("role", "button"));
-					listItem.add(dropdownLink);
+					link = new WebMarkupContainer("menuLink");
+					link.setOutputMarkupId(true);
+					link.add(AttributeModifier.replace("href", "#"));
+					link.add(AttributeModifier.replace("class", "dropdown-toggle"));
+					link.add(AttributeModifier.replace("data-toggle", "dropdown"));
+					link.add(AttributeModifier.replace("role", "button"));
+					listItem.add(link);
 					
-					dropdownLink.add(new Label("menuLabel", menuItemContainer.getLabel()).setRenderBodyOnly(true));
-					dropdownLink.add(new WebMarkupContainer("downIcon").setRenderBodyOnly(true));
+					link.add(new Label("menuLabel", menuItemContainer.getLabel()).setRenderBodyOnly(true));
+					link.add(new WebMarkupContainer("downIcon").setRenderBodyOnly(true));
 					
 					MenuItemsPanel subMenu = new MenuItemsPanel("subMenu", new PropertyModel<List<MenuItem>>(menuItemContainer, "subMenuItems"), new Model<MenuItemType>());
 					subMenu.add(AttributeModifier.replace("class", "dropdown-menu"));
@@ -78,11 +79,32 @@ public class MenuItemsPanel extends Panel {
 
 						@Override
 						public String getObject() {
-							return dropdownLink.getMarkupId();
+							return link.getMarkupId();
 						}
 					}));
 					listItem.add(subMenu);
+				} else {
+					throw new IllegalStateException("Unknown menuItem type: "+menuItem);
 				}
+				
+				// Icon
+				WebComponent icon = new WebComponent("icon") {
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					public boolean isVisible() {
+						return menuItem.getIconName() != null;
+					}
+				};
+				icon.add(AttributeModifier.replace("class", new AbstractReadOnlyModel<String>() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public String getObject() {
+						return "icon-"+menuItem.getIconName();
+					}
+				}));
+				link.add(icon);
 			}
 		});
 	}
