@@ -3,12 +3,14 @@ package dk.frankbille.scoreboard.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
@@ -20,7 +22,7 @@ public abstract class NavigationPanel<T> extends Panel {
 		
 		setOutputMarkupId(true);
 		
-		add(new AjaxLink<Void>("previousLink") {
+		AjaxLink<Void> previousLink = new AjaxLink<Void>("previousLink") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -29,10 +31,23 @@ public abstract class NavigationPanel<T> extends Panel {
 			}
 			
 			@Override
-			public boolean isVisible() {
+			public boolean isEnabled() {
 				return paginationModel.isPreviousPossible();
 			}
-		});
+		};
+		previousLink.add(AttributeModifier.append("class", new AbstractReadOnlyModel<String>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject() {
+				if (paginationModel.isPreviousPossible()) {
+					return null;
+				}
+				
+				return "disabled";
+			}
+		}));
+		add(previousLink);
 		
 		IModel<List<Integer>> pagesModel = new LoadableDetachableModel<List<Integer>>() {
 			private static final long serialVersionUID = 1L;
@@ -65,13 +80,25 @@ public abstract class NavigationPanel<T> extends Panel {
 						return paginationModel.getPage() != item.getModelObject();
 					}
 				};
+				pageLink.add(AttributeModifier.append("class", new AbstractReadOnlyModel<String>() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public String getObject() {
+						if (paginationModel.getPage() == item.getModelObject()) {
+							return "btn-primary disabled";
+						}
+
+						return null;
+					}
+				}));
 				item.add(pageLink);
 				
 				pageLink.add(new Label("pageLabel", item.getModel()));
 			}
 		});
 		
-		add(new AjaxLink<Void>("nextLink") {
+		AjaxLink<Void> nextLink = new AjaxLink<Void>("nextLink") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -80,10 +107,23 @@ public abstract class NavigationPanel<T> extends Panel {
 			}
 			
 			@Override
-			public boolean isVisible() {
+			public boolean isEnabled() {
 				return paginationModel.isNextPossible();
 			}
-		});
+		};
+		nextLink.add(AttributeModifier.append("class", new AbstractReadOnlyModel<String>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject() {
+				if (paginationModel.isNextPossible()) {
+					return null;
+				}
+				
+				return "disabled";
+			}
+		}));
+		add(nextLink);
 	}
 	
 	private void pageChanged(AjaxRequestTarget target, int selectedPage) {

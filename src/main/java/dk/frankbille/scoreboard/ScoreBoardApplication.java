@@ -51,6 +51,9 @@ public class ScoreBoardApplication extends WebApplication {
 				new SpringComponentInjector(this));
 
 		getSecuritySettings().setAuthorizationStrategy(new ScoreBoardAuthorizationStrategy());
+		
+		getMarkupSettings().setDefaultBeforeDisabledLink("");
+		getMarkupSettings().setDefaultAfterDisabledLink("");
 
 		mount(new MountedMapper("/daily", DailyGamePage.class, new UrlPathPageParametersEncoder()));
 		mountPage("/player/edit", PlayerEditPage.class);
