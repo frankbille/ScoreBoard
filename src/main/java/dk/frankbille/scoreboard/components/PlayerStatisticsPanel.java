@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -18,11 +21,13 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
+import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
@@ -113,7 +118,36 @@ public class PlayerStatisticsPanel extends Panel {
 					item.add(new AttributeAppender("class", new Model<String>("highlighted"), " "));
 				}
 				item.add(new Label("number", ""+(item.getIndex()+1)));
-				item.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
+				PageParameters pp = new PageParameters();
+				pp.set(0, player.getId());
+				BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
+				item.add(playerLink);
+				playerLink.add(new Label("name", new PropertyModel<Integer>(item.getModel(), "player.name")));
+				WebComponent medal = new WebComponent("medal") {
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					public boolean isVisible() {
+						return item.getIndex() < 3;
+					}
+				};
+				medal.add(AttributeModifier.append("class", new AbstractReadOnlyModel<String>() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public String getObject() {
+						if (item.getIndex() == 0) {
+							return "gold";
+						} else if (item.getIndex() == 1) {
+							return "silver";
+						} else if (item.getIndex() == 2) {
+							return "bronze";
+						}
+						
+						return null;
+					}
+				}));
+				item.add(medal);
 				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("winRatio", new FormatModel(new DecimalFormat("0.00"), new PropertyModel<Double>(item.getModel(), "gamesWonRatio"))));
 				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), new PropertyModel<Double>(item.getModel(), "rating"))));

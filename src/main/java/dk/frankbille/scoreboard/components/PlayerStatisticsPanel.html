@@ -1,8 +1,8 @@
-<wicket:panel>
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
 <table class="table table-hover table-striped table-bordered">
 	<thead>
 		<tr>
-			<th>#</th>
+			<th class="align-right">#</th>
 			<th><wicket:message key="player"/></th>
 			<th><wicket:message key="games"/></th>
 			<th><wicket:message key="winRatio"/></th>
@@ -12,8 +12,8 @@
 	</thead>
 	<tbody>
 		<tr wicket:id="players">
-			<td wicket:id="number"></td>
-			<td wicket:id="name"></td>
+			<td class="align-right"><i wicket:id="medal" class="icon-trophy icon-large"></i> <span wicket:id="number"></span></td>
+			<td><a wicket:id="playerLink"><span wicket:id="name"></span></a></td>
 			<td wicket:id="gamesCount"></td>
 			<td wicket:id="winRatio"></td>
 			<td wicket:id="rating"></td>
