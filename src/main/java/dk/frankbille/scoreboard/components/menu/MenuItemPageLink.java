@@ -16,14 +16,23 @@ class MenuItemPageLink implements Serializable, MenuItem {
 	private String icon;
 
 	public MenuItemPageLink(MenuItemType menuItemType, IModel<String> label, Class<? extends Page> pageClass) {
-		this(menuItemType, label, pageClass, null);
+		this(menuItemType, label, pageClass, null, null);
+	}
+	
+	public MenuItemPageLink(MenuItemType menuItemType, IModel<String> label, Class<? extends Page> pageClass, String icon) {
+		this(menuItemType, label, pageClass, null, icon);
 	}
 	
 	public MenuItemPageLink(MenuItemType menuItemType, IModel<String> label, Class<? extends Page> pageClass, PageParameters pageParameters) {
+		this(menuItemType, label, pageClass, pageParameters, null);
+	}
+	
+	public MenuItemPageLink(MenuItemType menuItemType, IModel<String> label, Class<? extends Page> pageClass, PageParameters pageParameters, String icon) {
 		this.menuItemType = menuItemType;
 		this.label = label;
 		this.pageClass = pageClass;
 		this.pageParameters = pageParameters;
+		this.icon = icon;
 	}
 
 	@Override

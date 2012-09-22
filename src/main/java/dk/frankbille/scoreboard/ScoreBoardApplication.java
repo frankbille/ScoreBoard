@@ -11,6 +11,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import com.vaynberg.wicket.select2.ApplicationSettings;
 
 import dk.frankbille.scoreboard.daily.DailyGamePage;
+import dk.frankbille.scoreboard.game.EditGamePage;
 import dk.frankbille.scoreboard.league.LeagueEditPage;
 import dk.frankbille.scoreboard.league.LeagueListPage;
 import dk.frankbille.scoreboard.player.PlayerEditPage;
@@ -56,6 +57,7 @@ public class ScoreBoardApplication extends WebApplication {
 		getMarkupSettings().setDefaultAfterDisabledLink("");
 
 		mount(new MountedMapper("/daily", DailyGamePage.class, new UrlPathPageParametersEncoder()));
+		mountPage("/game", EditGamePage.class);
 		mountPage("/player/edit", PlayerEditPage.class);
 		mountPage("/player", PlayerPage.class);
 		mountPage("/players", PlayerListPage.class);

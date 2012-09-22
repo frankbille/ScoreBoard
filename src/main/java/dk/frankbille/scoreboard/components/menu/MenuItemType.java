@@ -6,4 +6,5 @@ public enum MenuItemType {
 	LEAGUES,
 	SECURE,
 	LOGOUT,
+	GAME
 }

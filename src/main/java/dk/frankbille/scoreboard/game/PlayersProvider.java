@@ -1,4 +1,4 @@
-package dk.frankbille.scoreboard.daily;
+package dk.frankbille.scoreboard.game;
 
 import java.util.ArrayList;
 import java.util.Collection;

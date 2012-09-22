@@ -1,34 +1,36 @@
-package dk.frankbille.scoreboard.daily;
+package dk.frankbille.scoreboard.game;
 
 import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.components.DateField;
 import dk.frankbille.scoreboard.components.Select2Enabler;
+import dk.frankbille.scoreboard.components.menu.MenuItemType;
+import dk.frankbille.scoreboard.daily.DailyGamePage;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Team;
-import dk.frankbille.scoreboard.security.RequiresLoginToRender;
+import dk.frankbille.scoreboard.domain.User;
+import dk.frankbille.scoreboard.security.SecureBasePage;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
-public abstract class EditGamePanel extends Panel implements RequiresLoginToRender {
+public class EditGamePage extends SecureBasePage {
 	private static final long serialVersionUID = 1L;
 
 	@SpringBean
@@ -36,32 +38,42 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 
 	private Game game;
 	
-	public EditGamePanel(String id, Long gameId, final League league) {
-		super(id);
-		setOutputMarkupId(true);
-
-		if (gameId != null) {
+	public EditGamePage(PageParameters pageParameters) {
+		long gameId = pageParameters.get(0).toLong(-1);
+		
+		if (gameId > 0) {
 			game = scoreBoardService.getGame(gameId);
 		} else {
-			game = createNewGame(league);
+			game = createNewGame();
 		}
 
-    	Form<Void> form = new Form<Void>("form");
-    	add(form);
-		
-		form.add(new Label("editGameTitle", new AbstractReadOnlyModel<String>() {
+		add(new Label("editGameTitle", new AbstractReadOnlyModel<String>() {
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public String getObject() {
 				Localizer localizer = Application.get().getResourceSettings().getLocalizer();
 				if (game.getId() == null) {
-					return localizer.getString("newGame", EditGamePanel.this);
+					return localizer.getString("newGame", EditGamePage.this);
 				} else {
-					return localizer.getString("editGame", EditGamePanel.this);
+					return localizer.getString("editGame", EditGamePage.this);
 				}
 			}
 		}));
+
+		Form<Void> form = new Form<Void>("form") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onSubmit() {
+				scoreBoardService.saveGame(game);
+				
+				PageParameters pp = new PageParameters();
+				pp.add("league", game.getLeague().getId());
+				getRequestCycle().setResponsePage(DailyGamePage.class, pp);
+			}
+		};
+    	add(form);
 		
 		form.add(new FeedbackPanel("feedback"));
     	
@@ -83,31 +95,23 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 		DropDownChoice<League> leagueField = new DropDownChoice<League>("leagueField", defaultLeagueModel, possibleLeaguesModel, renderer);
 		leagueField.add(new Select2Enabler());
 		form.add(leagueField);
-    	
-    	form.add(new AjaxSubmitLink("save") {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				scoreBoardService.saveGame(game);
-				Game addedGame = game;
-				game = createNewGame(league);
-				target.add(EditGamePanel.this);
-				newGameAdded(addedGame, target);
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				target.add(EditGamePanel.this);
-			}
-		});
 	}
 
     public Game getGame() {
 		return game;
 	}
 
-	private Game createNewGame(League league) {
+	private Game createNewGame() {
+		long leagueId = 1;
+		if (ScoreBoardSession.get().isAuthenticated()) {
+			User user = ScoreBoardSession.get().getUser();
+			League defaultLeague = user.getDefaultLeague();
+			if (defaultLeague != null) {
+				leagueId = defaultLeague.getId();
+			}
+		}
+		League league = scoreBoardService.getLeague(leagueId);
+		
 		final Game game = new Game();
     	game.setDate(new Date());
     	GameTeam gameTeam1 = new GameTeam();
@@ -124,6 +128,9 @@ public abstract class EditGamePanel extends Panel implements RequiresLoginToRend
 		return game;
 	}
 
-	protected abstract void newGameAdded(Game game, AjaxRequestTarget target);
+	@Override
+	public MenuItemType getMenuItemType() {
+		return MenuItemType.GAME;
+	}
 
 }

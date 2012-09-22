@@ -1,10 +1,7 @@
-<wicket:panel xmlns:wicket="http://wicket.apache.org">
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+<h1 wicket:id="editGameTitle"></h1>
+
 <form wicket:id="form" class="form-horizontal">
-	<div class="control-group">
-		<div class="controls">
-			<h2 wicket:id="editGameTitle"></h2>
-		</div>
-	</div>
 	
 	<div class="control-group">
 		<div class="controls">
@@ -43,7 +40,7 @@
 	<span wicket:id="team2"></span>
 
 	<div class="form-actions">
-		<a wicket:id="save" class="btn btn-primary"><wicket:message key="save"/></a>
+		<button type="submit" class="btn btn-primary"><wicket:message key="save"/></button>
 	</div>
 </form>
-</wicket:panel>
+</wicket:extend>

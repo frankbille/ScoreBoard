@@ -17,6 +17,7 @@ import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.daily.DailyGamePage;
 import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.game.EditGamePage;
 import dk.frankbille.scoreboard.league.LeagueListPage;
 import dk.frankbille.scoreboard.player.PlayerListPage;
 import dk.frankbille.scoreboard.player.PlayerPage;
@@ -45,6 +46,10 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 			protected List<MenuItem> load() {
 				List<MenuItem> items = new ArrayList<MenuItem>();
 
+				if (ScoreBoardSession.get().isAuthenticated()) {
+					items.add(new MenuItemPageLink(MenuItemType.GAME, new StringResourceModel("addGame", this), EditGamePage.class, "plus"));
+				}
+				
 				MenuItemContainer dailyMenu = new MenuItemContainer(MenuItemType.DAILY, new StringResourceModel("daily", this));
 				List<League> leagues = scoreBoardService.getAllLeagues();
 				for (League league : leagues) {
@@ -79,13 +84,9 @@ public class MenuPanel extends GenericPanel<MenuItemType> {
 					if (player != null) {
 						PageParameters pp = new PageParameters();
 						pp.set(0, player.getId());
-						MenuItemPageLink userItem = new MenuItemPageLink(MenuItemType.SECURE, new Model<String>(player.getName()), PlayerPage.class, pp);
-						userItem.setIcon("user");
-						items.add(userItem);
+						items.add(new MenuItemPageLink(MenuItemType.SECURE, new Model<String>(player.getName()), PlayerPage.class, pp, "user"));
 					}
-					MenuItemPageLink logoutItem = new MenuItemPageLink(MenuItemType.LOGOUT, new StringResourceModel("logout", this), LogoutPage.class);
-					logoutItem.setIcon("signout");
-					items.add(logoutItem);
+					items.add(new MenuItemPageLink(MenuItemType.LOGOUT, new StringResourceModel("logout", this), LogoutPage.class, "signout"));
 				} else {
 					items.add(new MenuItemPageLink(MenuItemType.SECURE, new StringResourceModel("loginOrCreate", this), LoginPage.class));
 				}

@@ -1,6 +1,5 @@
 package dk.frankbille.scoreboard.components;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -16,24 +16,18 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.security.SecureExecutionAjaxLink;
+import dk.frankbille.scoreboard.game.EditGamePage;
+import dk.frankbille.scoreboard.security.SecureExecutionBookmarkablePageLink;
 
 public class PlayedGameListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	
-	public static interface GameSelectedCallback extends Serializable {
-		void onSelection(AjaxRequestTarget target, Game game);
-	}
-
 	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel) {
-		this(id, gamesModel, selectedPlayerModel, null);
-	}
-	
-	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel, final GameSelectedCallback gameSelectedCallback) {
 		super(id);
 		
 		setOutputMarkupId(true);
@@ -46,20 +40,9 @@ public class PlayedGameListPanel extends Panel {
 			@Override
 			protected void populateItem(final ListItem<Game> item) {
 				item.add(RowColorModifier.create(item));
-				WebMarkupContainer link = null;
-				if (gameSelectedCallback != null) {
-					link = new SecureExecutionAjaxLink<Game>("gameLink", item.getModel()) {
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						public void onClick(AjaxRequestTarget target) {
-							gameSelectedCallback.onSelection(target, getModelObject());
-						}
-					};
-				} else {
-					link = new WebMarkupContainer("gameLink");
-					link.setRenderBodyOnly(true);
-				}
+				PageParameters pp = new PageParameters();
+				pp.set(0, item.getModelObject().getId());
+				BookmarkablePageLink<Void> link = new SecureExecutionBookmarkablePageLink<Void>("gameLink", EditGamePage.class, pp);
 				item.add(link);
 				
 				link.add(new DateLabel("date", new PropertyModel<Date>(item.getModel(), "date"), new PatternDateConverter("yyyy-MM-dd", false)));

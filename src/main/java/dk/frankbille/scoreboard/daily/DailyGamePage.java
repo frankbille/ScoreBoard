@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -15,7 +14,6 @@ import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
-import dk.frankbille.scoreboard.components.PlayedGameListPanel.GameSelectedCallback;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
 import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
@@ -65,8 +63,6 @@ public class DailyGamePage extends BasePage {
 			}
 		};
 
-    	addNewGame();
-
     	addGameResults();
 
 		addPlayerStatistics();
@@ -97,27 +93,6 @@ public class DailyGamePage extends BasePage {
 		add(playersContainer);
 	}
 
-	private void addNewGame() {
-		addGame(null, null);
-	}
-	
-	private void addGame(Long gameId, AjaxRequestTarget target) {
-		EditGamePanel editGamePanel = new EditGamePanel("editGame", gameId, league) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void newGameAdded(Game game, AjaxRequestTarget target) {
-				target.add(playedGameList);
-				target.add(playersContainer);
-			}
-		};
-		editGamePanel.setOutputMarkupId(true);
-		addOrReplace(editGamePanel);
-		if (target != null) {
-			target.add(editGamePanel);
-		}
-	}
-
 	private void addGameResults() {
 		IModel<List<Game>> gamesModel = new LoadableDetachableModel<List<Game>>() {
 			private static final long serialVersionUID = 1L;
@@ -130,14 +105,7 @@ public class DailyGamePage extends BasePage {
 			}
 		};
 
-		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel, new GameSelectedCallback() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onSelection(AjaxRequestTarget target, Game game) {
-				addGame(game.getId(), target);
-			}
-		});
+		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel);
 		playedGameList.setOutputMarkupId(true);
 		add(playedGameList);
 	}
