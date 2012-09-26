@@ -57,7 +57,7 @@ public class PaginationModel<T> extends LoadableDetachableModel<List<T>> {
 	public int getMaxPage() {
 		List<T> fullList = nestedModel.getObject();
 		int maxRows = Math.max(fullList.size(), resultsPerPage);
-		return maxRows/resultsPerPage;
+		return (int) Math.ceil((double)maxRows/(double)resultsPerPage);
 	}
 	
 	public int nextPage() {
@@ -85,7 +85,6 @@ public class PaginationModel<T> extends LoadableDetachableModel<List<T>> {
 		}
 		if (toIndex >= fullList.size()) {
 			toIndex = fullList.size();
-			fromIndex = toIndex-resultsPerPage;
 		}
 		if (fromIndex < 0) {
 			fromIndex = 0;

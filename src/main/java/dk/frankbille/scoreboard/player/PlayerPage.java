@@ -1,5 +1,6 @@
 package dk.frankbille.scoreboard.player;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -11,6 +12,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardSession;
+import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
 import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
@@ -63,7 +65,9 @@ public class PlayerPage extends BasePage {
 
 			@Override
 			protected List<Game> load() {
-				return scoreBoardService.getPlayerGames(playerModel.getObject());
+				List<Game> playerGames = scoreBoardService.getPlayerGames(playerModel.getObject());
+				Collections.sort(playerGames, new GameComparator());
+				return playerGames;
 			}
 		};
 
