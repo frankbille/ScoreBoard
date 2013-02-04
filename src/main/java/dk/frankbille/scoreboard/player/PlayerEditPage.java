@@ -27,7 +27,7 @@ public class PlayerEditPage extends SecureBasePage {
 	private IModel<Player> playerModel;
 
 	private IModel<User> userModel;
-	
+
 	public PlayerEditPage(PageParameters parameters) {
 		Long playerId = parameters.get(0).toLongObject();
 		IModel<Player> playerModel = new PlayerModel(playerId);
@@ -37,18 +37,19 @@ public class PlayerEditPage extends SecureBasePage {
 	public PlayerEditPage(IModel<Player> playerModel) {
 		initialize(playerModel);
 	}
-	
+
 	private void initialize(IModel<Player> playerModel) {
 		this.playerModel = playerModel;
 		Form<Player> playerForm = new Form<Player>("playerForm", playerModel) {
 			private static final long serialVersionUID = 1L;
-			
+
 			@Override
 			protected void onSubmit() {
 				scoreBoardService.savePlayer(getModelObject());
 				User user = userModel.getObject();
 				if (user != null) {
 					scoreBoardService.updateUser(user);
+					ScoreBoardSession.get().refreshUser(user);
 				}
 				getRequestCycle().setResponsePage(PlayerListPage.class);
 			}
@@ -56,7 +57,7 @@ public class PlayerEditPage extends SecureBasePage {
 		add(playerForm);
 
 		playerForm.add(new Label("name", new PropertyModel<String>(playerModel, "name")));
-		
+
 		playerForm.add(new FeedbackPanel("feedback"));
 
 		{
@@ -73,18 +74,18 @@ public class PlayerEditPage extends SecureBasePage {
 			TextField<String> groupField = new TextField<String>("groupField", new PropertyModel<String>(playerModel, "groupName"));
 			playerForm.add(groupField);
 		}
-		
+
 		userModel = new LoadableDetachableModel<User>() {
 			private static final long serialVersionUID = 1L;
 
 			private User user = null;
-			
+
 			@Override
 			protected User load() {
 				if (user == null) {
 					user = scoreBoardService.getUserForPlayer(PlayerEditPage.this.playerModel.getObject());
 				}
-				
+
 				return user;
 			}
 		};
@@ -108,7 +109,7 @@ public class PlayerEditPage extends SecureBasePage {
 				return MenuItemType.SECURE;
 			}
 		}
-		
+
 		return MenuItemType.PLAYERS;
 	}
 
