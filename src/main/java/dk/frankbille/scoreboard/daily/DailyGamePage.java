@@ -4,17 +4,24 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.BasePage;
 import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.comparators.GameComparator;
+import dk.frankbille.scoreboard.components.GameStatisticsPanel;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
+import dk.frankbille.scoreboard.components.TooltipBehavior;
+import dk.frankbille.scoreboard.components.TooltipBehavior.Placement;
 import dk.frankbille.scoreboard.components.menu.MenuItemType;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.League;
@@ -37,19 +44,33 @@ public class DailyGamePage extends BasePage {
 
 	private League league;
 
+	private WebMarkupContainer chartContainer;
+
     public DailyGamePage(final PageParameters parameters) {
     	long leagueId = parameters.get("league").toLong(-1);
     	if (leagueId < 1) {
     		goToDefaultLeague();
     	}
-    
+
     	league = scoreBoardService.getLeague(leagueId);
     	if (league == null) {
     		goToDefaultLeague();
     	}
-    	
+
     	add(new Label("leagueName", league.getName()));
-    	
+
+    	WebMarkupContainer chartToggle = new WebMarkupContainer("chartToggle");
+    	chartToggle.add(AttributeAppender.replace("data-target", new AbstractReadOnlyModel<String>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject() {
+				return "#"+chartContainer.getMarkupId();
+			}
+		}));
+    	chartToggle.add(new TooltipBehavior(new StringResourceModel("clickToSeeChart", null), Placement.RIGHT));
+    	add(chartToggle);
+
 		loggedInPlayerModel = new LoadableDetachableModel<Player>() {
 			private static final long serialVersionUID = 1L;
 
@@ -104,6 +125,11 @@ public class DailyGamePage extends BasePage {
 				return allGames;
 			}
 		};
+
+		chartContainer = new WebMarkupContainer("chartContainer");
+		chartContainer.setOutputMarkupId(true);
+		add(chartContainer);
+		chartContainer.add(new GameStatisticsPanel("charts", gamesModel));
 
 		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel);
 		playedGameList.setOutputMarkupId(true);

@@ -5,8 +5,7 @@
 	<title><wicket:message key="title" /></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
-    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
 	<link href="css/datepicker.css" rel="stylesheet">
 	<link href="css/scoreboard.css" rel="stylesheet">
     <style type="text/css">
@@ -17,7 +16,14 @@
       .sidebar-nav {
         padding: 9px 0;
       }
+      .chart-toggle {
+        cursor: pointer;
+      }
+      .chart-toggle:hover {
+        color: #005580;
+      }
     </style>
+	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 	<script src="js/jquery-1.8.0.min.js"></script>
 </head>
 <body>
@@ -41,7 +47,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/bootstrap-datepicker.js"></script>
 </body>
