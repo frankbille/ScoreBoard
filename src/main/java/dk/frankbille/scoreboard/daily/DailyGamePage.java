@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -68,7 +68,7 @@ public class DailyGamePage extends BasePage {
 				return "#"+chartContainer.getMarkupId();
 			}
 		}));
-    	chartToggle.add(new TooltipBehavior(new Model<String>("Click to see graph"), Placement.RIGHT));
+    	chartToggle.add(new TooltipBehavior(new StringResourceModel("clickToSeeChart", null), Placement.RIGHT));
     	add(chartToggle);
 
 		loggedInPlayerModel = new LoadableDetachableModel<Player>() {
