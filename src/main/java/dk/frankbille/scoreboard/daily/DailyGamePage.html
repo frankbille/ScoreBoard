@@ -1,5 +1,11 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
-	<h1 wicket:id="leagueName"></h1>
+	<h1><span wicket:id="leagueName"></span> <small wicket:id="chartToggle" class="chart-toggle" data-toggle="collapse"><i class="icon-bar-chart"></i></small></h1>
+
+	<div class="row-fluid collapse" wicket:id="chartContainer">
+		<div class="span12">
+			<span wicket:id="charts"></span>
+		</div>
+	</div>
 
 	<div class="row-fluid">
 		<div class="span7">
