@@ -44,6 +44,18 @@ public class ScoreBoardSession extends WebSession {
 		return user;
 	}
 
+	public void refreshUser(User user) {
+		if (this.user == null) {
+			throw new IllegalStateException("Not possible to refresh user if not authenticated");
+		}
+
+		if (this.user.getUsername().equals(user.getUsername()) == false) {
+			throw new IllegalArgumentException("Not possible to refresh user if not the same");
+		}
+
+		this.user = user;
+	}
+
 	public void logout() {
 		CookieUtils cookieUtils = new CookieUtils();
 		cookieUtils.remove("loginUsername");

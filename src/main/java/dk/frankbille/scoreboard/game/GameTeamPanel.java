@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -29,7 +29,7 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 		private static final long serialVersionUID = 1L;
 
 		private IModel<GameTeam> gameTeamModel;
-		
+
 		public PlayersModel(IModel<GameTeam> gameTeamModel) {
 			this.gameTeamModel = gameTeamModel;
 		}
@@ -51,23 +51,19 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 
 	public GameTeamPanel(String id, IModel<GameTeam> model) {
 		super(id, model);
-		
+
 		setRenderBodyOnly(true);
 
 		TextField<Integer> scoreField = new TextField<Integer>("score", new PropertyModel<Integer>(model, "score"));
-		scoreField.add(new AjaxFormSubmitBehavior("onchange") {
+		scoreField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target) {
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target) {
+			protected void onUpdate(AjaxRequestTarget arg0) {
 			}
 		});
 		add(scoreField);
-		
+
 		Localizer localizer = Application.get().getResourceSettings().getLocalizer();
 
 		final Select2MultiChoice<Player> players = new Select2MultiChoice<Player>("players", new PlayersModel(model), new PlayersProvider());
