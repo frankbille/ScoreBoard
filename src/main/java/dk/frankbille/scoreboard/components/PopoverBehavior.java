@@ -10,8 +10,8 @@ public class PopoverBehavior extends Behavior {
 	private static final long serialVersionUID = 1L;
 
 	private IModel<? extends CharSequence> titleModel;
-	private IModel<? extends CharSequence> contentModel; 
-	
+	private IModel<? extends CharSequence> contentModel;
+
 	public PopoverBehavior(IModel<? extends CharSequence> titleModel, IModel<? extends CharSequence> contentModel) {
 		this.titleModel = titleModel;
 		this.contentModel = contentModel;
@@ -23,10 +23,10 @@ public class PopoverBehavior extends Behavior {
 		component.add(AttributeModifier.replace("title", titleModel));
 		component.add(AttributeModifier.replace("data-content", contentModel));
 	}
-	
+
 	@Override
 	public void renderHead(Component component, IHeaderResponse response) {
-		response.renderOnDomReadyJavaScript("$(\"*[rel=popover-top]\").popover({placement:\"top\", trigger:\"hover\"});");
+		response.renderOnDomReadyJavaScript("$(\"*[rel=popover-top]\").popover({placement:\"top\", trigger:\"hover\", html:true});");
 	}
-	
+
 }
