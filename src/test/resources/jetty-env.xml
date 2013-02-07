@@ -1,0 +1,18 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<New id="scoreboard" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg></Arg>
+		<Arg>jdbc/scoreboard</Arg>
+		<Arg>
+			<New class="org.apache.commons.dbcp.BasicDataSource">
+				<Set name="driverClassName">com.mysql.jdbc.Driver</Set>
+				<Set name="url">jdbc:mysql://localhost/scoreboard?allowMultiQueries=true</Set>
+				<Set name="username">root</Set>
+				<Set name="password"></Set>
+				<Set name="validationQuery">SELECT 1</Set>
+			</New>
+		</Arg>
+	</New>
+</Configure>

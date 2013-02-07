@@ -6,8 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.mock.MockServletContext;
@@ -41,6 +45,27 @@ public abstract class WicketSpringTestCase {
 	@BeforeClass
 	public static void setupSpring() {
 		if (applicationContext == null) {
+			try {
+				// Create initial context
+				System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.eclipse.jetty.jndi.InitialContextFactory");
+				System.setProperty(Context.URL_PKG_PREFIXES, "org.eclipse.jetty.jndi");
+				InitialContext ic = new InitialContext();
+
+				ic.createSubcontext("java:/comp/env");
+				ic.createSubcontext("java:/comp/env/jdbc");
+
+				// Construct DataSource
+				BasicDataSource ds = new BasicDataSource();
+				ds.setDriverClassName("org.hsqldb.jdbcDriver");
+				ds.setUrl("jdbc:hsqldb:mem:scoreboard");
+				ds.setUsername("sa");
+				ds.setPassword("");
+
+				ic.bind("java:/comp/env/jdbc/scoreboard", ds);
+			} catch (NamingException ex) {
+				throw new RuntimeException(ex);
+			}
+
 			MockServletContext servletContext = new MockServletContext(new ScoreBoardApplication(), "src/main/webapp");
 			servletContext.addInitParameter("contextConfigLocation", "classpath:applicationContext-test.xml");
 			ContextLoader loader = new ContextLoader();
@@ -52,7 +77,7 @@ public abstract class WicketSpringTestCase {
 	@Before
 	public void setupWicket() {
 		insertTestData();
-		
+
 		ScoreBoardApplication application = new ScoreBoardApplication() {
 			@Override
 			public Session newSession(Request request, Response response) {
@@ -63,7 +88,7 @@ public abstract class WicketSpringTestCase {
 		};
 		tester = new WicketTester(application, servletContext);
 	}
-	
+
 	private void insertTestData() {
 		/*
 		 * Leagues
@@ -75,7 +100,7 @@ public abstract class WicketSpringTestCase {
 			getScoreBoardService().saveLeague(league);
 			leagues.add(league);
 		}
-		
+
 		/*
 		 * Players
 		 */
@@ -86,13 +111,13 @@ public abstract class WicketSpringTestCase {
 			player.setFullName("Player Full Name "+i);
 			getScoreBoardService().savePlayer(player);
 			players.add(player);
-			
+
 			User user = new User();
 			user.setUsername("username"+i);
 			user.setDefaultLeague(getRandomLeague(leagues));
 			getScoreBoardService().createUser(user, "password"+i);
 		}
-		
+
 		/*
 		 * Games
 		 */
@@ -102,7 +127,7 @@ public abstract class WicketSpringTestCase {
 			for (League league : leagues) {
 				Game game = new Game();
 				game.setDate(date.toDate());
-				
+
 				GameTeam gameTeam1 = new GameTeam();
 				gameTeam1.setScore(getRandomScore(-1));
 				gameTeam1.setGame(game);
@@ -114,7 +139,7 @@ public abstract class WicketSpringTestCase {
 				team1.addPlayer(player2);
 				gameTeam1.setTeam(team1);
 				game.setTeam1(gameTeam1);
-				
+
 				GameTeam gameTeam2 = new GameTeam();
 				gameTeam2.setScore(getRandomScore(gameTeam1.getScore()));
 				gameTeam2.setGame(game);
@@ -127,14 +152,14 @@ public abstract class WicketSpringTestCase {
 				gameTeam2.setTeam(team2);
 				game.setTeam2(gameTeam2);
 				game.setLeague(league);
-				
+
 				getScoreBoardService().saveGame(game);
 			}
-			
+
 			date = date.plusDays(1);
 		}
 	}
-	
+
 	private int getRandomScore(int disallowedScore) {
 		int score = -1;
 		do {
@@ -142,7 +167,7 @@ public abstract class WicketSpringTestCase {
 		} while(score == disallowedScore);
 		return score;
 	}
-	
+
 	private Player getRandomPlayer(List<Player> players, Player... disallowedPlayers) {
 		Player player = null;
 		Set<Player> disallowedPlayerSet = new HashSet<Player>();
@@ -155,7 +180,7 @@ public abstract class WicketSpringTestCase {
 		} while(disallowedPlayerSet.contains(player));
 		return player;
 	}
-	
+
 	private League getRandomLeague(List<League> leagues) {
 		return leagues.get(RandomUtils.nextInt(leagues.size()));
 	}
