@@ -46,7 +46,7 @@ public class GameStatisticsPanel extends Panel {
 		javascript.append("function drawChart() {\n");
 		javascript.append("var data = google.visualization.arrayToDataTable([\n");
 
-		List<Game> games = gameModel.getObject();
+		List<Game> games = new ArrayList<Game>(gameModel.getObject());
 
 		Collections.sort(games, new Comparator<Game>() {
 			@Override
