@@ -1,39 +1,49 @@
 package dk.frankbille.scoreboard;
 
 import org.apache.wicket.RuntimeConfigurationType;
-import org.eclipse.jetty.plus.webapp.EnvConfiguration;
-import org.eclipse.jetty.plus.webapp.PlusConfiguration;
+import org.apache.wicket.util.time.Duration;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.FragmentConfiguration;
-import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
-import org.eclipse.jetty.webapp.MetaInfConfiguration;
+import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.webapp.WebInfConfiguration;
-import org.eclipse.jetty.webapp.WebXmlConfiguration;
-import org.eclipse.jetty.xml.XmlConfiguration;
 
 public class Start {
     public static void main(String[] args) throws Exception {
     	System.setProperty("wicket.configuration", RuntimeConfigurationType.DEVELOPMENT.name());
+    	
+    	int timeout = (int) Duration.ONE_HOUR.getMilliseconds();
 
-		Server server = new Server(8080);
+        Server server = new Server();
+        SocketConnector connector = new SocketConnector();
 
-		WebAppContext webAppContext = new WebAppContext("src/main/webapp", "/");
-		webAppContext.setConfigurationClasses(new String[]{
-				WebInfConfiguration.class.getName(),
-				WebXmlConfiguration.class.getName(),
-				MetaInfConfiguration.class.getName(),
-				FragmentConfiguration.class.getName(),
-				EnvConfiguration.class.getName(),
-				PlusConfiguration.class.getName(),
-				JettyWebXmlConfiguration.class.getName()
-		});
-		XmlConfiguration configuration = new XmlConfiguration(Start.class.getResourceAsStream("/jetty-env.xml"));
-		configuration.configure(webAppContext);
+        // Set some timeout options to make debugging easier.
+        connector.setMaxIdleTime(timeout);
+        connector.setSoLingerTime(-1);
+        connector.setPort(8080);
+        server.addConnector(connector);
 
-		server.setHandler(webAppContext);
+        WebAppContext bb = new WebAppContext();
+        bb.setServer(server);
+        bb.setContextPath("/");
+        bb.setWar("src/main/webapp");
 
-		server.start();
-		server.join();
+        // START JMX SERVER
+        // MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        // MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
+        // server.getContainer().addEventListener(mBeanContainer);
+        // mBeanContainer.start();
+
+        server.setHandler(bb);
+
+        try {
+            System.out.println(">>> STARTING EMBEDDED JETTY SERVER, PRESS ANY KEY TO STOP");
+            server.start();
+            System.in.read();
+            System.out.println(">>> STOPPING EMBEDDED JETTY SERVER");
+            server.stop();
+            server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 }
