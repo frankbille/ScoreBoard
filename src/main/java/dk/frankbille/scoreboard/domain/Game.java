@@ -119,18 +119,10 @@ public class Game implements Serializable {
 	}
 
 	public GameTeam getWinnerTeam() {
-		if (team1.getScore() == team2.getScore()) {
-			return null;
-		}
-		
-		return team1.getScore() > team2.getScore() ? team1 : team2;
+		return team1.getScore() >= team2.getScore() ? team1 : team2;
 	}
 
 	public GameTeam getLoserTeam() {
-		if (team1.getScore() == team2.getScore()) {
-			return null;
-		}
-		
 		return team1.getScore() < team2.getScore() ? team1 : team2;
 	}
 }
