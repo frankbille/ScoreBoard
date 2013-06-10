@@ -24,7 +24,7 @@
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>ScoreBoard</name>
-	<description>Keep track of player stats and game results for team-games. Ideel for office usage.</description>
+	<description>Keep track of player stats and game results for team-games. Ideal for office usage.</description>
 	<licenses>
 		<license>
 			<name>GNU General Public License, Version 3.0</name>
