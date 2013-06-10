@@ -43,3 +43,4 @@ Build instructions (for developers using Eclipse)
 [eclipse]: http://www.eclipse.org/downloads/
 [issues]: https://github.com/frankbille/ScoreBoard/issues
 [license]: http://www.gnu.org/licenses/gpl.html
+[idea]: http://www.jetbrains.com/idea/
