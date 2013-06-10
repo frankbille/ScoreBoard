@@ -37,7 +37,7 @@ public class GameTeamPanel extends Panel {
 
 	public GameTeamPanel(String id, final IModel<GameTeam> model, final IModel<Player> selectedPlayerModel) {
 		super(id, model);
-		
+
 		final IModel<List<Player>> playersModel = new LoadableDetachableModel<List<Player>>() {
 			private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class GameTeamPanel extends Panel {
 				return players;
 			}
 		};
-		
+
 		// Popover
 		add(new PopoverBehavior(new StringResourceModel("rating", null), new AbstractReadOnlyModel<CharSequence>() {
 			private static final long serialVersionUID = 1L;
@@ -58,51 +58,44 @@ public class GameTeamPanel extends Panel {
 			@Override
 			public CharSequence getObject() {
 				StringBuilder b = new StringBuilder();
-				
+
 				b.append("<small>");
-				
+
 				GameTeam gameTeam = model.getObject();
 				List<Player> players = playersModel.getObject();
-				
+
 				RatingCalculator rating = RatingProvider.getRatings();
 				Localizer localizer = Application.get().getResourceSettings().getLocalizer();
-				
+
 				// Player ratings
 				for (Player player : players) {
 					b.append(player.getName()).append(" (");
 
 					GamePlayerRating playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
 					b.append(RATING_VALUE.format(playerRating.getRating()));
-					
+
 					b.append(")<br>");
 				}
-				
+
 				// Team rating
 				GameRating gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
 				b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
-				if (gameTeam.isWinner()) {
-					b.append(RATING_VALUE.format(gameRatingChange.getWinnerRating()));
-				} else {
-					b.append(RATING_VALUE.format(gameRatingChange.getLoserRating()));
-				}
+				b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
 				b.append(" ");
-				double change = gameRatingChange.getChange();
-				if (false == gameTeam.isWinner()) {
-					change = 0 - change;
-				}
+				double change = gameRatingChange.getChange(gameTeam.getId());
 
 				int playerCount = players.size();
 				if (playerCount > 0) {
 					change /= playerCount;
 				}
 				b.append(RATING_CHANGE.format(change));
-				
+
 				b.append("</small>");
-				
+
 				return b;
 			}
 		}));
-		
+
 		// Players
 		add(new ListView<Player>("players", playersModel) {
 			private static final long serialVersionUID = 1L;
@@ -110,16 +103,16 @@ public class GameTeamPanel extends Panel {
 			@Override
 			protected void populateItem(final ListItem<Player> item) {
 				final Player player = item.getModelObject();
-				
+
 				PageParameters pp = new PageParameters();
 				pp.set(0, player.getId());
 				BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
 				item.add(playerLink);
 				playerLink.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
-				
+
 				item.add(new Label("plus", "+") {
 					private static final long serialVersionUID = 1L;
-					
+
 					@Override
 					public boolean isVisible() {
 						return item.getIndex() < getViewSize()-1;
