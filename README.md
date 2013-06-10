@@ -13,6 +13,18 @@ License
 Licensed under the [GNU General Public License, Version 3.0][license]
 
 
+Build instructions (for developers using IntelliJ IDEA)
+-------------------------------------------------------
+
+ 1. Install [IntelliJ IDEA Community Edition][idea]
+ 2. When started up, checkout sourcecode from GitHub from within IDEA
+ 3. Say "yes" to open the project.
+ 4. From the runner menu, there are two shared run configurations:
+    1. __Run application__ - Run the application against a local MySQL server running on port 3306 with username "root"
+       and no password.
+    2. __All Tests__ - Run all unit tests found in the ScoreBoard project.
+
+
 Build instructions (for developers using Eclipse)
 -------------------------------------------------
 
