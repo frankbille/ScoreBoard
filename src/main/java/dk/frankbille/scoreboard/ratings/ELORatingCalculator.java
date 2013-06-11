@@ -32,19 +32,19 @@ public class ELORatingCalculator implements RatingCalculator {
 	private Map<Long,ELOPlayerRating> players;
 	private Map<Long,ELOGameRating> games;
 	private Map<String,ELOGamePlayerRating> gamePlayers;
-	
+
 	public ELORatingCalculator() {
 		players = new HashMap<Long,ELOPlayerRating>();
 		games = new HashMap<Long,ELOGameRating>();
 		gamePlayers = new HashMap<String,ELOGamePlayerRating>();
 	}
-	
+
 	@Override
 	public void setGames(List<Game> games) {
 		//Clear the current ratings
 		players.clear();
 		gamePlayers.clear();
-		
+
 		//Order the games by date
 		Collections.sort(games, new GameComparator() {
 			@Override
@@ -60,7 +60,7 @@ public class ELORatingCalculator implements RatingCalculator {
 				return compare;
 			}
 		});
-		
+
 		//Go through the games one-by-one
 		for (Game game : games) {
 			addTeamRatings(game);
@@ -71,54 +71,64 @@ public class ELORatingCalculator implements RatingCalculator {
 		GameTeam winner = game.getWinnerTeam();
 		int winnerScore = winner.getScore();
 		double winnerRating = calculateTeamRating(winner);
-		
+
 		GameTeam loser = game.getLoserTeam();
 		int loserScore = loser.getScore();
 		double loserRating = calculateTeamRating(loser);
-		
+
 		//Check that we have 2 teams
 		if (winner==null ||loser==null)
 			throw new RatingException("ELORatingCalculator needs a winning and a loosing team");
-		
+
 		//Calculate the rating change for the team
 		double change = ELOCalculator.calculate(winnerRating, winnerScore, loserRating, loserScore);
-		
+
+		if (winnerScore==loserScore && winnerRating>loserRating) {
+			GameTeam tempTeam = winner;
+			winner = loser;
+			loser = tempTeam;
+
+			double tempRating = winnerRating;
+			winnerRating = loserRating;
+			loserRating = tempRating;
+		}
+
 		//Add the rating change to the game and the players
-		games.put(game.getId(), new ELOGameRating(winnerRating, loserRating, change));
+		games.put(game.getId(), new ELOGameRating(winner.getId(), winnerRating, loser.getId(), loserRating, change));
 		setRatingChange(winner,+change);
 		setRatingChange(loser,-change);
 	}
 
 	private double calculateTeamRating(GameTeam team) {
-		ELOTeamRatingBuilder ratingBuilder = new ELOTeamRatingBuilder(); 
+		ELOTeamRatingBuilder ratingBuilder = new ELOTeamRatingBuilder();
 		for (Player player : team.getTeam().getPlayers()) {
 			ratingBuilder.addPlayer(getPlayerRating(player.getId()).getRating());
 		}
 		return ratingBuilder.getTeamRating();
 	}
-	
+
 	@Override
 	public ELOPlayerRating getPlayerRating(long playerId) {
 		//Try to find the playerRating
 		ELOPlayerRating player = players.get(playerId);
-		
+
 		if (player==null) {
 			//Create a new default player
 			player = new ELOPlayerRating();
 			players.put(playerId, player);
 		}
-		
+
 		return player;
 	}
 
 	private void setRatingChange(GameTeam team, double ratingChange) {
 		//Find the rating change per player
 		ratingChange = ratingChange/team.getTeam().getPlayers().size();
-		
+
 		for (Player player : team.getTeam().getPlayers()) {
 			ELOPlayerRating playerRating = getPlayerRating(player.getId());
 			addGamePlayerRating(
-				team.getGame().getId(), player.getId(), 
+				team.getGame().getId(), player.getId(),
 				playerRating.getRating(), ratingChange);
 			playerRating.changeRating(ratingChange);
 		}
