@@ -100,7 +100,7 @@ public class GameTeamPanel extends GenericPanel<GameTeam> {
 			public void validate(IValidatable<Collection<Player>> validatable) {
 				Collection<Player> value = validatable.getValue();
 				if (value.isEmpty()) {
-					validatable.error(new ValidationError().addMessageKey("teamMustHaveAtLeastOnePlayer"));
+					validatable.error(new ValidationError().addKey("teamMustHaveAtLeastOnePlayer"));
 				}
 			}
 		});

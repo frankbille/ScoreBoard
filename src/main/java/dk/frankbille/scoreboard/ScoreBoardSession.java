@@ -48,7 +48,6 @@ public class ScoreBoardSession extends WebSession {
 		}
 	}
 
-	@Override
 	public boolean authenticate(String username, String password) {
 		user = scoreBoardService.authenticate(username, password);
 		return isAuthenticated();

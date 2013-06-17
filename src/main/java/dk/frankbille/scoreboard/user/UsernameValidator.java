@@ -49,19 +49,19 @@ public class UsernameValidator implements IValidator<String> {
 	public void validate(IValidatable<String> validatable) {
 		String username = validatable.getValue();
 		if (username == null || username.length() == 0) {
-			validatable.error(new ValidationError().addMessageKey("mustSpecifyAUsername"));
+			validatable.error(new ValidationError().addKey("mustSpecifyAUsername"));
 			return;
 		}
 		
 		if (username.length() <= 2) {
-			validatable.error(new ValidationError().addMessageKey("usernameMustBeAtleastThreeCharacters"));
+			validatable.error(new ValidationError().addKey("usernameMustBeAtleastThreeCharacters"));
 			return;
 		} 
 		
 		User user = userModel.getObject();
 		if (username.equals(user.getUsername()) == false) {
 			if (scoreBoardService.hasUserWithUsername(username)) {
-				validatable.error(new ValidationError().addMessageKey("duplicateUsername"));
+				validatable.error(new ValidationError().addKey("duplicateUsername"));
 				return;
 			}
 		}

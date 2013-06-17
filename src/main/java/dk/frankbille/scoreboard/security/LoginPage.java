@@ -190,9 +190,7 @@ public class LoginPage extends BasePage {
 
 	private void authenticated() {
 		if (ScoreBoardSession.get().isAuthenticated()) {
-			if (false == continueToOriginalDestination()) {
-				getRequestCycle().setResponsePage(ScoreBoardApplication.get().getHomePage());
-			}
+            continueToOriginalDestination();
 		}
 	}
 
