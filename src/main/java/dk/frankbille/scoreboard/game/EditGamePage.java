@@ -110,6 +110,7 @@ public class EditGamePage extends SecureBasePage {
 			}
 		};
 		ChoiceRenderer<League> renderer = new ChoiceRenderer<League>("name", "id");
+
 		DropDownChoice<League> leagueField = new DropDownChoice<League>("leagueField", defaultLeagueModel, possibleLeaguesModel, renderer);
 		leagueField.add(new Select2Enabler());
 		form.add(leagueField);

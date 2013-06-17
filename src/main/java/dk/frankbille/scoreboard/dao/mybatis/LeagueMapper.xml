@@ -25,11 +25,13 @@
 		INSERT INTO
 			league
 		(
-			name
+			name,
+            active
 		)
 		VALUES
 		(
-			#{name}
+			#{name},
+            #{active}
 		)
 	</insert>
 
@@ -37,7 +39,8 @@
 		UPDATE
 			league
 		SET
-			name = #{name}
+			name = #{name},
+            active = #{active}
 		WHERE
 			id = #{id}
 	</update>
@@ -45,7 +48,8 @@
 	<select id="getLeagues" resultType="dk.frankbille.scoreboard.domain.League">
 		SELECT
 			id,
-			name
+			name,
+            active
 		FROM
 			league
 		ORDER BY
@@ -55,7 +59,8 @@
 	<select id="getLeague" resultType="dk.frankbille.scoreboard.domain.League" parameterType="java.lang.Long">
 		SELECT
 			id,
-			name
+			name,
+            active
 		FROM
 			league
 		WHERE

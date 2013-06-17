@@ -19,6 +19,7 @@
 package dk.frankbille.scoreboard.league;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
@@ -72,6 +73,11 @@ public class LeagueEditPage extends SecureBasePage {
 			TextField<String> nameField = new TextField<String>("nameField", new PropertyModel<String>(leagueModel, "name"));
 			playerForm.add(nameField);
 		}
+
+        {
+            CheckBox activeField = new CheckBox("activeField", new PropertyModel<Boolean>(leagueModel, "active"));
+            playerForm.add(activeField);
+        }
 	}
 
 	@Override
