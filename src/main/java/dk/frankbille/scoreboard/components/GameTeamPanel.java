@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -69,75 +70,78 @@ public class GameTeamPanel extends Panel {
 			}
 		};
 
+        WebMarkupContainer gameTeamPanel = new WebMarkupContainer("gameTeamPanel");
+        add(gameTeamPanel);
+
 		// Popover
-		add(new PopoverBehavior(new StringResourceModel("rating", null), new AbstractReadOnlyModel<CharSequence>() {
-			private static final long serialVersionUID = 1L;
+		gameTeamPanel.add(new PopoverBehavior(new StringResourceModel("rating", null), new AbstractReadOnlyModel<CharSequence>() {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			public CharSequence getObject() {
-				StringBuilder b = new StringBuilder();
+            @Override
+            public CharSequence getObject() {
+                StringBuilder b = new StringBuilder();
 
-				b.append("<small>");
+                b.append("<small>");
 
-				GameTeam gameTeam = model.getObject();
-				List<Player> players = playersModel.getObject();
+                GameTeam gameTeam = model.getObject();
+                List<Player> players = playersModel.getObject();
 
-				RatingCalculator rating = RatingProvider.getRatings();
-				Localizer localizer = Application.get().getResourceSettings().getLocalizer();
+                RatingCalculator rating = RatingProvider.getRatings();
+                Localizer localizer = Application.get().getResourceSettings().getLocalizer();
 
-				// Player ratings
-				for (Player player : players) {
-					b.append(player.getName()).append(" (");
+                // Player ratings
+                for (Player player : players) {
+                    b.append(player.getName()).append(" (");
 
-					GamePlayerRating playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
-					b.append(RATING_VALUE.format(playerRating.getRating()));
+                    GamePlayerRating playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
+                    b.append(RATING_VALUE.format(playerRating.getRating()));
 
-					b.append(")<br>");
-				}
+                    b.append(")<br>");
+                }
 
-				// Team rating
-				GameRating gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
-				b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
-				b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
-				b.append(" ");
-				double change = gameRatingChange.getChange(gameTeam.getId());
+                // Team rating
+                GameRating gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
+                b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
+                b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
+                b.append(" ");
+                double change = gameRatingChange.getChange(gameTeam.getId());
 
-				int playerCount = players.size();
-				if (playerCount > 0) {
-					change /= playerCount;
-				}
-				b.append(RATING_CHANGE.format(change));
+                int playerCount = players.size();
+                if (playerCount > 0) {
+                    change /= playerCount;
+                }
+                b.append(RATING_CHANGE.format(change));
 
-				b.append("</small>");
+                b.append("</small>");
 
-				return b;
-			}
-		}));
+                return b;
+            }
+        }));
 
 		// Players
-		add(new ListView<Player>("players", playersModel) {
-			private static final long serialVersionUID = 1L;
+		gameTeamPanel.add(new ListView<Player>("players", playersModel) {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			protected void populateItem(final ListItem<Player> item) {
-				final Player player = item.getModelObject();
+            @Override
+            protected void populateItem(final ListItem<Player> item) {
+                final Player player = item.getModelObject();
 
-				PageParameters pp = new PageParameters();
-				pp.set(0, player.getId());
-				BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
-				item.add(playerLink);
-				playerLink.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
+                PageParameters pp = new PageParameters();
+                pp.set(0, player.getId());
+                BookmarkablePageLink<Void> playerLink = new BookmarkablePageLink<Void>("playerLink", PlayerPage.class, pp);
+                item.add(playerLink);
+                playerLink.add(new Label("name", new PropertyModel<String>(item.getModel(), "name")));
 
-				item.add(new Label("plus", "+") {
-					private static final long serialVersionUID = 1L;
+                item.add(new Label("plus", "+") {
+                    private static final long serialVersionUID = 1L;
 
-					@Override
-					public boolean isVisible() {
-						return item.getIndex() < getViewSize()-1;
-					}
-				});
-			}
-		});
+                    @Override
+                    public boolean isVisible() {
+                        return item.getIndex() < getViewSize() - 1;
+                    }
+                });
+            }
+        });
 	}
 
 }
