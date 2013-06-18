@@ -73,4 +73,12 @@
 		<sql>UPDATE systemuser SET default_league_id=(SELECT id FROM league WHERE name='League 1')</sql>
 	</changeSet>
 
+    <changeSet id="add_active_column_to_league" author="Frank Bille &lt;github@frankbille.dk&gt;">
+        <addColumn tableName="league">
+            <column name="active" type="tinyint" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
