@@ -30,6 +30,12 @@
 			<input type="text" wicket:id="nameField" wicket:message="placeholder:name"/>
 		</div>
 	</div>
+    <div class="control-group">
+        <label wicket:for="activeField" class="control-label"><wicket:message key="active"/></label>
+        <div class="controls">
+            <input type="checkbox" wicket:id="activeField"/>
+        </div>
+    </div>
 		
 	<div class="form-actions">
 		<input type="submit" wicket:message="value:save" class="btn btn-primary"/>

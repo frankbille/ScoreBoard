@@ -21,6 +21,7 @@ package dk.frankbille.scoreboard.game;
 import java.util.Date;
 import java.util.List;
 
+import dk.frankbille.scoreboard.components.LeagueSelector;
 import org.apache.wicket.Application;
 import org.apache.wicket.Localizer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -101,18 +102,20 @@ public class EditGamePage extends SecureBasePage {
     	form.add(new GameTeamPanel("team2", new PropertyModel<GameTeam>(this, "game.team2")));
 
     	IModel<League> defaultLeagueModel = new PropertyModel<League>(this, "game.league");
-		IModel<List<League>> possibleLeaguesModel = new LoadableDetachableModel<List<League>>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected List<League> load() {
-				return scoreBoardService.getAllLeagues();
-			}
-		};
-		ChoiceRenderer<League> renderer = new ChoiceRenderer<League>("name", "id");
-		DropDownChoice<League> leagueField = new DropDownChoice<League>("leagueField", defaultLeagueModel, possibleLeaguesModel, renderer);
-		leagueField.add(new Select2Enabler());
-		form.add(leagueField);
+        form.add(new LeagueSelector("leagueField", defaultLeagueModel));
+//		IModel<List<League>> possibleLeaguesModel = new LoadableDetachableModel<List<League>>() {
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected List<League> load() {
+//				return scoreBoardService.getAllLeagues();
+//			}
+//		};
+//		ChoiceRenderer<League> renderer = new ChoiceRenderer<League>("name", "id");
+//
+//		DropDownChoice<League> leagueField = new DropDownChoice<League>("leagueField", defaultLeagueModel, possibleLeaguesModel, renderer);
+//		leagueField.add(new Select2Enabler());
+//		form.add(leagueField);
 	}
 
     public Game getGame() {

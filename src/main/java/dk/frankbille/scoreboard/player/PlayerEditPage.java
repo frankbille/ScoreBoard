@@ -96,15 +96,10 @@ public class PlayerEditPage extends SecureBasePage {
 		userModel = new LoadableDetachableModel<User>() {
 			private static final long serialVersionUID = 1L;
 
-			private User user = null;
-
 			@Override
 			protected User load() {
-				if (user == null) {
-					user = scoreBoardService.getUserForPlayer(PlayerEditPage.this.playerModel.getObject());
-				}
-
-				return user;
+                User user = scoreBoardService.getUserForPlayer(PlayerEditPage.this.playerModel.getObject());
+                return user;
 			}
 		};
 		playerForm.add(new UserPanel("userFields", userModel) {
