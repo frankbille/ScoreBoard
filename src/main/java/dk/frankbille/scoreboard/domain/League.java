@@ -62,4 +62,11 @@ public class League implements Serializable {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
+
+    @Override
+    public String toString() {
+        return "League{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

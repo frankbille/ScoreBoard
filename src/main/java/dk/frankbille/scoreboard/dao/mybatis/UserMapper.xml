@@ -55,7 +55,8 @@
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName,
 			league.id AS leagueId,
-			league.name AS leagueName
+			league.name AS leagueName,
+            league.active AS leagueActive
 		FROM
 			systemuser
 			LEFT JOIN
@@ -74,7 +75,8 @@
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName,
 			league.id AS leagueId,
-			league.name AS leagueName
+			league.name AS leagueName,
+        league.active AS leagueActive
 		FROM
 			systemuser
 			LEFT JOIN
@@ -93,7 +95,8 @@
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName,
 			league.id AS leagueId,
-			league.name AS leagueName
+			league.name AS leagueName,
+            league.active AS leagueActive
 		FROM
 			systemuser
 			LEFT JOIN
@@ -123,5 +126,6 @@
 	<resultMap id="League" type="dk.frankbille.scoreboard.domain.League">
 		<id property="id" column="leagueId"/>
 		<result property="name" column="leagueName"/>
+        <result property="active" column="leagueActive"/>
 	</resultMap>
 </mapper>
