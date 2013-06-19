@@ -19,13 +19,19 @@
 package dk.frankbille.scoreboard.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 
-public class PlayerResult implements Serializable {
+public class TeamResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Player player;
+	private TeamId team;
 
 	private int gamesWon = 0;
 
@@ -33,12 +39,20 @@ public class PlayerResult implements Serializable {
 
 	private Trend trend;
 
-	public PlayerResult(Player player) {
-		this.player = player;
+	private String name;
+
+	public TeamResult(TeamId team, Set<Player> players) {
+		this.team = team;
+		List<String> names = new ArrayList<String>();
+		for (Player player : players) {
+			names.add(player.getName());
+		}
+		Collections.sort(names);
+		this.name = StringUtils.join(names, ", ");
 	}
 
-	public Player getPlayer() {
-		return player;
+	public TeamId getTeam() {
+		return team;
 	}
 
 	public void gameWon() {
@@ -66,7 +80,7 @@ public class PlayerResult implements Serializable {
 	}
 
 	public double getRating() {
-		return RatingProvider.getRatings().getPlayerRating(player.getId()).getRating();
+		return RatingProvider.getRatings().getTeamRating(team).getRating();
 	}
 
 	public Trend getTrend() {
@@ -77,4 +91,7 @@ public class PlayerResult implements Serializable {
 		this.trend = trend;
 	}
 
+	public String getName() {
+		return name;
+	}
 }

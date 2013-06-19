@@ -18,7 +18,7 @@
 
 package dk.frankbille.scoreboard.ratings;
 
-public interface GamePlayerRating {
+public interface RatingInterface {
 	public double getRating();
-	public double getChange();
+	void changeRating(double ratingChange);
 }

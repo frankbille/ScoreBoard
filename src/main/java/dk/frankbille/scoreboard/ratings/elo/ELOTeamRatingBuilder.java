@@ -16,24 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.ratings;
+package dk.frankbille.scoreboard.ratings.elo;
 
-public class ELOGamePlayerRating implements GamePlayerRating {
+public class ELOTeamRatingBuilder {
 	private double rating;
-	private double change;
+	private int players;
 	
-	public ELOGamePlayerRating(double rating, double change) {
-		this.rating = rating;
-		this.change = change;
+	public ELOTeamRatingBuilder() {
+		this.rating = 0;
+		this.players = 0;
+	}
+	
+	public void addPlayer(double rating) {
+		this.rating += rating;
+		this.players++;
 	}
 
-	@Override
-	public double getRating() {
-		return rating;
-	}
-
-	@Override
-	public double getChange() {
-		return change;
+	public double getTeamRating() {
+		if (players==0)
+			return ELOCalculator.DEFAULT_RATING;
+		else
+			return rating/players;
 	}
 }

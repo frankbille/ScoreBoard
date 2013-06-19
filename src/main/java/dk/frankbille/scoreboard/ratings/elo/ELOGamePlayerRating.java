@@ -16,8 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.ratings;
+package dk.frankbille.scoreboard.ratings.elo;
 
-public interface PlayerRating {
-	public double getRating();
+import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
+
+public class ELOGamePlayerRating implements GamePlayerRatingInterface {
+	private double rating;
+	private double change;
+	
+	public ELOGamePlayerRating(double rating, double change) {
+		this.rating = rating;
+		this.change = change;
+	}
+
+	@Override
+	public double getRating() {
+		return rating;
+	}
+
+	@Override
+	public double getChange() {
+		return change;
+	}
 }

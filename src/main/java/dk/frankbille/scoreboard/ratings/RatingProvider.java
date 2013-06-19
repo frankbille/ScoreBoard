@@ -18,6 +18,8 @@
 
 package dk.frankbille.scoreboard.ratings;
 
+import dk.frankbille.scoreboard.ratings.elo.ELORatingCalculator;
+
 public class RatingProvider {
 	public static RatingCalculator ratings;
 	public static RatingCalculator getRatings() {

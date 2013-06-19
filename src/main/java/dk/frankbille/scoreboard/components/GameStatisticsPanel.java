@@ -21,7 +21,7 @@ package dk.frankbille.scoreboard.components;
 import dk.frankbille.scoreboard.comparators.PlayerComparator;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.ratings.GamePlayerRating;
+import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
@@ -101,7 +101,7 @@ public class GameStatisticsPanel extends Panel {
             for (Player player : sortedPlayers) {
                 javascript.append(", ");
                 if (gamePlayers.contains(player)) {
-                    GamePlayerRating gamePlayerRating = rating.getGamePlayerRating(game.getId(), player.getId());
+                    GamePlayerRatingInterface gamePlayerRating = rating.getGamePlayerRating(game.getId(), player.getId());
                     javascript.append(Math.round(gamePlayerRating.getRating() + gamePlayerRating.getChange()));
                 } else {
                     javascript.append("null");

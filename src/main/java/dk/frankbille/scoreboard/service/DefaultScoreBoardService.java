@@ -40,7 +40,9 @@ import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.PlayerResult;
-import dk.frankbille.scoreboard.domain.PlayerResult.Trend;
+import dk.frankbille.scoreboard.domain.TeamId;
+import dk.frankbille.scoreboard.domain.TeamResult;
+import dk.frankbille.scoreboard.domain.Trend;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
@@ -85,7 +87,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public void saveGame(Game game) {
 		gameDao.saveGame(game);
 	}
-	
+
 	@Transactional(readOnly = true)
 	@Override
 	public Game getGame(Long gameId) {
@@ -200,6 +202,88 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 		return playerResults;
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public List<TeamResult> getTeamResults(League league) {
+		List<TeamResult> teamResults = new ArrayList<TeamResult>();
+		Map<TeamId, TeamResult> cache = new HashMap<TeamId, TeamResult>();
+		Map<TeamId, List<Game>> teamGamesCache = new HashMap<TeamId, List<Game>>();
+
+		List<Game> games = gameDao.getAllGames(league);
+		for (Game game : games) {
+			extractTeamStatistics(game.getTeam1(), game, teamResults, cache, teamGamesCache);
+			extractTeamStatistics(game.getTeam2(), game, teamResults, cache, teamGamesCache);
+		}
+
+		// Add trends
+		for (TeamId teamId : teamGamesCache.keySet()) {
+			List<Game> playerGames = teamGamesCache.get(teamId);
+
+			// Take the last 3 games
+			int trendPeriod = playerGames.size() < 3 ? playerGames.size() : 3;
+			if (playerGames.size() > 0) {
+				Collections.sort(playerGames, new Comparator<Game>() {
+					@Override
+					public int compare(Game o1, Game o2) {
+						int compare = o2.getDate().compareTo(o1.getDate());
+						if (compare == 0) {
+							compare = o2.getId().compareTo(o1.getId());
+						}
+						return compare;
+					}
+				});
+
+				int winCount = 0;
+				int looseCount = 0;
+				for (int i = 0; i < trendPeriod; i++) {
+					Game game = playerGames.get(i);
+					if (game.didTeamWin(teamId)) {
+						winCount++;
+					} else {
+						looseCount++;
+					}
+				}
+
+				if (winCount > looseCount) {
+					cache.get(teamId).setTrend(Trend.WINNING);
+				} else if (winCount < looseCount) {
+					cache.get(teamId).setTrend(Trend.LOOSING);
+				} else {
+					cache.get(teamId).setTrend(Trend.EVEN);
+				}
+			} else {
+				cache.get(teamId).setTrend(Trend.NOT_DEFINED);
+			}
+		}
+
+		return teamResults;
+	}
+
+	private void extractTeamStatistics(GameTeam gameTeam, Game game, List<TeamResult> teamResults,
+			Map<TeamId, TeamResult> cache,
+			Map<TeamId, List<Game>> teamGamesCache) {
+		TeamId teamId = new TeamId(gameTeam);
+		TeamResult result = cache.get(teamId);
+		if (result == null) {
+			result = new TeamResult(teamId, gameTeam.getTeam().getPlayers());
+			cache.put(teamId, result);
+			teamResults.add(result);
+		}
+
+		List<Game> teamGames = teamGamesCache.get(teamId);
+		if (teamGames == null) {
+			teamGames = new ArrayList<Game>();
+			teamGamesCache.put(teamId, teamGames);
+		}
+		teamGames.add(game);
+
+		if (game.didTeamWin(gameTeam)) {
+			result.gameWon();
+		} else {
+			result.gameLost();
+		}
+	}
+
 	private void extractPlayerStatistics(GameTeam gameTeam, Game game,
 			List<PlayerResult> playerResults, Map<Player, PlayerResult> cache,
 			Map<Player, List<Game>> playerGamesCache) {
@@ -232,7 +316,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public Player getPlayer(Long playerId) {
 		return playerDao.getPlayer(playerId);
 	}
-	
+
 	@Transactional(readOnly = true)
 	@Override
 	public List<Player> searchPlayers(String term) {
@@ -266,7 +350,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public boolean hasUserWithUsername(String username) {
 		return userDao.hasUserWithUsername(username);
 	}
-	
+
 	@Transactional(readOnly = true)
 	@Override
 	public List<League> getAllLeagues() {
@@ -278,10 +362,9 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	public League getLeague(Long leagueId) {
 		return leagueDao.getLeague(leagueId);
 	}
-	
+
 	@Override
 	public void saveLeague(League league) {
 		leagueDao.saveLeague(league);
 	}
-
 }

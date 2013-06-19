@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.ratings;
+package dk.frankbille.scoreboard.ratings.elo;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,14 +27,23 @@ import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
+import dk.frankbille.scoreboard.domain.TeamId;
+import dk.frankbille.scoreboard.domain.TeamResult;
+import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
+import dk.frankbille.scoreboard.ratings.GameRatingInterface;
+import dk.frankbille.scoreboard.ratings.RatingCalculator;
+import dk.frankbille.scoreboard.ratings.RatingException;
+import dk.frankbille.scoreboard.ratings.RatingInterface;
 
 public class ELORatingCalculator implements RatingCalculator {
-	private Map<Long,ELOPlayerRating> players;
+	private Map<Long,RatingInterface> players;
+	private Map<TeamId,RatingInterface> teams;
 	private Map<Long,ELOGameRating> games;
 	private Map<String,ELOGamePlayerRating> gamePlayers;
 
 	public ELORatingCalculator() {
-		players = new HashMap<Long,ELOPlayerRating>();
+		players = new HashMap<Long,RatingInterface>();
+		teams = new HashMap<TeamId,RatingInterface>();
 		games = new HashMap<Long,ELOGameRating>();
 		gamePlayers = new HashMap<String,ELOGamePlayerRating>();
 	}
@@ -43,6 +52,7 @@ public class ELORatingCalculator implements RatingCalculator {
 	public void setGames(List<Game> games) {
 		//Clear the current ratings
 		players.clear();
+		teams.clear();
 		gamePlayers.clear();
 
 		//Order the games by date
@@ -51,10 +61,10 @@ public class ELORatingCalculator implements RatingCalculator {
 			public int compare(Game o1, Game o2) {
 				int compare = 0;
 
-				compare = -(o2.getDate().compareTo(o1.getDate()));
+				compare = o1.getDate().compareTo(o2.getDate());
 
 				if (compare == 0) {
-					compare = -(o2.getId().compareTo(o1.getId()));
+					compare = o1.getId().compareTo(o2.getId());
 				}
 
 				return compare;
@@ -80,7 +90,7 @@ public class ELORatingCalculator implements RatingCalculator {
 		if (winner==null ||loser==null)
 			throw new RatingException("ELORatingCalculator needs a winning and a loosing team");
 
-		//Calculate the rating change for the team
+		//Calculate the rating change for the teams
 		double change = ELOCalculator.calculate(winnerRating, winnerScore, loserRating, loserScore);
 
 		if (winnerScore==loserScore && winnerRating>loserRating) {
@@ -108,30 +118,46 @@ public class ELORatingCalculator implements RatingCalculator {
 	}
 
 	@Override
-	public ELOPlayerRating getPlayerRating(long playerId) {
+	public RatingInterface getPlayerRating(long playerId) {
 		//Try to find the playerRating
-		ELOPlayerRating player = players.get(playerId);
+		RatingInterface player = players.get(playerId);
 
 		if (player==null) {
 			//Create a new default player
-			player = new ELOPlayerRating();
+			player = new ELORating();
 			players.put(playerId, player);
 		}
 
 		return player;
 	}
 
-	private void setRatingChange(GameTeam team, double ratingChange) {
+	public RatingInterface getTeamRating(TeamId teamId) {
+		//Try to find the playerRating
+		RatingInterface team = teams.get(teamId);
+
+		if (team==null) {
+			//Create a new default player
+			team = new ELORating();
+			teams.put(teamId, team);
+		}
+
+		return team;
+	}
+
+	private void setRatingChange(GameTeam team, double teamChange) {
 		//Find the rating change per player
-		ratingChange = ratingChange/team.getTeam().getPlayers().size();
+		double ratingChange = teamChange/team.getTeam().getPlayers().size();
 
 		for (Player player : team.getTeam().getPlayers()) {
-			ELOPlayerRating playerRating = getPlayerRating(player.getId());
+			RatingInterface playerRating = getPlayerRating(player.getId());
 			addGamePlayerRating(
 				team.getGame().getId(), player.getId(),
 				playerRating.getRating(), ratingChange);
 			playerRating.changeRating(ratingChange);
 		}
+
+		RatingInterface teamRating = getTeamRating(new TeamId(team));
+		teamRating.changeRating(teamChange);
 	}
 
 	public void addGamePlayerRating(long gameId, long playerId, double rating, double change) {
@@ -140,12 +166,12 @@ public class ELORatingCalculator implements RatingCalculator {
 	}
 
 	@Override
-	public GamePlayerRating getGamePlayerRating(long gameId, long playerId) {
+	public GamePlayerRatingInterface getGamePlayerRating(long gameId, long playerId) {
 		return gamePlayers.get(gameId+"-"+playerId);
 	}
 
 	@Override
-	public GameRating getGameRatingChange(Long gameId) {
+	public GameRatingInterface getGameRatingChange(Long gameId) {
 		return games.get(gameId);
 	}
 }

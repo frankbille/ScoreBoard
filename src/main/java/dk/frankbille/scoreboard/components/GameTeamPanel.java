@@ -43,8 +43,8 @@ import dk.frankbille.scoreboard.domain.GameTeam;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.domain.Team;
 import dk.frankbille.scoreboard.player.PlayerPage;
-import dk.frankbille.scoreboard.ratings.GamePlayerRating;
-import dk.frankbille.scoreboard.ratings.GameRating;
+import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
+import dk.frankbille.scoreboard.ratings.GameRatingInterface;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 
@@ -93,14 +93,14 @@ public class GameTeamPanel extends Panel {
                 for (Player player : players) {
                     b.append(player.getName()).append(" (");
 
-                    GamePlayerRating playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
+                    GamePlayerRatingInterface playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
                     b.append(RATING_VALUE.format(playerRating.getRating()));
 
                     b.append(")<br>");
                 }
 
                 // Team rating
-                GameRating gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
+                GameRatingInterface gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
                 b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
                 b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
                 b.append(" ");

@@ -31,9 +31,9 @@ public class Game implements Serializable {
 	private Date date;
 
 	private GameTeam team1;
-	
+
 	private GameTeam team2;
-	
+
 	private League league;
 
 	public Long getId() {
@@ -51,27 +51,27 @@ public class Game implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public GameTeam getTeam1() {
 		return team1;
 	}
-	
+
 	public void setTeam1(GameTeam team1) {
 		this.team1 = team1;
 	}
-	
+
 	public GameTeam getTeam2() {
 		return team2;
 	}
-	
+
 	public void setTeam2(GameTeam team2) {
 		this.team2 = team2;
 	}
-	
+
 	public League getLeague() {
 		return league;
 	}
-	
+
 	public void setLeague(League league) {
 		this.league = league;
 	}
@@ -80,10 +80,23 @@ public class Game implements Serializable {
 		if (team.getId() != team1.getId() && team.getId() != team2.getId()) {
 			throw new IllegalArgumentException("The team was not one of the 2 teams in the game: "+team.getId());
 		}
-		
+
 		return team.getScore() == getLargestScore();
 	}
-	
+
+	public boolean didTeamWin(TeamId teamId) {
+		if (false == teamId.equals(new TeamId(team1)) && false == teamId.equals(new TeamId(team2))) {
+			throw new IllegalArgumentException("The team was not one of the 2 teams in the game: "+teamId.toString());
+		}
+
+		if (teamId.equals(new TeamId(team1))) {
+			return team1.getScore() == getLargestScore();
+		}
+		else {
+			return team2.getScore() == getLargestScore();
+		}
+	}
+
 	public int getLargestScore() {
 		return Math.max(team1.getScore(), team2.getScore());
 	}
@@ -97,14 +110,14 @@ public class Game implements Serializable {
 			return team1;
 		} else if (team2.hasPlayer(player)) {
 			return team2;
-		} 
+		}
 		return null;
 	}
 
 	public boolean didPlayerWin(Player player) {
 		return didTeamWin(getTeamForPlayer(player));
 	}
-	
+
 	public List<GameTeam> getTeamsSortedByScore() {
 		List<GameTeam> teams = new ArrayList<GameTeam>();
 		GameTeam firstTeam = getWinnerTeam();

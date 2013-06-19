@@ -38,6 +38,7 @@ import dk.frankbille.scoreboard.comparators.GameComparator;
 import dk.frankbille.scoreboard.components.GameStatisticsPanel;
 import dk.frankbille.scoreboard.components.PlayedGameListPanel;
 import dk.frankbille.scoreboard.components.PlayerStatisticsPanel;
+import dk.frankbille.scoreboard.components.TeamStatisticsPanel;
 import dk.frankbille.scoreboard.components.TooltipBehavior;
 import dk.frankbille.scoreboard.components.TooltipBehavior.Placement;
 import dk.frankbille.scoreboard.components.menu.MenuItemType;
@@ -57,6 +58,8 @@ public class DailyGamePage extends BasePage {
 	private PlayedGameListPanel playedGameList;
 
 	private PlayerStatisticsPanel playersContainer;
+
+	private TeamStatisticsPanel teamsContainer;
 
 	private IModel<Player> loggedInPlayerModel;
 
@@ -105,6 +108,7 @@ public class DailyGamePage extends BasePage {
     	addGameResults();
 
 		addPlayerStatistics();
+		addTeamsStatistics();
     }
 
 	private void goToDefaultLeague() {
@@ -130,6 +134,12 @@ public class DailyGamePage extends BasePage {
 		playersContainer = new PlayerStatisticsPanel("playersContainer", loggedInPlayerModel, league);
 		playersContainer.setOutputMarkupId(true);
 		add(playersContainer);
+	}
+
+	private void addTeamsStatistics() {
+		teamsContainer = new TeamStatisticsPanel("teamsContainer", league);
+		teamsContainer.setOutputMarkupId(true);
+		add(teamsContainer);
 	}
 
 	private void addGameResults() {

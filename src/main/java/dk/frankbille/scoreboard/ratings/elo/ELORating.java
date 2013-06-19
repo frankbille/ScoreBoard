@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.ratings;
+package dk.frankbille.scoreboard.ratings.elo;
 
-public class ELOPlayerRating implements PlayerRating {
+import dk.frankbille.scoreboard.ratings.RatingInterface;
+
+public class ELORating implements RatingInterface {
 	private double rating;
 
-	public ELOPlayerRating() {
+	public ELORating() {
 		this.rating = ELOCalculator.DEFAULT_RATING;
 	}
 

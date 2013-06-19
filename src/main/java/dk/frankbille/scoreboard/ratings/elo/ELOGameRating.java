@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.ratings;
+package dk.frankbille.scoreboard.ratings.elo;
 
-public class ELOGameRating implements GameRating {
+import dk.frankbille.scoreboard.ratings.GameRatingInterface;
+
+public class ELOGameRating implements GameRatingInterface {
 	private double winnerRating;
 	private long winnerTeamId;
 	private double loserRating;
