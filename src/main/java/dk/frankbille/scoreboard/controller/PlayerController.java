@@ -26,11 +26,20 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/player")
 public class PlayerController {
 
     private Dao<Player> playerDao;
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public List<Resource<Player>> getPlayers() {
+        return createResource(playerDao.findAll());
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{playerId}")
     @ResponseBody
@@ -42,6 +51,14 @@ public class PlayerController {
     @ResponseBody
     public Resource<Player> createPlayer(@RequestBody Player player) {
         return createResource(playerDao.persist(player));
+    }
+
+    private List<Resource<Player>> createResource(List<Player> players) {
+        List<Resource<Player>> playerResources = new ArrayList<>();
+        for (Player player : players) {
+            playerResources.add(createResource(player));
+        }
+        return playerResources;
     }
 
     private Resource<Player> createResource(Player player) {
