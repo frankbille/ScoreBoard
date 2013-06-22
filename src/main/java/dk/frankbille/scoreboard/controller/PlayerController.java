@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/player")
+@RequestMapping("/players")
 public class PlayerController {
 
     private Dao<Player> playerDao;

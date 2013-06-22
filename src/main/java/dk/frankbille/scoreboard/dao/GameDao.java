@@ -19,17 +19,19 @@
 package dk.frankbille.scoreboard.dao;
 
 import com.googlecode.objectify.ObjectifyService;
-import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.Team;
+import dk.frankbille.scoreboard.domain.Game;
+import dk.frankbille.scoreboard.domain.GameTeam;
+import dk.frankbille.scoreboard.domain.League;
 
-public class PlayerDao extends AbstractDao<Player> {
+public class GameDao extends AbstractDao<Game> {
 
     static {
-        ObjectifyService.register(Player.class);
-        ObjectifyService.register(Team.class);
+        ObjectifyService.register(Game.class);
+        ObjectifyService.register(GameTeam.class);
+        ObjectifyService.register(League.class);
     }
 
-    public PlayerDao() {
-        super(Player.class);
+    public GameDao() {
+        super(Game.class);
     }
 }

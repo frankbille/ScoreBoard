@@ -16,20 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.dao;
+package dk.frankbille.scoreboard.domain;
 
-import com.googlecode.objectify.ObjectifyService;
-import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.Team;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import org.springframework.hateoas.Identifiable;
 
-public class PlayerDao extends AbstractDao<Player> {
+@Entity
+public class League implements Identifiable<Long> {
 
-    static {
-        ObjectifyService.register(Player.class);
-        ObjectifyService.register(Team.class);
+    @Id
+    private Long id;
+    private String name;
+    private boolean active;
+
+    public Long getId() {
+        return id;
     }
 
-    public PlayerDao() {
-        super(Player.class);
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

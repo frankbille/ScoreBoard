@@ -29,9 +29,16 @@
     <mvc:annotation-driven/>
 
     <bean id="playerDao" class="dk.frankbille.scoreboard.dao.PlayerDao"/>
+    <bean id="gameDao" class="dk.frankbille.scoreboard.dao.GameDao"/>
 
     <bean id="playerController" class="dk.frankbille.scoreboard.controller.PlayerController">
         <property name="playerDao" ref="playerDao"/>
     </bean>
+
+    <bean id="gameController" class="dk.frankbille.scoreboard.controller.GameController">
+        <property name="gameDao" ref="gameDao"/>
+    </bean>
+
+    <bean id="adminController" class="dk.frankbille.scoreboard.controller.AdminController"/>
 
 </beans>

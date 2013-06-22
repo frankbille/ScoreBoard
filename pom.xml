@@ -35,6 +35,7 @@
     <properties>
         <appengine.version>1.8.1.1</appengine.version>
         <jetty.version>9.0.3.v20130506</jetty.version>
+        <jackson.version>2.2.1</jackson.version>
     </properties>
     <dependencies>
         <dependency>
@@ -60,17 +61,22 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.2.1</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.2.1</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.objectify</groupId>
             <artifactId>objectify</artifactId>
             <version>4.0rc1</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.2</version>
         </dependency>
 
         <!-- Test -->
@@ -138,7 +144,9 @@
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.version}</version>
                 <configuration>
+                    <fullScanSeconds>0</fullScanSeconds>
                     <jvmFlags>
+                        <jvmFlag>-Xmx512m</jvmFlag>
                         <jvmFlag>-Xdebug</jvmFlag>
                         <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
                     </jvmFlags>
