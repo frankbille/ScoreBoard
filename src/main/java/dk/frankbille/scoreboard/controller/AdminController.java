@@ -35,11 +35,25 @@ import java.util.Random;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/loadtestdata")
+    @RequestMapping(method = RequestMethod.GET, value = "/loadbigdata")
     @ResponseBody
-    public String loadTestData() {
+    public String loadBigData() {
+        createTestData(100, 5000, 10000);
+
+        return "LOADED";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/loadsmalldata")
+    @ResponseBody
+    public String loadSmallData() {
+        createTestData(5, 35, 500);
+
+        return "LOADED";
+    }
+
+    private void createTestData(int numberOfLeagues, int numberOfPlayers, int numberOfGames) {
         List<League> leagues = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= numberOfLeagues; i++) {
             League league = new League();
             league.setName("League " + i);
             league.setActive(true);
@@ -48,14 +62,14 @@ public class AdminController {
         }
 
         List<Player> players = new ArrayList<>();
-        for (int i = 1; i <= 5000; i++) {
+        for (int i = 1; i <= numberOfPlayers; i++) {
             Player p = new Player();
             p.setName("Player " + i);
             ObjectifyService.ofy().save().entity(p).now();
             players.add(p);
         }
 
-        for (int i = 1; i <= 10000; i++) {
+        for (int i = 1; i <= numberOfGames; i++) {
             Team team1 = new Team();
             team1.setPlayers(getRandomPlayers(players, 2));
             ObjectifyService.ofy().save().entity(team1).now();
@@ -83,8 +97,6 @@ public class AdminController {
             game.setLeague(getRandomLeague(leagues));
             ObjectifyService.ofy().save().entity(game).now();
         }
-
-        return "LOADED";
     }
 
     private List<Player> getRandomPlayers(List<Player> allPlayers, int numberOfPlayers) {

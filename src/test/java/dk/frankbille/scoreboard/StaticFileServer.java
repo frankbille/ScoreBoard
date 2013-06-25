@@ -19,7 +19,9 @@
 package dk.frankbille.scoreboard;
 
 import org.eclipse.jetty.proxy.ProxyServlet;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -32,18 +34,20 @@ public class StaticFileServer {
     public static void main(String[] args) throws Exception {
         Server server = new Server(8081);
 
-        ServletContextHandler handler = new ServletContextHandler(server, "/");
-        handler.setContextPath("/");
-        handler.setResourceBase("src/main/webapp");
         ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setCacheControl("no-cache");
-        handler.setHandler(resourceHandler);
-        server.setHandler(handler);
+        resourceHandler.setResourceBase("src/main/webapp");
+        resourceHandler.setWelcomeFiles(new String[]{"index.html"});
 
+        ServletContextHandler servletContextHandler = new ServletContextHandler(server, "/");
         ServletHolder servlet = new ServletHolder(ProxyServlet.Transparent.class);
-        server.setAttribute("proxyTo", "http://localhost:8080/api");
-        server.setAttribute("prefix", "/api");
-        handler.addServlet(servlet, "/api/*");
+        servlet.setInitParameter("proxyTo", "http://localhost:8080/api");
+        servlet.setInitParameter("prefix", "/api");
+        servletContextHandler.addServlet(servlet, "/api/*");
+
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resourceHandler, servletContextHandler});
+        server.setHandler(handlers);
+
 
         server.start();
         server.join();
