@@ -1,23 +1,47 @@
-var scoreBoardApp = angular.module("ScoreBoard", ["ngResource"]).config(['$routeProvider', function($routeProvider) {
+var scoreBoardApp = angular.module("ScoreBoard", ["ngResource"])
+
+scoreBoardApp.config(function($routeProvider) {
 	$routeProvider.
 		when('/players', {
-			templateUrl: 'partials/player-list.html',
+			templateUrl: '/partials/player-list.html',
 			controller: PlayerListController
 		}).
 		when('/players/:playerId', {
-			templateUrl: 'partials/player-detail.html',
+			templateUrl: '/partials/player-detail.html',
 			controller: PlayerDetailController
 		}).
 		otherwise({
 			redirectTo: '/players'
 		});
-}]);
+});
+
+function MenuController($scope, $location) {
+    $scope.location = $location;
+    $scope.items = [
+        {
+            name : "Add Game",
+            icon : "icon-plus",
+            link : "/addgame"
+        },
+        {
+            name : "Daily",
+            link : "/daily"
+        },
+        {
+            name : "Players",
+            link : "/players"
+        },
+        {
+            name : "Leagues",
+            link : "/leagues"
+        }
+    ];
+}
 
 function PlayerListController($scope, $resource) {
 	var Player = $resource("/api/players/:playerId", {playerId: '@id'});
 
     var players = Player.query(function() {
-        console.log(players);
     	$scope.players = players;
     });
 }

@@ -35,10 +35,10 @@
     <div class="navbar-inner">
         <div class="container-fluid">
             <a class="brand" href="#">ScoreBoard</a>
-            <ul class="nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
+            <ul class="nav" data-ng-controller="MenuController">
+                <li data-ng-repeat="item in items"
+                    data-ng-class="(location.path().indexOf(item.link) == 0 && 'active')"><a href="#{{item.url}}"><i
+                        class="{{item.icon}}"></i> {{item.name}}</a></li>
             </ul>
         </div>
     </div>
