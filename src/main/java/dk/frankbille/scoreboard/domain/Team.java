@@ -67,4 +67,12 @@ public class Team implements Identifiable<Long> {
         }
     }
 
+    public void addPlayer(Ref<Player> player) {
+        if (playerRefs == null) {
+            playerRefs = new ArrayList<>();
+        }
+
+        playerRefs.add(player);
+    }
+
 }

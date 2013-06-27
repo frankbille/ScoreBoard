@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!doctype html>
 <!--
   ~ ScoreBoard
   ~ Copyright (C) 2012-2013 Frank Bille
@@ -17,12 +17,28 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>scoreboardapplication</application>
-    <version>1-99-1</version>
-    <threadsafe>true</threadsafe>
-    <admin-console>
-        <page name="Load Test Data" url="/admin/loadtestdata.html"/>
-        <page name="Import Data" url="/admin/importoldversion.html"/>
-    </admin-console>
-</appengine-web-app>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Load Version</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <form action="/api/admin/import" enctype="multipart/form-data" method="POST">
+            <fieldset>
+                <legend>Import Old Data</legend>
+                <p>
+                    <label>MySQL XML Dump</label>
+                    <input type="file" placeholder="MySQL XML Dump File" name="xmlDumpFile">
+                </p>
+                <button type="submit" class="btn">Submit</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

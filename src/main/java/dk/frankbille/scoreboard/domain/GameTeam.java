@@ -49,6 +49,10 @@ public class GameTeam implements Identifiable<Long> {
         this.teamRef = Ref.create(team);
     }
 
+    public void setTeam(Ref<Team> teamRef) {
+        this.teamRef = teamRef;
+    }
+
     public int getScore() {
         return score;
     }

@@ -18,18 +18,28 @@
 
 package dk.frankbille.scoreboard.controller;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Ref;
 import dk.frankbille.scoreboard.domain.*;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -49,6 +59,16 @@ public class AdminController {
         createTestData(5, 35, 500);
 
         return "LOADED";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/import")
+    @ResponseBody
+    public String importOldData(@RequestParam("xmlDumpFile") MultipartFile xmlDumpFile) throws ParserConfigurationException, SAXException, IOException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser parser = factory.newSAXParser();
+        parser.parse(xmlDumpFile.getInputStream(), new XmlDumpParser());
+
+        return "IMPORTED";
     }
 
     private void createTestData(int numberOfLeagues, int numberOfPlayers, int numberOfGames) {
@@ -109,4 +129,152 @@ public class AdminController {
         return allLeagues.get(new Random().nextInt(allLeagues.size()));
     }
 
+    private static class XmlDumpParser extends DefaultHandler {
+        private static final DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.date();
+        private String currentTable = null;
+        private Object currentObject = null;
+        private String fieldName = null;
+        private StringBuilder fieldValue = new StringBuilder();
+        private Map<Long, Team> teams = new HashMap<>();
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if ("table_data".equalsIgnoreCase(qName)) {
+                String tableName = attributes.getValue("name");
+                if (!"DATABASECHANGELOGLOCK".equalsIgnoreCase(tableName)
+                        && !"DATABASECHANGELOG".equalsIgnoreCase(tableName)) {
+                    currentTable = tableName;
+                } else {
+                    currentTable = null;
+                }
+            } else if ("row".equalsIgnoreCase(qName)) {
+                if ("game".equalsIgnoreCase(currentTable)) {
+                    currentObject = new Game();
+                } else if ("game_team".equalsIgnoreCase(currentTable)) {
+                    currentObject = new GameTeam();
+                } else if ("team".equalsIgnoreCase(currentTable)) {
+                    currentObject = new Team();
+                } else if ("team_players".equalsIgnoreCase(currentTable)) {
+                    currentObject = new Team();
+                } else if ("player".equalsIgnoreCase(currentTable)) {
+                    currentObject = new Player();
+                } else if ("league".equalsIgnoreCase(currentTable)) {
+                    currentObject = new League();
+                } else {
+                    currentObject = null;
+                }
+            } else if ("field".equalsIgnoreCase(qName)) {
+                if (currentObject != null) {
+                    fieldName = attributes.getValue("name");
+                    fieldValue = new StringBuilder();
+                } else {
+                    fieldName = null;
+                }
+            }
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            if ("field".equalsIgnoreCase(qName)) {
+                if (currentObject instanceof Game) {
+                    Game game = (Game) currentObject;
+                    if ("id".equalsIgnoreCase(fieldName)) {
+                        game.setId(getLong());
+                    } else if ("game_date".equalsIgnoreCase(fieldName)) {
+                        game.setDate(getDate());
+                    } else if ("team1_id".equalsIgnoreCase(fieldName)) {
+                        game.setGameTeam1(Ref.create(Key.create(GameTeam.class, getLong())));
+                    } else if ("team2_id".equalsIgnoreCase(fieldName)) {
+                        game.setGameTeam2(Ref.create(Key.create(GameTeam.class, getLong())));
+                    } else if ("league_id".equalsIgnoreCase(fieldName)) {
+                        game.setLeague(Ref.create(Key.create(League.class, getLong())));
+                    }
+                } else if (currentObject instanceof GameTeam) {
+                    GameTeam gameTeam = (GameTeam) currentObject;
+                    if ("id".equalsIgnoreCase(fieldName)) {
+                        gameTeam.setId(getLong());
+                    } else if ("score".equalsIgnoreCase(fieldName)) {
+                        gameTeam.setScore(getInt());
+                    } else if ("team_id".equalsIgnoreCase(fieldName)) {
+                        gameTeam.setTeam(Ref.create(Key.create(Team.class, getLong())));
+                    }
+                } else if (currentObject instanceof Team) {
+                    Team team = (Team) currentObject;
+                    if ("team".equalsIgnoreCase(currentTable)) {
+                        if ("id".equalsIgnoreCase(fieldName)) {
+                            team.setId(getLong());
+                            teams.put(team.getId(), team);
+                        } else if ("name".equalsIgnoreCase(fieldName)) {
+                            team.setName(getString());
+                        }
+                    } else if ("team_players".equalsIgnoreCase(currentTable)) {
+                        if ("team_id".equalsIgnoreCase(fieldName)) {
+                            team.setId(getLong());
+                        } else if ("player_id".equalsIgnoreCase(fieldName)) {
+                            Team teamEntity = teams.get(team.getId());
+                            teamEntity.addPlayer(Ref.create(Key.create(Player.class, getLong())));
+                        }
+                    }
+                } else if (currentObject instanceof Player) {
+                    Player player = (Player) currentObject;
+                    if ("id".equalsIgnoreCase(fieldName)) {
+                        player.setId(getLong());
+                    } else if ("name".equalsIgnoreCase(fieldName)) {
+                        player.setName(getString());
+                    } else if ("full_name".equalsIgnoreCase(fieldName)) {
+                        player.setFullName(getString());
+                    } else if ("group_name".equalsIgnoreCase(fieldName)) {
+                        player.setGroupName(getString());
+                    }
+                } else if (currentObject instanceof League) {
+                    League league = (League) currentObject;
+                    if ("id".equalsIgnoreCase(fieldName)) {
+                        league.setId(getLong());
+                    } else if ("name".equalsIgnoreCase(fieldName)) {
+                        league.setName(getString());
+                    } else if ("active".equalsIgnoreCase(fieldName)) {
+                        league.setActive(getBoolean());
+                    }
+                }
+            } else if ("row".equalsIgnoreCase(qName)) {
+                if (currentObject != null) {
+                    if (!(currentObject instanceof Team)) {
+                        ObjectifyService.ofy().save().entity(currentObject);
+                        currentObject = null;
+                    }
+                }
+            } else if ("database".equalsIgnoreCase(qName)) {
+                for (Team team : teams.values()) {
+                    ObjectifyService.ofy().save().entity(team);
+                }
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if (fieldName != null) {
+                fieldValue.append(ch, start, length);
+            }
+        }
+
+        private long getLong() {
+            return Long.parseLong(fieldValue.toString());
+        }
+
+        private int getInt() {
+            return Integer.parseInt(fieldValue.toString());
+        }
+
+        private String getString() {
+            return fieldValue.toString();
+        }
+
+        private boolean getBoolean() {
+            return getInt() == 1;
+        }
+
+        private Date getDate() {
+            return DATE_FORMAT.parseDateTime(fieldValue.toString()).toDate();
+        }
+    }
 }

@@ -63,6 +63,10 @@ public class Game implements Identifiable<Long> {
         this.gameTeam1Key = Ref.create(gameTeam1);
     }
 
+    public void setGameTeam1(Ref<GameTeam> gameTeam1Key) {
+        this.gameTeam1Key = gameTeam1Key;
+    }
+
     public GameTeam getGameTeam2() {
         return gameTeam2Key.get();
     }
@@ -71,11 +75,19 @@ public class Game implements Identifiable<Long> {
         this.gameTeam2Key = Ref.create(gameTeam2);
     }
 
+    public void setGameTeam2(Ref<GameTeam> gameTeam2Key) {
+        this.gameTeam2Key = gameTeam2Key;
+    }
+
     public League getLeague() {
         return leagueKey.get();
     }
 
     public void setLeague(League league) {
         this.leagueKey = Ref.create(league);
+    }
+
+    public void setLeague(Ref<League> leagueKey) {
+        this.leagueKey = leagueKey;
     }
 }

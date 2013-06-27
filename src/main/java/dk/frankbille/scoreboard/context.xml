@@ -41,4 +41,12 @@
 
     <bean id="adminController" class="dk.frankbille.scoreboard.controller.AdminController"/>
 
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- max upload size in bytes -->
+        <property name="maxUploadSize" value="20971520"/>
+
+        <!-- max size of file in memory (in bytes) -->
+        <property name="maxInMemorySize" value="1048576"/>
+    </bean>
+
 </beans>

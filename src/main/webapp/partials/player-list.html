@@ -21,14 +21,14 @@
     <tr>
         <th>Name</th>
         <th>Full Name</th>
-        <th>Group</th>
+        <th>Group Name</th>
     </tr>
     </thead>
     <tbody>
     <tr data-ng-repeat="player in players | orderBy:'player.name'">
         <td class="nopad"><a href="#/players/{{player.id}}">{{player.name}}</a></td>
         <td>{{player.fullName}}</td>
-        <td>{{player.group}}</td>
+        <td>{{player.groupName}}</td>
     </tr>
     </tbody>
 </table>
