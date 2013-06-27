@@ -16,8 +16,19 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ul>
-    <li data-ng-repeat="player in players">
-        <a href="#/players/{{player.id}}">{{player.name}}</a>
-    </li>
-</ul>
+<table class="table table-hover table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Full Name</th>
+        <th>Group</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-ng-repeat="player in players | orderBy:'player.name'">
+        <td class="nopad"><a href="#/players/{{player.id}}">{{player.name}}</a></td>
+        <td>{{player.fullName}}</td>
+        <td>{{player.group}}</td>
+    </tr>
+    </tbody>
+</table>
