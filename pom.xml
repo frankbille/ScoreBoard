@@ -33,7 +33,7 @@
         </license>
     </licenses>
     <properties>
-        <appengine.version>1.8.1.1</appengine.version>
+        <appengine.target.version>1.8.1.1</appengine.target.version>
         <jetty.version>9.0.3.v20130506</jetty.version>
         <jackson.version>2.2.1</jackson.version>
     </properties>
@@ -41,12 +41,12 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.version}</version>
+            <version>${appengine.target.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-labs</artifactId>
-            <version>${appengine.version}</version>
+            <version>${appengine.target.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -170,7 +170,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.version}</version>
+                <version>${appengine.target.version}</version>
                 <configuration>
                     <fullScanSeconds>0</fullScanSeconds>
                     <jvmFlags>
