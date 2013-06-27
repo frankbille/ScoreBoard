@@ -25,7 +25,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr data-ng-repeat="player in players | orderBy:'player.name'">
+    <tr data-ng-repeat="player in players | orderBy:'name'">
         <td class="nopad"><a href="#/players/{{player.id}}">{{player.name}}</a></td>
         <td>{{player.fullName}}</td>
         <td>{{player.groupName}}</td>
