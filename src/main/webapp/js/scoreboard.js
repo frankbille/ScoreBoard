@@ -10,9 +10,23 @@ scoreBoardApp.config(function($routeProvider) {
 			templateUrl: '/partials/player-detail.html',
 			controller: PlayerDetailController
 		}).
+		when('/leagues', {
+            templateUrl: '/partials/league-list.html',
+            controller: LeagueListController
+        }).
+		when('/leagues/:leagueId', {
+			templateUrl: '/partials/league-detail.html',
+			controller: LeagueDetailController
+		}).
 		otherwise({
 			redirectTo: '/players'
 		});
+});
+
+scoreBoardApp.filter("yesno", function() {
+	return function(input) {
+		return input ? "Yes" : "No";
+	}
 });
 
 function MenuController($scope, $location) {
@@ -50,4 +64,18 @@ function PlayerDetailController($scope, $resource, $routeParams) {
 	var Player = $resource("/api/players/:playerId", {playerId: '@id'});
 
     $scope.player = Player.get({playerId : $routeParams.playerId});
+}
+
+function LeagueListController($scope, $resource) {
+	var League = $resource("/api/leagues/:leagueId", {leagueId: '@id'});
+
+    var leagues = League.query(function() {
+    	$scope.leagues = leagues;
+    });
+}
+
+function LeagueDetailController($scope, $resource, $routeParams) {
+	var League = $resource("/api/leagues/:leagueId", {leagueId: '@id'});
+
+    $scope.league = League.get({leagueId : $routeParams.leagueId});
 }

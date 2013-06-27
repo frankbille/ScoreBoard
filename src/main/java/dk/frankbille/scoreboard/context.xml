@@ -29,10 +29,15 @@
     <mvc:annotation-driven/>
 
     <bean id="playerDao" class="dk.frankbille.scoreboard.dao.PlayerDao"/>
+    <bean id="leagueDao" class="dk.frankbille.scoreboard.dao.LeagueDao"/>
     <bean id="gameDao" class="dk.frankbille.scoreboard.dao.GameDao"/>
 
     <bean id="playerController" class="dk.frankbille.scoreboard.controller.PlayerController">
         <property name="playerDao" ref="playerDao"/>
+    </bean>
+
+    <bean id="leagueController" class="dk.frankbille.scoreboard.controller.LeagueController">
+        <property name="leagueDao" ref="leagueDao"/>
     </bean>
 
     <bean id="gameController" class="dk.frankbille.scoreboard.controller.GameController">

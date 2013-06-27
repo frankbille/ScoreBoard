@@ -37,7 +37,7 @@
             <a class="brand" href="#">ScoreBoard</a>
             <ul class="nav" data-ng-controller="MenuController">
                 <li data-ng-repeat="item in items"
-                    data-ng-class="(location.path().indexOf(item.link) == 0 && 'active')"><a href="#{{item.url}}"><i
+                    data-ng-class="(location.path().indexOf(item.link) == 0 && 'active')"><a href="#{{item.link}}"><i
                         class="{{item.icon}}"></i> {{item.name}}</a></li>
             </ul>
         </div>
