@@ -23,6 +23,38 @@ scoreBoardApp.config(function($routeProvider) {
 		});
 });
 
+scoreBoardApp.factory("ScoreBoardCache", function($cacheFactory) {
+	return $cacheFactory("ScoreBoard");
+});
+
+scoreBoardApp.factory("PlayerResource", function($resource, ScoreBoardCache) {
+    return $resource("/api/players/:playerId", {playerId: '@id'}, {
+		"get"   : {
+			method : "GET",
+			cache  : ScoreBoardCache
+		},
+		"query" : {
+			method  : "GET",
+			cache   : ScoreBoardCache,
+			isArray : true
+		}
+	});
+});
+
+scoreBoardApp.factory("LeagueResource", function($resource, ScoreBoardCache) {
+    return $resource("/api/leagues/:leagueId", {leagueId: '@id'}, {
+		"get"   : {
+			method : "GET",
+			cache  : ScoreBoardCache
+		},
+		"query" : {
+			method  : "GET",
+			cache   : ScoreBoardCache,
+			isArray : true
+		}
+	});
+});
+
 scoreBoardApp.filter("yesno", function() {
 	return function(input) {
 		return input ? "Yes" : "No";
@@ -52,30 +84,22 @@ function MenuController($scope, $location) {
     ];
 }
 
-function PlayerListController($scope, $resource) {
-	var Player = $resource("/api/players/:playerId", {playerId: '@id'});
-
-    var players = Player.query(function() {
+function PlayerListController($scope, $resource, PlayerResource) {
+    var players = PlayerResource.query(function() {
     	$scope.players = players;
     });
 }
 
-function PlayerDetailController($scope, $resource, $routeParams) {
-	var Player = $resource("/api/players/:playerId", {playerId: '@id'});
-
-    $scope.player = Player.get({playerId : $routeParams.playerId});
+function PlayerDetailController($scope, $resource, PlayerResource, $routeParams) {
+    $scope.player = PlayerResource.get({playerId : $routeParams.playerId});
 }
 
-function LeagueListController($scope, $resource) {
-	var League = $resource("/api/leagues/:leagueId", {leagueId: '@id'});
-
-    var leagues = League.query(function() {
+function LeagueListController($scope, $resource, LeagueResource) {
+    var leagues = LeagueResource.query(function() {
     	$scope.leagues = leagues;
     });
 }
 
-function LeagueDetailController($scope, $resource, $routeParams) {
-	var League = $resource("/api/leagues/:leagueId", {leagueId: '@id'});
-
-    $scope.league = League.get({leagueId : $routeParams.leagueId});
+function LeagueDetailController($scope, $resource, LeagueResource, $routeParams) {
+    $scope.league = LeagueResource.get({leagueId : $routeParams.leagueId});
 }
