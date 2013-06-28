@@ -1,4 +1,4 @@
-var scoreBoardApp = angular.module("ScoreBoard", ["ngResource"])
+var scoreBoardApp = angular.module("ScoreBoard", ["ngResource", "ui.bootstrap"])
 
 scoreBoardApp.config(function($routeProvider) {
 	$routeProvider.
@@ -63,25 +63,12 @@ scoreBoardApp.filter("yesno", function() {
 
 function MenuController($scope, $location) {
     $scope.location = $location;
-    $scope.items = [
-        {
-            name : "Add Game",
-            icon : "icon-plus",
-            link : "/addgame"
-        },
-        {
-            name : "Daily",
-            link : "/daily"
-        },
-        {
-            name : "Players",
-            link : "/players"
-        },
-        {
-            name : "Leagues",
-            link : "/leagues"
-        }
-    ];
+}
+
+function DailyMenuController($scope, LeagueResource) {
+    var leagues = LeagueResource.query(function() {
+        $scope.leagues = leagues;
+    });
 }
 
 function PlayerListController($scope, $resource, PlayerResource) {

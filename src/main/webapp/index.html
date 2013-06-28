@@ -27,6 +27,7 @@
 
     <script src="js/angular.js"></script>
     <script src="js/angular-resource.js"></script>
+    <script src="js/ui-bootstrap-0.4.0.min.js"></script>
     <script src="js/scoreboard.js"></script>
 </head>
 <body>
@@ -36,9 +37,25 @@
         <div class="container-fluid">
             <a class="brand" href="#">ScoreBoard</a>
             <ul class="nav" data-ng-controller="MenuController">
-                <li data-ng-repeat="item in items"
-                    data-ng-class="(location.path().indexOf(item.link) == 0 && 'active')"><a href="#{{item.link}}"><i
-                        class="{{item.icon}}"></i> {{item.name}}</a></li>
+                <li data-ng-class="(location.path().indexOf('/addgame') == 0 && 'active')">
+                    <a href="#/addgame"><i class="icon-plus"></i> Add Game</a>
+                </li>
+                <li class="dropdown" data-ng-class="(location.path().indexOf('/daily') == 0 && 'active')">
+                    <a id="menu-daily-drop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Daily
+                        <b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="menu-daily-drop"
+                        data-ng-controller="DailyMenuController">
+                        <li role="presentation" data-ng-repeat="league in leagues">
+                            <a role="menuitem" href="#/daily/{{league.id}}">{{league.name}}</a>
+                        </li>
+                    </ul>
+                </li>
+                <li data-ng-class="(location.path().indexOf('/players') == 0 && 'active')">
+                    <a href="#/players">Players</a>
+                </li>
+                <li data-ng-class="(location.path().indexOf('/leagues') == 0 && 'active')">
+                    <a href="#/leagues">Leagues</a>
+                </li>
             </ul>
         </div>
     </div>
