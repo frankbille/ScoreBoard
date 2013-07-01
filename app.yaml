@@ -1,0 +1,38 @@
+application: scoreboardapplication
+version: 1_99_4
+runtime: go
+api_version: go1
+
+handlers:
+- url: /
+  static_files: client/index.html
+  upload: client/index.html
+  mime_type: text/html; charset=utf-8
+
+- url: /(.*\.css)
+  mime_type: text/css; charset=utf-8
+  static_files: client/\1
+  upload: client/(.*\.css)
+
+- url: /(.*\.html)
+  mime_type: text/html; charset=utf-8
+  static_files: client/\1
+  upload: client/(.*\.html)
+
+- url: /(.*\.ico)
+  mime_type: image/x-icon; charset=utf-8
+  static_files: client/\1
+  upload: client/(.*\.ico)
+
+- url: /(.*\.js)
+  mime_type: text/javascript; charset=utf-8
+  static_files: client/\1
+  upload: client/(.*\.js)
+
+- url: /(.*\.woff)
+  mime_type: application/font-woff
+  static_files: client/\1
+  upload: client/(.*\.woff)
+
+- url: /api/.*
+  script: _go_app
