@@ -27,15 +27,18 @@ type ScoreBoardService struct {
 
 func (r ScoreBoardService) HandleGetAllPlayers() []domain.Player {
 	c := appengine.NewContext(r.Request());
-	q := datastore.NewQuery("Player").
-		Order("Name")
+	q := datastore.NewQuery("Player").Order("Name")
 	var players []domain.Player
 	_, err := q.GetAll(c, &players)
 	if err != nil {
 		c.Errorf("fetching players: %v", err)
 		return nil
 	}
-
+	
+	if players == nil {
+		return make([]domain.Player, 0, 1)
+	}
+	
 	return players
 }
 

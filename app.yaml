@@ -9,15 +9,21 @@ handlers:
   upload: client/index.html
   mime_type: text/html; charset=utf-8
 
+- url: /admin/(.*\.html)
+  mime_type: text/html; charset=utf-8
+  static_files: client/admin/\1
+  upload: client/admin/(.*\.html)
+  login: admin
+
 - url: /(.*\.css)
   mime_type: text/css; charset=utf-8
   static_files: client/\1
   upload: client/(.*\.css)
 
-- url: /(.*\.html)
+- url: /partials/(.*\.html)
   mime_type: text/html; charset=utf-8
-  static_files: client/\1
-  upload: client/(.*\.html)
+  static_files: client/partials/\1
+  upload: client/partials/(.*\.html)
 
 - url: /(.*\.ico)
   mime_type: image/x-icon; charset=utf-8
@@ -36,3 +42,10 @@ handlers:
 
 - url: /api/.*
   script: _go_app
+
+admin_console:
+  pages:
+  - name: Import Old Version
+    url: /admin/importoldversion.html
+  - name: Load Test Data
+    url: /admin/loadtestdata.html
