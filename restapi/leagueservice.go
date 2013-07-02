@@ -1,15 +1,14 @@
-package restapi
+package scoreboard
 
 import (
     "appengine"
     "appengine/datastore"
-    "restapi/domain"
 )
 
-func (r ScoreBoardService) HandleGetAllLeagues() []domain.League {
+func (r ScoreBoardService) HandleGetAllLeagues() []League {
     c := appengine.NewContext(r.Request())
     q := datastore.NewQuery("league").Order("Name")
-    var leagues []domain.League
+    var leagues []League
     _, err := q.GetAll(c, &leagues)
     if err != nil {
         c.Errorf("Error fetching leagues: %v", err)
@@ -17,7 +16,7 @@ func (r ScoreBoardService) HandleGetAllLeagues() []domain.League {
     }
 
     if leagues == nil {
-        return make([]domain.League, 0, 1)
+        return make([]League, 0, 1)
     }
 
     return leagues

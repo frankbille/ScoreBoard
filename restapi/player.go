@@ -1,4 +1,4 @@
-package domain
+package scoreboard
 
 import (
     "github.com/frankbille/sanitize"

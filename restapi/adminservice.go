@@ -1,4 +1,4 @@
-package restapi
+package scoreboard
 
 import (
     "appengine"
@@ -7,7 +7,6 @@ import (
     "fmt"
     "io/ioutil"
     "net/http"
-    "restapi/domain"
     "strconv"
     "strings"
     "time"
@@ -84,9 +83,9 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
         Score int
     }
 
-    allPlayers := map[int64]domain.Player{}
-    allLeagues := map[int64]domain.League{}
-    allGames := map[int64]*domain.Game{}
+    allPlayers := map[int64]Player{}
+    allLeagues := map[int64]League{}
+    allGames := map[int64]*Game{}
     allGameData := map[int64]gameData{}
     allGameTeamData := map[int64]gameTeamData{}
     allTeamPlayers := map[int64][]int64{}
@@ -112,7 +111,7 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
                     }
                 }
 
-                p := domain.NewPlayer(Name, FullName, GroupName)
+                p := NewPlayer(Name, FullName, GroupName)
                 allPlayers[Id] = p
             }
         }
@@ -132,7 +131,7 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
                     }
                 }
 
-                l := domain.NewLeague(Name, Active)
+                l := NewLeague(Name, Active)
                 allLeagues[Id] = l
             }
         }
@@ -158,7 +157,7 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
                     }
                 }
 
-                allGames[Id] = &domain.Game{
+                allGames[Id] = &Game{
                     Id:       Id,
                     GameDate: GameDate,
                 }
@@ -236,18 +235,18 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-func createGameTeam(c appengine.Context, score int, players []int64, allPlayers map[int64]domain.Player) domain.GameTeam {
+func createGameTeam(c appengine.Context, score int, players []int64, allPlayers map[int64]Player) GameTeam {
     playerKeys := make([]*datastore.Key, len(players))
     for index, playerId := range players {
         playerKeys[index] = datastore.NewKey(c, "player", allPlayers[playerId].GetId(), 0, nil)
     }
-    return domain.GameTeam{
+    return GameTeam{
         Players: playerKeys,
         Score:   score,
     }
 }
 
-func persistObject(c appengine.Context, w http.ResponseWriter, entityName string, entity domain.PersistableObject) {
+func persistObject(c appengine.Context, w http.ResponseWriter, entityName string, entity PersistableObject) {
     var key *datastore.Key
     if entity.GetId() != "" {
         key = datastore.NewKey(c, entityName, entity.GetId(), 0, nil)
