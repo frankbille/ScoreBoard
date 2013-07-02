@@ -64,9 +64,11 @@ To get started you minimally need the tools for it:
       For a quick start to actually be able to compile things, read [this document][goinstalldoc].
    3. Make sure that you read http://golang.org/doc/code.html#Workspaces and http://golang.org/doc/code.html#GOPATH
       from the above guide, as they are quite essential.
-   4. Execute the two following commands when Go is set up correctly:
-      * `go get github.com/frankbille/sanitize`
-      * `go get github.com/googollee/go-rest`
+   4. Open a command prompt and `cd` to the folder where you have cloned the ScoreBoard
+      code to on your computer.
+   5. Execute the two following commands when Go is set up correctly:
+      * `go get`
+	  * This will download dependencies and build them.
 2. [Google App Engine][gae]
    1. Download and install [Google Appengine SDK for Go][gaeinstall]
    2. Open a command prompt and `cd` to the folder where you have cloned the ScoreBoard
