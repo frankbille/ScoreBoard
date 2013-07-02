@@ -21,6 +21,7 @@ type ScoreBoardService struct {
 
     GetAllPlayers rest.Processor `method:"GET" path:"/players"`
     GetAllLeagues rest.Processor `method:"GET" path:"/leagues"`
+    GetLeague     rest.Processor `method:"GET" path:"/leagues/:leagueId"`
 
     post map[string]string
 }

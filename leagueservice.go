@@ -21,3 +21,13 @@ func (r ScoreBoardService) HandleGetAllLeagues() []League {
 
     return leagues
 }
+
+func (r ScoreBoardService) HandleGetLeague() League {
+    c := appengine.NewContext(r.Request())
+    key := datastore.NewKey(c, "league", r.Vars()["leagueId"], 0, nil)
+    var league League
+    if err := datastore.Get(c, key, &league); err != nil {
+        c.Errorf("Error fetching league: %v", err)
+    }
+    return league
+}

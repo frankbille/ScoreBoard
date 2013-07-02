@@ -18,6 +18,10 @@ scoreBoardApp.config(function($routeProvider) {
 			templateUrl: '/partials/league-detail.html',
 			controller: LeagueDetailController
 		}).
+		when('/daily/:leagueId', {
+			templateUrl: '/partials/daily.html',
+			controller: DailyController
+		}).
 		otherwise({
 			redirectTo: '/players'
 		});
@@ -71,22 +75,26 @@ function DailyMenuController($scope, LeagueResource) {
     });
 }
 
-function PlayerListController($scope, $resource, PlayerResource) {
+function PlayerListController($scope, PlayerResource) {
     var players = PlayerResource.query(function() {
     	$scope.players = players;
     });
 }
 
-function PlayerDetailController($scope, $resource, PlayerResource, $routeParams) {
+function PlayerDetailController($scope, PlayerResource, $routeParams) {
     $scope.player = PlayerResource.get({playerId : $routeParams.playerId});
 }
 
-function LeagueListController($scope, $resource, LeagueResource) {
+function LeagueListController($scope, LeagueResource) {
     var leagues = LeagueResource.query(function() {
     	$scope.leagues = leagues;
     });
 }
 
-function LeagueDetailController($scope, $resource, LeagueResource, $routeParams) {
+function LeagueDetailController($scope, LeagueResource, $routeParams) {
     $scope.league = LeagueResource.get({leagueId : $routeParams.leagueId});
+}
+
+function DailyController($scope, LeagueResource, $routeParams) {
+	$scope.league = LeagueResource.get({leagueId : $routeParams.leagueId});
 }
