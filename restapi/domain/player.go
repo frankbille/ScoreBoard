@@ -19,3 +19,7 @@ func NewPlayer(Name, FullName, GroupName string) Player {
         GroupName: GroupName,
     }
 }
+
+func (p Player) GetId() string {
+	return p.Id
+}

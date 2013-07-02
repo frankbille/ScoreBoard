@@ -17,3 +17,7 @@ func NewLeague(Name string, Active bool) League {
         Active: Active,
     }
 }
+
+func (l League) GetId() string {
+	return l.Id
+}
