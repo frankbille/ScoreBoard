@@ -8,6 +8,7 @@ import (
     "io/ioutil"
     "net/http"
     "restapi/domain"
+    "strconv"
     "strings"
 )
 
@@ -92,6 +93,31 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
                 p := domain.NewPlayer(Name, FullName, GroupName)
                 key := datastore.NewKey(c, "player", p.Id, 0, nil)
                 key, err := datastore.Put(c, key, &p)
+
+                if err != nil {
+                    http.Error(w, err.Error(), http.StatusInternalServerError)
+                    return
+                }
+
+                fmt.Fprintf(w, "Key: %v\n", key)
+            }
+        }
+        // Leagues
+        if strings.EqualFold(table.Name, "league") {
+            for _, row := range table.Rows {
+                var Name string
+                var Active bool
+                for _, field := range row.Fields {
+                    if field.Name == "name" {
+                        Name = field.Value
+                    } else if field.Name == "active" {
+                        Active, _ = strconv.ParseBool(field.Value)
+                    }
+                }
+
+                l := domain.NewLeague(Name, Active)
+                key := datastore.NewKey(c, "league", l.Id, 0, nil)
+                key, err := datastore.Put(c, key, &l)
 
                 if err != nil {
                     http.Error(w, err.Error(), http.StatusInternalServerError)

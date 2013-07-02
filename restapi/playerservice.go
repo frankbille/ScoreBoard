@@ -15,8 +15,6 @@ func (r ScoreBoardService) HandleGetAllPlayers() []domain.Player {
         c.Errorf("Error fetching players: %v", err)
         return nil
     }
-	
-	c.Infof("Players: %v", players)
 
     if players == nil {
         return make([]domain.Player, 0, 1)
