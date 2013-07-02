@@ -13,7 +13,6 @@ handlers:
   mime_type: text/html; charset=utf-8
   static_files: client/admin/\1
   upload: client/admin/(.*\.html)
-  login: admin
 
 - url: /(.*\.css)
   mime_type: text/css; charset=utf-8
@@ -41,6 +40,9 @@ handlers:
   upload: client/(.*\.woff)
 
 - url: /api/.*
+  script: _go_app
+  
+- url: /api/admin/.*
   script: _go_app
 
 admin_console:
