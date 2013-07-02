@@ -1,0 +1,8 @@
+language: go
+install:
+  - go get github.com/frankbille/sanitize
+  - go get github.com/googollee/go-rest
+script: go test restapi/*.go
+branches:
+  only:
+    - appengine-angularjs
