@@ -236,9 +236,9 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
 }
 
 func createGameTeam(c appengine.Context, score int, players []int64, allPlayers map[int64]Player) GameTeam {
-    playerKeys := make([]*datastore.Key, len(players))
+    playerKeys := make([]string, len(players))
     for index, playerId := range players {
-        playerKeys[index] = datastore.NewKey(c, "player", allPlayers[playerId].GetId(), 0, nil)
+        playerKeys[index] = allPlayers[playerId].GetId()
     }
     return GameTeam{
         Players: playerKeys,

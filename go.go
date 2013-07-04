@@ -1,27 +1,28 @@
 package scoreboard
 
 import (
-    "fmt"
-    "github.com/googollee/go-rest"
-    "net/http"
+	"fmt"
+	"github.com/googollee/go-rest"
+	"net/http"
 )
 
 func init() {
-    handler, err := rest.New(&ScoreBoardService{
-        post: make(map[string]string),
-    })
-    fmt.Errorf("%s", err)
-    http.Handle("/api/", handler)
+	handler, err := rest.New(&ScoreBoardService{
+		post: make(map[string]string),
+	})
+	fmt.Errorf("%s", err)
+	http.Handle("/api/", handler)
 
-    http.HandleFunc("/api/admin/import", importOldVersion)
+	http.HandleFunc("/api/admin/import", importOldVersion)
 }
 
 type ScoreBoardService struct {
-    rest.Service `prefix:"/api" mime:"application/json" charset:"utf-8"`
+	rest.Service `prefix:"/api" mime:"application/json" charset:"utf-8"`
 
-    GetAllPlayers rest.Processor `method:"GET" path:"/players"`
-    GetAllLeagues rest.Processor `method:"GET" path:"/leagues"`
-    GetLeague     rest.Processor `method:"GET" path:"/leagues/:leagueId"`
+	GetAllPlayers  rest.Processor `method:"GET" path:"/players"`
+	GetAllLeagues  rest.Processor `method:"GET" path:"/leagues"`
+	GetLeague      rest.Processor `method:"GET" path:"/leagues/:leagueId"`
+	GetLeagueGames rest.Processor `method:"GET" path:"/leagues/:leagueId/games"`
 
-    post map[string]string
+	post map[string]string
 }

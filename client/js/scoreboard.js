@@ -28,7 +28,17 @@ scoreBoardApp.config(function($routeProvider) {
 });
 
 scoreBoardApp.factory("ScoreBoardCache", function($cacheFactory) {
-	return $cacheFactory("ScoreBoard");
+	var cache = $cacheFactory("ScoreBoard");
+	var origGet = cache.get;
+	cache.get = function(key) {
+		if (key.indexOf("/api/players/") > -1) {
+			var players = origGet("/api/players");
+			console.log(players);
+		}
+		
+		return origGet(key);
+	};
+	return cache;
 });
 
 scoreBoardApp.factory("PlayerResource", function($resource, ScoreBoardCache) {
@@ -59,9 +69,41 @@ scoreBoardApp.factory("LeagueResource", function($resource, ScoreBoardCache) {
 	});
 });
 
+scoreBoardApp.factory("GameResource", function($resource, ScoreBoardCache) {
+    return $resource("/api/leagues/:leagueId/games", {leagueId: '@id'}, {
+		"get"   : {
+			method : "GET",
+			cache  : ScoreBoardCache
+		},
+		"query" : {
+			method  : "GET",
+			cache   : ScoreBoardCache,
+			isArray : true
+		}
+	});
+});
+
 scoreBoardApp.filter("yesno", function() {
 	return function(input) {
 		return input ? "Yes" : "No";
+	}
+});
+
+scoreBoardApp.directive("gameteam", function() {
+	return {
+		restrict: 'A',
+		templateUrl: '/partials/gameteam.html',
+		replace: false,
+		transclude: false,
+		scope: {
+			gameteam: "="
+		},
+		controller: function($scope, $element, $attrs, $transclude, PlayerResource) {
+			$scope.players = [];
+			for (i = 0; i < $scope.gameteam.players.length; i++) {
+				$scope.players.push(PlayerResource.get({playerId : $scope.gameteam.players[i]}));
+			}
+		}
 	}
 });
 
@@ -95,6 +137,10 @@ function LeagueDetailController($scope, LeagueResource, $routeParams) {
     $scope.league = LeagueResource.get({leagueId : $routeParams.leagueId});
 }
 
-function DailyController($scope, LeagueResource, $routeParams) {
+function DailyController($scope, LeagueResource, GameResource, $routeParams) {
 	$scope.league = LeagueResource.get({leagueId : $routeParams.leagueId});
+	
+	var games = GameResource.query({leagueId : $routeParams.leagueId}, function() {
+		$scope.games = games;
+	})
 }

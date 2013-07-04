@@ -20,7 +20,24 @@
 <div class="row-fluid">
 	<div class="span7">
 		<h2>Played Games</h2>
-		TODO
+		<table class="table table-hover table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th colspan='3'>Teams</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="game in games">
+					<td>{{game.gameDate | date:'yyyy-MM-dd'}}</td>
+					<td gameteam="game.team1"></td>
+					<td>vs</td>
+					<td>{{game.team2}}</td>
+					<td>SCORE</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 	<div class="span5">
 		<h2>Players by Rating</h2>
