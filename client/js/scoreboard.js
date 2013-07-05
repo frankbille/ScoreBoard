@@ -28,17 +28,7 @@ scoreBoardApp.config(function($routeProvider) {
 });
 
 scoreBoardApp.factory("ScoreBoardCache", function($cacheFactory) {
-	var cache = $cacheFactory("ScoreBoard");
-	var origGet = cache.get;
-	cache.get = function(key) {
-		if (key.indexOf("/api/players/") > -1) {
-			var players = origGet("/api/players");
-			console.log(players);
-		}
-		
-		return origGet(key);
-	};
-	return cache;
+	return $cacheFactory("ScoreBoard");
 });
 
 scoreBoardApp.factory("PlayerResource", function($resource, ScoreBoardCache) {
