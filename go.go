@@ -14,6 +14,7 @@ func init() {
 	http.Handle("/api/", handler)
 
 	http.HandleFunc("/api/admin/import", importOldVersion)
+	http.HandleFunc("/api/admin/doimport", doImportOldVersion)
 }
 
 type ScoreBoardService struct {

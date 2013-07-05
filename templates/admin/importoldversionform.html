@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Old Version</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <form action="{{.}}" enctype="multipart/form-data" method="POST">
+            <fieldset>
+                <legend>Import Old Data</legend>
+                <p>
+                    <label>MySQL XML Dump</label>
+                    <input type="file" placeholder="MySQL XML Dump File" name="xmlDumpFile">
+                </p>
+                <button type="submit" class="btn">Submit</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

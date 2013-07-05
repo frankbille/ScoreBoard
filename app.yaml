@@ -46,10 +46,14 @@ handlers:
 - url: /api/admin/.*
   script: _go_app
   login: admin
+  
+- url: /_ah/queue/go/delay
+  script: _go_app
+  login: admin
 
 admin_console:
   pages:
   - name: Import Old Version
-    url: /admin/importoldversion.html
+    url: /api/admin/import
   - name: Load Test Data
     url: /admin/loadtestdata.html
