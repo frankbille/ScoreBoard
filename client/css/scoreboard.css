@@ -1,3 +1,11 @@
 body {
 	padding-top: 60px;
 }
+
+.pagination a {
+	cursor: pointer;
+}
+
+.nowrap {
+	white-space: nowrap;
+}

@@ -29,14 +29,21 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="game in games">
-					<td>{{game.gameDate | date:'yyyy-MM-dd'}}</td>
+				<tr data-ng-repeat="game in games | orderBy:'-gameDate' | startFrom:currentPage*pageSize | limitTo:pageSize">
+					<td class="nowrap">{{game.gameDate | date:'yyyy-MM-dd'}}</td>
 					<td gameteam="game.team1"></td>
 					<td>vs</td>
-					<td>{{game.team2}}</td>
+					<td gameteam="game.team2"></td>
 					<td>SCORE</td>
 				</tr>
 			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan='5'>
+						<pagination rotate="false" num-pages="pageCount" current-page="currentPage" max-size="10" boundary-links="true" class="pagination-small" previous-text="'&lsaquo;'" next-text="'&rsaquo;'" first-text="'&laquo;'" last-text="'&raquo;'"></pagination>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 	<div class="span5">

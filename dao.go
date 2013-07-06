@@ -35,6 +35,10 @@ func LoadAllPlayers(c appengine.Context) []Player {
 	}
 
 	query(c, ENTITY_PLAYER, &players, sort)
+	
+	if players == nil {
+		players = []Player{}
+	}
 
 	return players
 }
