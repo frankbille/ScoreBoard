@@ -73,6 +73,27 @@ scoreBoardApp.factory("GameResource", function($resource, ScoreBoardCache) {
 	});
 });
 
+scoreBoardApp.factory("PlayerService", function(PlayerResource) {
+	return {
+		_players : null,
+		getAllPlayers : function() {
+			var players = this._getPlayers();
+			var playerList = [];
+			for (var playerId in players) {
+				playerList.push(players[playerId]);
+			}
+		}
+		
+		_getPlayers : function() {
+			if (this._players == null) {
+				
+			}
+			
+			return this._players;
+		}
+	}
+});
+
 scoreBoardApp.filter("yesno", function() {
 	return function(input) {
 		return input ? "Yes" : "No";
