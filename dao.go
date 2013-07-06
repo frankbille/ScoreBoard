@@ -11,13 +11,13 @@ const (
 	ENTITY_LEAGUE string = "league"
 )
 
-type queryEnhancer func(query *datastore.Query)
+type queryEnhancer func(query *datastore.Query) *datastore.Query
 
 func query(c appengine.Context, entity string, result interface{}, queryEnhancer queryEnhancer) {
 	query := datastore.NewQuery(entity)
 
 	if queryEnhancer != nil {
-		queryEnhancer(query)
+		query = queryEnhancer(query)
 	}
 
 	_, err := query.GetAll(c, result)
@@ -30,8 +30,8 @@ func query(c appengine.Context, entity string, result interface{}, queryEnhancer
 func LoadAllPlayers(c appengine.Context) []Player {
 	var players []Player
 
-	sort := func(query *datastore.Query) {
-		query.Order("Name")
+	sort := func(query *datastore.Query) *datastore.Query {
+		return query.Order("Name")
 	}
 
 	query(c, ENTITY_PLAYER, &players, sort)
@@ -46,8 +46,8 @@ func LoadAllPlayers(c appengine.Context) []Player {
 func LoadAllLeagues(c appengine.Context) []League {
 	var leagues []League
 
-	sort := func(query *datastore.Query) {
-		query.Order("Name")
+	sort := func(query *datastore.Query) *datastore.Query {
+		return query.Order("Name")
 	}
 
 	query(c, ENTITY_LEAGUE, &leagues, sort)
@@ -58,9 +58,9 @@ func LoadAllLeagues(c appengine.Context) []League {
 func LoadLeagueGames(c appengine.Context, leagueId string) []Game {
 	var games []Game
 
-	sortAndFilter := func(query *datastore.Query) {
+	sortAndFilter := func(query *datastore.Query) *datastore.Query {
 		leagueKey := datastore.NewKey(c, ENTITY_LEAGUE, leagueId, 0, nil)
-		query.Filter("League =", leagueKey).Order("-GameDate")
+		return query.Filter("League =", leagueKey).Order("-GameDate")
 	}
 
 	query(c, ENTITY_GAME, &games, sortAndFilter)
