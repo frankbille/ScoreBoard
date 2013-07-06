@@ -9,3 +9,7 @@ body {
 .nowrap {
 	white-space: nowrap;
 }
+
+.gameteam-plus-true {
+	display: none;
+}
