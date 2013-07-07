@@ -31,10 +31,10 @@
 			<tbody>
 				<tr data-ng-repeat="game in games | orderBy:'-gameDate' | startFrom:currentPage*pageSize | limitTo:pageSize">
 					<td class="nowrap">{{game.gameDate | date:'yyyy-MM-dd'}}</td>
-					<td gameteam="game.team1"></td>
+					<td gameteam="game.getWinner()"></td>
 					<td>vs</td>
-					<td gameteam="game.team2"></td>
-					<td>SCORE</td>
+					<td gameteam="game.getLoser()"></td>
+					<td>{{game.getWinner().score}}:{{game.getLoser().score}}</td>
 				</tr>
 			</tbody>
 			<tfoot>

@@ -36,17 +36,7 @@ scoreBoardApp.factory("PlayerResource", function($resource, ScoreBoardCache) {
 });
 
 scoreBoardApp.factory("LeagueResource", function($resource, ScoreBoardCache) {
-    return $resource("/api/leagues/:leagueId", {leagueId: '@id'}, {
-		"get"   : {
-			method : "GET",
-			cache  : ScoreBoardCache
-		},
-		"query" : {
-			method  : "GET",
-			cache   : ScoreBoardCache,
-			isArray : true
-		}
-	});
+    return $resource("/api/leagues");
 });
 
 scoreBoardApp.factory("GameResource", function($resource, ScoreBoardCache) {
@@ -65,17 +55,29 @@ scoreBoardApp.factory("GameResource", function($resource, ScoreBoardCache) {
 
 scoreBoardApp.factory("ServiceFactory", function($q) {
 	return {
-		create : function(resource) {
+		create : function(resource, enhanceEntity) {
 			return {
-				get : function(entityId) {
-					var entityMapPromise = this._getEntities();
+				get : function(params, entityId) {
+					if (angular.isUndefined(entityId)) {
+						entityId = params;
+						params = null;
+					}
+					if (angular.isUndefined(params)) {
+						params = null;
+					}
+					
+					var entityMapPromise = this._getEntities(params);
 					return entityMapPromise.then(function(entityMap) {
 						return entityMap[entityId];
 					});
 				},
 		
-				getAll : function() {
-					var entityMapPromise = this._getEntities();
+				getAll : function(params) {
+					if (angular.isUndefined(params)) {
+						params = null;
+					}
+					
+					var entityMapPromise = this._getEntities(params);
 					return entityMapPromise.then(function(entityMap) {
 						var entityList = [];
 				
@@ -88,21 +90,33 @@ scoreBoardApp.factory("ServiceFactory", function($q) {
 				},
 		
 				_entities : null,
-				_getEntities : function() {
+				_getEntities : function(params) {
 					var deferredEntityMap = $q.defer();
-			
+					
 					if (this._entities == null) {
+						this._entities = {};
+					}
+					
+					var dataKey = "empty";
+					if (params != null) {
+						dataKey = params.dataKey;
+					}
+					
+					if (this._entities[dataKey] == null) {
 						var entityService = this;
-					    var entities = resource.query(function() {
-							entityService._entities = {};
+					    var entities = resource.query(params, function() {
+							entityService._entities[dataKey] = {};
 							for (i = 0; i < entities.length; i++) {
 								var entity = entities[i];
-								entityService._entities[entity.id] = entity;
+								if (angular.isFunction(enhanceEntity)) {
+									enhanceEntity(entity);
+								}
+								entityService._entities[dataKey][entity.id] = entity;
 							}
-							deferredEntityMap.resolve(entityService._entities);					
+							deferredEntityMap.resolve(entityService._entities[dataKey]);					
 					    });
 					} else {
-						deferredEntityMap.resolve(this._entities);
+						deferredEntityMap.resolve(this._entities[dataKey]);
 					}
 			
 					return deferredEntityMap.promise;
@@ -118,6 +132,27 @@ scoreBoardApp.factory("PlayerService", function(PlayerResource, ServiceFactory) 
 
 scoreBoardApp.factory("LeagueService", function(LeagueResource, ServiceFactory) {
 	return ServiceFactory.create(LeagueResource);
+});
+
+scoreBoardApp.factory("GameService", function(GameResource, ServiceFactory) {
+	return ServiceFactory.create(GameResource, function(game) {
+		game.getWinner = function() {
+			if (game.team1.score >= game.team2.score) {
+				return game.team1;
+			} else {
+				return game.team2;
+			}
+		};
+		
+		game.getLoser = function() {
+			if (game.team1.score < game.team2.score) {
+				return game.team1;
+			} else {
+				return game.team2;
+			}
+			
+		};
+	});
 });
 
 scoreBoardApp.filter("yesno", function() {
@@ -186,15 +221,15 @@ function LeagueDetailController($scope, LeagueService, $routeParams) {
 	});
 }
 
-function DailyController($scope, LeagueService, GameResource, $routeParams) {
+function DailyController($scope, LeagueService, GameService, $routeParams) {
 	LeagueService.get($routeParams.leagueId).then(function(league) {
 		$scope.league = league;
 	});
 	
-	var games = GameResource.query({leagueId : $routeParams.leagueId}, function() {
+	GameService.getAll({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}).then(function(games) {
 		$scope.games = games;
 		$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
-	})
+	});
 	$scope.currentPage = 1;
-	$scope.pageSize = 10;
+	$scope.pageSize = 20;
 }
