@@ -1,6 +1,7 @@
 package scoreboard
 
 import (
+	"appengine/datastore"
 	"github.com/frankbille/sanitize"
 )
 
@@ -22,4 +23,8 @@ func NewPlayer(Name, FullName, GroupName string) Player {
 
 func (p Player) GetId() string {
 	return p.Id
+}
+
+func (p Player) GetParent() *datastore.Key {
+	return nil
 }

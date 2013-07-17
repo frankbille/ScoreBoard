@@ -1,0 +1,14 @@
+<small>
+	<div data-ng-repeat="teamPlayer in teamPlayers">
+		{{teamPlayer.player.name}}:
+		{{teamPlayer.startRating | number:0}}
+		<i class="icon-double-angle-{{teamPlayer.rateDirection}}"></i>
+		{{teamPlayer.endRating | number:0}}
+	</div>
+	<div>
+		Team:
+		{{avgStartRating | number:0}}
+		<i class="icon-double-angle-{{rateDirection}}"></i>
+		{{avgEndRating | number:0}}
+	</div>
+</small>

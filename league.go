@@ -1,6 +1,7 @@
 package scoreboard
 
 import (
+	"appengine/datastore"
 	"github.com/frankbille/sanitize"
 )
 
@@ -20,4 +21,8 @@ func NewLeague(Name string, Active bool) League {
 
 func (l League) GetId() string {
 	return l.Id
+}
+
+func (l League) GetParent() *datastore.Key {
+	return nil
 }

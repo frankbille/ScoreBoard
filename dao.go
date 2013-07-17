@@ -9,22 +9,19 @@ const (
 	ENTITY_GAME   string = "game"
 	ENTITY_PLAYER string = "player"
 	ENTITY_LEAGUE string = "league"
+	ENTITY_RATING string = "rating"
 )
 
 type queryEnhancer func(query *datastore.Query) *datastore.Query
 
-func query(c appengine.Context, entity string, result interface{}, queryEnhancer queryEnhancer) {
+func query(c appengine.Context, entity string, result interface{}, queryEnhancer queryEnhancer) ([]*datastore.Key, error) {
 	query := datastore.NewQuery(entity)
 
 	if queryEnhancer != nil {
 		query = queryEnhancer(query)
 	}
 
-	_, err := query.GetAll(c, result)
-
-	if err != nil {
-		c.Errorf("Error fetching objects: %v", err)
-	}
+	return query.GetAll(c, result)
 }
 
 func LoadAllPlayers(c appengine.Context) []Player {
@@ -35,7 +32,7 @@ func LoadAllPlayers(c appengine.Context) []Player {
 	}
 
 	query(c, ENTITY_PLAYER, &players, sort)
-	
+
 	if players == nil {
 		players = []Player{}
 	}
@@ -60,10 +57,23 @@ func LoadLeagueGames(c appengine.Context, leagueId string) []Game {
 
 	sortAndFilter := func(query *datastore.Query) *datastore.Query {
 		leagueKey := datastore.NewKey(c, ENTITY_LEAGUE, leagueId, 0, nil)
-		return query.Filter("League =", leagueKey).Order("-GameDate")
+		return query.Ancestor(leagueKey).Order("-GameDate").Order("ChangeDate")
 	}
 
-	query(c, ENTITY_GAME, &games, sortAndFilter)
+	keys, err := query(c, ENTITY_GAME, &games, sortAndFilter)
+	if err != nil {
+		c.Errorf("%v", err)
+	}
+	
+	if games == nil {
+		games = make([]Game, 0)
+	}
+
+	for i := 0; i < len(games); i++ {
+		game := &games[i]
+		key := keys[i]
+		game.Id = key.IntID()
+	}
 
 	return games
 }

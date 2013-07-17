@@ -11,7 +11,20 @@ indexes:
 # your application using appcfg.py.
 
 - kind: game
+  ancestor: yes
   properties:
-  - name: League
+  - name: GameDate
+  - name: ChangeDate
+
+- kind: game
+  ancestor: yes
+  properties:
+  - name: GameDate
+  - name: Id
+
+- kind: game
+  ancestor: yes
+  properties:
   - name: GameDate
     direction: desc
+  - name: ChangeDate

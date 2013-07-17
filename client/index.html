@@ -1,48 +1,32 @@
 <!doctype html>
-<!--
-  ~ ScoreBoard
-  ~ Copyright (C) 2012-2013 Frank Bille
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <html data-ng-app="ScoreBoard">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/scoreboard.css">
-    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
 
-    <script src="js/angular.js"></script>
-    <script src="js/angular-resource.js"></script>
-    <script src="js/ui-bootstrap-0.4.0.min.js"></script>
-    <script src="js/ui-bootstrap-tpls-0.4.0.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-resource.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.4/angular-strap.min.js"></script>
+
     <script src="js/scoreboard.js"></script>
 </head>
 <body>
 
-<div class="navbar navbar-fixed-top navbar-inverse">
+<div class="navbar navbar-fixed-top navbar-inverse" bs-navbar>
     <div class="navbar-inner">
         <div class="container-fluid">
             <a class="brand" href="#">ScoreBoard</a>
             <ul class="nav" data-ng-controller="MenuController">
-                <li data-ng-class="(location.path().indexOf('/addgame') == 0 && 'active')">
+                <li data-match-route="/addgame.*">
                     <a href="#/addgame"><i class="icon-plus"></i> Add Game</a>
                 </li>
-                <li class="dropdown" data-ng-class="(location.path().indexOf('/daily') == 0 && 'active')">
-                    <a id="menu-daily-drop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Daily
+                <li class="dropdown"  data-match-route="/daily.*">
+                    <a id="menu-daily-drop" role="button" class="dropdown-toggle" data-toggle="dropdown">Daily
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="menu-daily-drop"
                         data-ng-controller="DailyMenuController">
@@ -51,10 +35,10 @@
                         </li>
                     </ul>
                 </li>
-                <li data-ng-class="(location.path().indexOf('/players') == 0 && 'active')">
+                <li data-match-route="/players.*">
                     <a href="#/players">Players</a>
                 </li>
-                <li data-ng-class="(location.path().indexOf('/leagues') == 0 && 'active')">
+                <li data-match-route="/leagues.*">
                     <a href="#/leagues">Leagues</a>
                 </li>
             </ul>

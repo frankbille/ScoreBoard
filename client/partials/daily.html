@@ -1,20 +1,3 @@
-<!--
-  ~ ScoreBoard
-  ~ Copyright (C) 2012-2013 Frank Bille
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
 <h1>{{league.name}}</h1>
 
 <div class="row-fluid">
@@ -29,7 +12,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="game in games | orderBy:'-gameDate' | startFrom:currentPage*pageSize | limitTo:pageSize">
+				<tr data-ng-repeat="game in games | orderBy:'-gameDate' | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
 					<td class="nowrap">{{game.gameDate | date:'yyyy-MM-dd'}}</td>
 					<td gameteam="game.getWinner()"></td>
 					<td>vs</td>
@@ -40,7 +23,13 @@
 			<tfoot>
 				<tr>
 					<td colspan='5'>
-						<pagination rotate="false" num-pages="pageCount" current-page="currentPage" max-size="10" boundary-links="true" class="pagination-small" previous-text="'&lsaquo;'" next-text="'&rsaquo;'" first-text="'&laquo;'" last-text="'&raquo;'"></pagination>
+						<div class="pagination pagination-small">
+							<ul>
+								<li data-ng-repeat="page in pages" data-ng-class="(page.number == currentPage && 'active')">
+									<a href="#/daily/{{league.id}}/{{page.number}}" ng-click="currentPage = page.number">{{page.number}}</a>
+								</li>
+							</ul>
+						</div>
 					</td>
 				</tr>
 			</tfoot>

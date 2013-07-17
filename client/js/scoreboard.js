@@ -1,4 +1,4 @@
-var scoreBoardApp = angular.module("ScoreBoard", ["ngResource", "ui.bootstrap"])
+var scoreBoardApp = angular.module("ScoreBoard", ["ngResource", "$strap.directives"])
 
 scoreBoardApp.config(function($routeProvider) {
 	$routeProvider.
@@ -19,6 +19,10 @@ scoreBoardApp.config(function($routeProvider) {
 			controller: LeagueDetailController
 		}).
 		when('/daily/:leagueId', {
+			templateUrl: '/partials/daily.html',
+			controller: DailyController
+		}).
+		when('/daily/:leagueId/:currentPage', {
 			templateUrl: '/partials/daily.html',
 			controller: DailyController
 		}).
@@ -179,9 +183,32 @@ scoreBoardApp.directive("gameteam", function() {
 			gameteam: "="
 		},
 		controller: function($scope, $element, $attrs, $transclude, PlayerService) {
-			$scope.players = [];
-			for (i = 0; i < $scope.gameteam.players.length; i++) {
-				$scope.players.push(PlayerService.get($scope.gameteam.players[i]));
+			$scope.teamPlayers = $scope.gameteam.players;
+			$scope.avgStartRating = 0
+			$scope.avgEndRating = 0;
+			for (i = 0; i < $scope.teamPlayers.length; i++) {
+				var teamPlayer = $scope.teamPlayers[i];
+				if (angular.isString(teamPlayer.player)) {
+					teamPlayer.player = PlayerService.get(teamPlayer.player);
+				}
+				if (teamPlayer.endRating > teamPlayer.startRating) {
+					teamPlayer.rateDirection = "up text-success";
+				} else if (teamPlayer.endRating < teamPlayer.startRating) {
+					teamPlayer.rateDirection = "down text-error";
+				} else {
+					teamPlayer.rateDirection = "right text-info";
+				}
+				$scope.avgStartRating += teamPlayer.startRating;
+				$scope.avgEndRating += teamPlayer.endRating;
+			}
+			$scope.avgStartRating /= $scope.teamPlayers.length;
+			$scope.avgEndRating /= $scope.teamPlayers.length;
+			if ($scope.avgEndRating > $scope.avgStartRating) {
+				$scope.rateDirection = "up text-success";
+			} else if ($scope.avgEndRating < $scope.avgStartRating) {
+				$scope.rateDirection = "down text-error";
+			} else {
+				$scope.rateDirection = "right text-info";
 			}
 		}
 	}
@@ -225,11 +252,17 @@ function DailyController($scope, LeagueService, GameService, $routeParams) {
 	LeagueService.get($routeParams.leagueId).then(function(league) {
 		$scope.league = league;
 	});
-	
+
+	$scope.currentPage = $routeParams.currentPage || 1;
+	$scope.pageSize = 20;
 	GameService.getAll({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}).then(function(games) {
 		$scope.games = games;
 		$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
+		$scope.pages = [];
+		for (var i = 1; i <= $scope.pageCount; i++) {
+			$scope.pages.push({
+				number: i
+			});
+		}
 	});
-	$scope.currentPage = 1;
-	$scope.pageSize = 20;
 }

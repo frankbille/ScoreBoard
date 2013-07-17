@@ -84,7 +84,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 
 		type gameTeamData struct {
 			Team  int64
-			Score int
+			Score int32
 		}
 
 		allPlayers := map[int64]Player{}
@@ -162,8 +162,8 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 					}
 
 					allGames[Id] = &Game{
-						Id:       Id,
-						GameDate: GameDate,
+						GameDate:   GameDate,
+						ChangeDate: time.Now(),
 					}
 
 					allGameData[Id] = gameData{
@@ -177,7 +177,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 				for _, row := range table.Rows {
 					var Id int64
 					var Team int64
-					var Score int
+					var Score int32
 					for _, field := range row.Fields {
 						if field.Name == "id" {
 							Id, _ = strconv.ParseInt(field.Value, 0, 64)
@@ -185,7 +185,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 							Team, _ = strconv.ParseInt(field.Value, 0, 64)
 						} else if field.Name == "score" {
 							score, _ := strconv.ParseInt(field.Value, 0, 0)
-							Score = int(score)
+							Score = int32(score)
 						}
 					}
 
@@ -224,6 +224,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 
 			game.Team1 = createGameTeam(c, gameTeam1.Score, allTeamPlayers[gameTeam1.Team], allPlayers)
 			game.Team2 = createGameTeam(c, gameTeam2.Score, allTeamPlayers[gameTeam2.Team], allPlayers)
+
 			game.League = datastore.NewKey(c, "league", league.GetId(), 0, nil)
 		}
 
@@ -236,6 +237,9 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		}
 		for _, game := range allGames {
 			persistObject(c, "game", game)
+		}
+		for _, league := range allLeagues {
+			RecalculateLeagueRatings(c, league.GetId())
 		}
 
 		err = blobstore.Delete(c, blobKey)
@@ -260,13 +264,15 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 	importFunc.Call(c, blobKey)
 }
 
-func createGameTeam(c appengine.Context, score int, players []int64, allPlayers map[int64]Player) GameTeam {
-	playerKeys := make([]string, len(players))
+func createGameTeam(c appengine.Context, score int32, players []int64, allPlayers map[int64]Player) GameTeam {
+	teamPlayers := make([]TeamPlayer, len(players))
 	for index, playerId := range players {
-		playerKeys[index] = allPlayers[playerId].GetId()
+		teamPlayers[index] = TeamPlayer{
+			Player: allPlayers[playerId].GetId(),
+		}
 	}
 	return GameTeam{
-		Players: playerKeys,
+		Players: teamPlayers,
 		Score:   score,
 	}
 }
@@ -274,13 +280,14 @@ func createGameTeam(c appengine.Context, score int, players []int64, allPlayers 
 func persistObject(c appengine.Context, entityName string, entity PersistableObject) {
 	var key *datastore.Key
 	if entity.GetId() != "" {
-		key = datastore.NewKey(c, entityName, entity.GetId(), 0, nil)
+		key = datastore.NewKey(c, entityName, entity.GetId(), 0, entity.GetParent())
 	} else {
-		key = datastore.NewIncompleteKey(c, entityName, nil)
+		key = datastore.NewIncompleteKey(c, entityName, entity.GetParent())
 	}
 	key, err := datastore.Put(c, key, entity)
 
 	if err != nil {
+		c.Errorf("Error: %v", err)
 		return
 	}
 }

@@ -20,9 +20,10 @@ func init() {
 type ScoreBoardService struct {
 	rest.Service `prefix:"/api" mime:"application/json" charset:"utf-8"`
 
-	GetAllPlayers  rest.Processor `method:"GET" path:"/players"`
-	GetAllLeagues  rest.Processor `method:"GET" path:"/leagues"`
-	GetLeagueGames rest.Processor `method:"GET" path:"/leagues/:leagueId/games"`
+	GetAllPlayers            rest.Processor `method:"GET" path:"/players"`
+	GetAllLeagues            rest.Processor `method:"GET" path:"/leagues"`
+	GetLeagueGames           rest.Processor `method:"GET" path:"/leagues/:leagueId/games"`
+	RecalculateLeagueRatings rest.Processor `method:"GET" path:"/leagues/:leagueId/recalc"`
 
 	post map[string]string
 }
