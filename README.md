@@ -17,7 +17,7 @@ the browser, to minimize the hit on the server.
 
 ### Why a rewrite?
 
-Basically because of the hassle of deploying Java applications, when you when
+Basically because the hassle of deploying Java applications, when you want
 cheap/free hosting. This app is not meant for any commercial use but only for
 fun/recreational spare time in office spaces.
 
