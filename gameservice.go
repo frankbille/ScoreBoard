@@ -47,9 +47,17 @@ func RecalculateLeagueRatings(c appengine.Context, leagueId string) {
 			}
 		}
 
-		_, err = datastore.PutMulti(c, gameKeys, games)
-		if err != nil {
-			return err
+		for i := 0; i < len(games); i += 500 {
+			start := i
+			end := i + 500
+			if end > len(games) {
+				end = len(games)
+			}
+			_, err := datastore.PutMulti(c, gameKeys[start:end], games[start:end])
+
+			if err != nil {
+				return err
+			}
 		}
 
 		return nil
@@ -79,7 +87,7 @@ func getTeamRating(teamPlayers []TeamPlayer, playerRatings map[string]float64) f
 
 func applyResultRating(c appengine.Context, gameTeam *GameTeam, playerRatings map[string]float64, resultRating float64, winner bool) {
 	teamPlayers := gameTeam.Players
-	
+
 	perPlayerRating := resultRating / float64(len(teamPlayers))
 
 	for i := 0; i < len(teamPlayers); i++ {

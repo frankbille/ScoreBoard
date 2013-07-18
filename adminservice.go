@@ -266,7 +266,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			i++
 		}
 		persistObjects(c, "player", players)
-		
+
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
 			Total:  total,
@@ -280,7 +280,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			i++
 		}
 		persistObjects(c, "league", leagues)
-		
+
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
 			Total:  total,
@@ -294,7 +294,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			i++
 		}
 		persistObjects(c, "game", games)
-		
+
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
 			Total:  total,
@@ -377,10 +377,17 @@ func persistObjects(c appengine.Context, entityName string, entities []Persistab
 		keys[i] = key
 	}
 
-	keys, err := datastore.PutMulti(c, keys, entities)
+	for i := 0; i < len(entities); i += 500 {
+		start := i
+		end := i + 500
+		if end > len(entities) {
+			end = len(entities)
+		}
+		_, err := datastore.PutMulti(c, keys[start:end], entities[start:end])
 
-	if err != nil {
-		c.Errorf("Error: %v", err)
-		return
+		if err != nil {
+			c.Errorf("Error: %v", err)
+			return
+		}
 	}
 }
