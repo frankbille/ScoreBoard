@@ -3,6 +3,7 @@ package scoreboard
 import (
 	"appengine"
 	"appengine/blobstore"
+	"appengine/channel"
 	"appengine/datastore"
 	"appengine/delay"
 	"encoding/xml"
@@ -36,7 +37,13 @@ type MysqlDump struct {
 	Databases []Database `xml:"database"`
 }
 
-var adminTemplates = template.Must(template.ParseFiles("templates/admin/importoldversionform.html"))
+type ImportStatus struct {
+	Step   int    `json:"step"`
+	Total  int    `json:"total"`
+	Status string `json:"status"`
+}
+
+var adminTemplates = template.Must(template.ParseFiles("templates/admin/importoldversionform.html", "templates/admin/importoldversionformprogress.html"))
 
 func importOldVersion(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
@@ -45,7 +52,7 @@ func importOldVersion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "text/html")
-	err = adminTemplates.Execute(w, uploadURL)
+	err = adminTemplates.ExecuteTemplate(w, "importoldversionform.html", uploadURL)
 	if err != nil {
 		c.Errorf("%v", err)
 	}
@@ -63,6 +70,16 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v := MysqlDump{}
+
+		step := 1
+		total := 7
+
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Parsing XML",
+		})
+		step++
 
 		err = xml.Unmarshal(data, &v)
 
@@ -95,6 +112,13 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		allTeamPlayers := map[int64][]int64{}
 
 		tables := v.Databases[0].Tables
+
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Preparing objects",
+		})
+		step++
 
 		for i := 0; i < len(tables); i++ {
 			table := tables[i]
@@ -229,15 +253,39 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Persist objects
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Persist players",
+		})
+		step++
 		for _, player := range allPlayers {
 			persistObject(c, "player", &player)
 		}
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Persist leagues",
+		})
+		step++
 		for _, league := range allLeagues {
 			persistObject(c, "league", &league)
 		}
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Persist games",
+		})
+		step++
 		for _, game := range allGames {
 			persistObject(c, "game", game)
 		}
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Calculate ratings",
+		})
+		step++
 		for _, league := range allLeagues {
 			RecalculateLeagueRatings(c, league.GetId())
 		}
@@ -248,6 +296,12 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			c.Errorf("Error: %v", err)
 			return
 		}
+
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Finished importing",
+		})
 	})
 
 	c := appengine.NewContext(r)
@@ -261,6 +315,23 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 
 	blobKey := blobs["xmlDumpFile"][0].BlobKey
 
+	// Open channel
+	tok, err := channel.Create(c, string(blobKey))
+	if err != nil {
+		http.Error(w, "Couldn't create Channel", http.StatusInternalServerError)
+		c.Errorf("channel.Create: %v", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	err = adminTemplates.ExecuteTemplate(w, "importoldversionformprogress.html", map[string]string{
+		"token": tok,
+	})
+	if err != nil {
+		c.Errorf("%v", err)
+	}
+
+	// Start import
 	importFunc.Call(c, blobKey)
 }
 

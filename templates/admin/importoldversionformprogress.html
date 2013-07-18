@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<title>Import Old Version</title>
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" type="text/css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h1>Import Old Data</h1>
+				<hr>
+				<div class="progress progress-striped active" id="progress">
+					<div class="bar" id="progressbar"></div>
+				</div>
+			</div>
+		</div>
+		<script>
+		var progress = $("#progress");
+		var progressBar = $("#progressbar");
+		
+		var channel = new goog.appengine.Channel('{{js .token}}');
+		var socket = channel.open();
+		socket.onmessage = function(msg) {
+			var data = $.parseJSON(msg.data);
+			var pct = (data.step/data.total)*100.0;
+			progressBar.css("width", ""+pct+"%");
+			progressBar.text(data.status);
+			
+			if (data.total == data.step) {
+				progress.removeClass("progress-striped");
+				progress.removeClass("active");
+				progress.addClass("progress-success");
+				
+				socket.close();
+			}
+		};
+		socket.onopen = function() {
+			console.log("Channel Opened");
+		};
+		socket.onerror = function(err) {
+			console.log("Error");
+			console.log(err);
+		};
+		socket.onclose = function() {
+			console.log("Channel Closed");
+		}
+		</script>
+	</body>
+</html>
