@@ -104,8 +104,8 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			Score int32
 		}
 
-		allPlayers := map[int64]Player{}
-		allLeagues := map[int64]League{}
+		allPlayers := map[int64]*Player{}
+		allLeagues := map[int64]*League{}
 		allGames := map[int64]*Game{}
 		allGameData := map[int64]gameData{}
 		allGameTeamData := map[int64]gameTeamData{}
@@ -140,7 +140,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 					}
 
 					p := NewPlayer(Name, FullName, GroupName)
-					allPlayers[Id] = p
+					allPlayers[Id] = &p
 				}
 			}
 			// Leagues
@@ -160,7 +160,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 					}
 
 					l := NewLeague(Name, Active)
-					allLeagues[Id] = l
+					allLeagues[Id] = &l
 				}
 			}
 			// Games
@@ -187,7 +187,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 
 					allGames[Id] = &Game{
 						GameDate:   GameDate,
-						ChangeDate: time.Now(),
+						ChangeDate: time.Now().UnixNano(),
 					}
 
 					allGameData[Id] = gameData{
@@ -259,27 +259,42 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			Status: "Persist players",
 		})
 		step++
+		players := make([]PersistableObject, len(allPlayers))
+		i := 0
 		for _, player := range allPlayers {
-			persistObject(c, "player", &player)
+			players[i] = player
+			i++
 		}
+		persistObjects(c, "player", players)
+		
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
 			Total:  total,
 			Status: "Persist leagues",
 		})
 		step++
+		leagues := make([]PersistableObject, len(allLeagues))
+		i = 0
 		for _, league := range allLeagues {
-			persistObject(c, "league", &league)
+			leagues[i] = league
+			i++
 		}
+		persistObjects(c, "league", leagues)
+		
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
 			Total:  total,
 			Status: "Persist games",
 		})
 		step++
+		games := make([]PersistableObject, len(allGames))
+		i = 0
 		for _, game := range allGames {
-			persistObject(c, "game", game)
+			games[i] = game
+			i++
 		}
+		persistObjects(c, "game", games)
+		
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
 			Total:  total,
@@ -335,7 +350,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 	importFunc.Call(c, blobKey)
 }
 
-func createGameTeam(c appengine.Context, score int32, players []int64, allPlayers map[int64]Player) GameTeam {
+func createGameTeam(c appengine.Context, score int32, players []int64, allPlayers map[int64]*Player) GameTeam {
 	teamPlayers := make([]TeamPlayer, len(players))
 	for index, playerId := range players {
 		teamPlayers[index] = TeamPlayer{
@@ -348,14 +363,21 @@ func createGameTeam(c appengine.Context, score int32, players []int64, allPlayer
 	}
 }
 
-func persistObject(c appengine.Context, entityName string, entity PersistableObject) {
-	var key *datastore.Key
-	if entity.GetId() != "" {
-		key = datastore.NewKey(c, entityName, entity.GetId(), 0, entity.GetParent())
-	} else {
-		key = datastore.NewIncompleteKey(c, entityName, entity.GetParent())
+func persistObjects(c appengine.Context, entityName string, entities []PersistableObject) {
+	keys := make([]*datastore.Key, len(entities))
+
+	for i := 0; i < len(entities); i++ {
+		entity := entities[i]
+		var key *datastore.Key
+		if entity.GetId() != "" {
+			key = datastore.NewKey(c, entityName, entity.GetId(), 0, entity.GetParent())
+		} else {
+			key = datastore.NewIncompleteKey(c, entityName, entity.GetParent())
+		}
+		keys[i] = key
 	}
-	key, err := datastore.Put(c, key, entity)
+
+	keys, err := datastore.PutMulti(c, keys, entities)
 
 	if err != nil {
 		c.Errorf("Error: %v", err)

@@ -8,7 +8,7 @@ import (
 type Game struct {
 	Id         int64          `datastore:"-" json:"id"`
 	GameDate   time.Time      `json:"gameDate"`
-	ChangeDate time.Time      `json:"-"`
+	ChangeDate int64          `json:"-"`
 	Team1      GameTeam       `json:"team1"`
 	Team2      GameTeam       `json:"team2"`
 	League     *datastore.Key `json:"-"`

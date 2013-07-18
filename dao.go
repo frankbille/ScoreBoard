@@ -57,7 +57,7 @@ func LoadLeagueGames(c appengine.Context, leagueId string) []Game {
 
 	sortAndFilter := func(query *datastore.Query) *datastore.Query {
 		leagueKey := datastore.NewKey(c, ENTITY_LEAGUE, leagueId, 0, nil)
-		return query.Ancestor(leagueKey).Order("-GameDate").Order("ChangeDate")
+		return query.Ancestor(leagueKey).Order("-GameDate").Order("-ChangeDate")
 	}
 
 	keys, err := query(c, ENTITY_GAME, &games, sortAndFilter)
