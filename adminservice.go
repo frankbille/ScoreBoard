@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"sort"
 )
 
 type Field struct {
@@ -41,6 +42,34 @@ type ImportStatus struct {
 	Step   int    `json:"step"`
 	Total  int    `json:"total"`
 	Status string `json:"status"`
+}
+
+type Games struct {
+	games []PersistableObject
+}
+
+func (g Games) Len() int {
+	return len(g.games)
+}
+
+func (g Games) Swap(i, j int) {
+	g.games[i], g.games[j] = g.games[j], g.games[i]
+}
+
+func (g Games) Less(i, j int) bool {
+	game1 := g.games[i].(*Game)
+	game2 := g.games[j].(*Game)
+	
+	if game1.GameDate.Before(game2.GameDate) {
+		return true
+	}
+	if game1.GameDate.Equal(game2.GameDate) {
+		if game1.Id < game2.Id {
+			return true
+		}
+	}
+	
+	return false
 }
 
 var adminTemplates = template.Must(template.ParseFiles("templates/admin/importoldversionform.html", "templates/admin/importoldversionformprogress.html"))
@@ -186,8 +215,8 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 					}
 
 					allGames[Id] = &Game{
-						GameDate:   GameDate,
-						ChangeDate: time.Now().UnixNano(),
+						Id:       Id,
+						GameDate: GameDate,
 					}
 
 					allGameData[Id] = gameData{
@@ -293,6 +322,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			games[i] = game
 			i++
 		}
+		sort.Sort(Games{games})
 		persistObjects(c, "game", games)
 
 		channel.SendJSON(c, string(blobKey), ImportStatus{

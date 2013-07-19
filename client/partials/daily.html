@@ -37,6 +37,27 @@
 	</div>
 	<div class="span5">
 		<h2>Players by Rating</h2>
-		TODO
+		<table class="table table-hover table-striped table-bordered">
+			<thead>
+				<tr>
+					<th class="align-right">#</th>
+					<th>Player</th>
+					<th>Games</th>
+					<th>Win ratio</th>
+					<th>Rating</th>
+					<th>Trend</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="player in players">
+					<td style="text-align: right"><i data-ng-class="player.medal"></i> {{$index+1}}</td>
+					<td><a href="#/players/{{player.id}}">{{player.name}}</a></td>
+					<td>{{player.gamesWon + player.gamesLost}}</td>
+					<td><div bs-tooltip="('Won: '+player.gamesWon+' Lost: '+player.gamesLost)" data-placement="top">{{player.gamesWon / (player.gamesWon+player.gamesLost) * 100 | number:0}}%</div></td>
+					<td>{{player.rating | number:0}}</td>
+					<td><div bs-popover="'/partials/playergamespopover.html'" data-title="Trend" data-trigger="hover" data-placement="left"><i data-ng-repeat="result in player.trend | limitTo:5 track by $index" data-ng-class="result"></i></div></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>

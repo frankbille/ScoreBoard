@@ -13,3 +13,15 @@ body {
 .gameteam-plus-true {
 	display: none;
 }
+
+.gold {
+	color: #C98910;
+}
+
+.silver {
+	color: #A8A8A8;
+}
+
+.bronze {
+	color: #965A38;
+}

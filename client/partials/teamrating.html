@@ -1,6 +1,6 @@
 <small>
 	<div data-ng-repeat="teamPlayer in teamPlayers">
-		{{teamPlayer.player.name}}:
+		{{teamPlayer.playerObject.name}}:
 		{{teamPlayer.startRating | number:0}}
 		<i class="icon-double-angle-{{teamPlayer.rateDirection}}"></i>
 		{{teamPlayer.endRating | number:0}}

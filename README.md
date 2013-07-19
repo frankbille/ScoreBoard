@@ -50,11 +50,11 @@ syntax similar to `C` and with very few mature frameworks compared to `Java` or
 
 ### How to develop on the code?
 
-This is still so new technologies for me, so I haven't figured out what the best
-stack is to develop this. I basically use a text editor (TextMate2 in this case)
-to edit the `JavaScript` and `Go` files, and then run the Google App Engine 
-development server to build/host the files, so I can continuously develop and test
-in a browser, without having to restart all the time.
+This is still new technologies for me, so I haven't figured out what the best
+stack is to develop this. I basically use a text editor ([TextMate2][textmate]
+in this case) to edit the `JavaScript` and `Go` files, and then run the Google
+App Engine development server to build/host the files, so I can continuously
+develop and test in a browser, without having to restart all the time.
 
 To get started you minimally need the tools for it:
 
@@ -102,3 +102,4 @@ Licensed under the [GNU General Public License, Version 3.0][license]
 [golang]: http://golang.org
 [goinstalldoc]: http://golang.org/doc/install
 [angularjs]: http://angularjs.org
+[textmate]: http://macromates.com

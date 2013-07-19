@@ -1,6 +1,6 @@
 <div bs-popover="'/partials/teamrating.html'" data-title="Rating" data-trigger="hover" data-placement="top">
 	<span data-ng-repeat="teamPlayer in teamPlayers">
-		<a href="#/players/{{teamPlayer.player.id}}">{{teamPlayer.player.name}}</a>
+		<a href="#/players/{{teamPlayer.playerObject.id}}">{{teamPlayer.playerObject.name}}</a>
 		<span class="gameteam-plus-{{$last}}">+</span>
 	</span>
 </div>

@@ -188,9 +188,7 @@ scoreBoardApp.directive("gameteam", function() {
 			$scope.avgEndRating = 0;
 			for (i = 0; i < $scope.teamPlayers.length; i++) {
 				var teamPlayer = $scope.teamPlayers[i];
-				if (angular.isString(teamPlayer.player)) {
-					teamPlayer.player = PlayerService.get(teamPlayer.player);
-				}
+				teamPlayer.playerObject = PlayerService.get(teamPlayer.player);
 				if (teamPlayer.endRating > teamPlayer.startRating) {
 					teamPlayer.rateDirection = "up text-success";
 				} else if (teamPlayer.endRating < teamPlayer.startRating) {
@@ -248,7 +246,35 @@ function LeagueDetailController($scope, LeagueService, $routeParams) {
 	});
 }
 
-function DailyController($scope, LeagueService, GameService, $routeParams) {
+function handleTeam(team, playerStatMap, playerMap, winner) {
+	for (var i = 0; i < team.players.length; i++) {
+		var teamPlayer = team.players[i];
+		var player = playerMap[teamPlayer.player];
+
+		var playerStat = playerStatMap[player.id];
+		if (angular.isUndefined(playerStat)) {
+			playerStat = {
+				id: player.id,
+				name: player.name,
+				rating: teamPlayer.endRating,
+				gamesWon: 0,
+				gamesLost: 0,
+				trend: []
+			};
+			playerStatMap[player.id] = playerStat;
+		}
+	
+		if (winner) {
+			playerStat.gamesWon++;
+		} else {
+			playerStat.gamesLost++;
+		}
+		
+		playerStat.trend.push(winner ? "icon-double-angle-up text-success" : "icon-double-angle-down text-error");
+	}
+}
+
+function DailyController($scope, LeagueService, PlayerService, GameService, $routeParams) {
 	LeagueService.get($routeParams.leagueId).then(function(league) {
 		$scope.league = league;
 	});
@@ -256,13 +282,42 @@ function DailyController($scope, LeagueService, GameService, $routeParams) {
 	$scope.currentPage = $routeParams.currentPage || 1;
 	$scope.pageSize = 20;
 	GameService.getAll({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}).then(function(games) {
-		$scope.games = games;
-		$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
-		$scope.pages = [];
-		for (var i = 1; i <= $scope.pageCount; i++) {
-			$scope.pages.push({
-				number: i
+		// Ensure that players has been loaded
+		PlayerService.getAll().then(function(players) {
+			$scope.games = games;
+			$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
+			$scope.pages = [];
+			for (var i = 1; i <= $scope.pageCount; i++) {
+				$scope.pages.push({
+					number: i
+				});
+			}
+			
+			var playerMap = {};
+			for (var i = 0; i < players.length; i++) {
+				playerMap[players[i].id] = players[i];
+			}
+		
+			var playerStatMap = {};
+			for (var i = 0; i < $scope.games.length; i++) {
+				var game = $scope.games[i];
+				handleTeam(game.getWinner(), playerStatMap, playerMap, true);
+				handleTeam(game.getLoser(), playerStatMap, playerMap, false);
+			}
+			
+			var playerList = $.map(playerStatMap, function(k, v) {
+				return k;
 			});
-		}
+			
+			playerList.sort(function(p1, p2) {
+				return p2.rating-p1.rating;
+			});
+			
+			playerList[0].medal = "icon-trophy icon-large gold";
+			playerList[1].medal = "icon-trophy icon-large silver";
+			playerList[2].medal = "icon-trophy icon-large bronze";
+			
+			$scope.players = playerList;
+		});
 	});
 }
