@@ -313,9 +313,15 @@ function DailyController($scope, LeagueService, PlayerService, GameService, $rou
 				return p2.rating-p1.rating;
 			});
 			
-			playerList[0].medal = "icon-trophy icon-large gold";
-			playerList[1].medal = "icon-trophy icon-large silver";
-			playerList[2].medal = "icon-trophy icon-large bronze";
+			if (playerList.length > 0) {
+				playerList[0].medal = "icon-trophy icon-large gold";
+			}
+			if (playerList.length > 1) {
+				playerList[1].medal = "icon-trophy icon-large silver";
+			}
+			if (playerList.length > 2) {
+				playerList[2].medal = "icon-trophy icon-large bronze";
+			}
 			
 			$scope.players = playerList;
 		});
