@@ -13,7 +13,7 @@
 			</thead>
 			<tbody>
 				<tr data-ng-repeat="game in games | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
-					<td class="nowrap">{{game.gameDate | date:'yyyy-MM-dd'}}</td>
+					<td class="nowrap"><a href="#/daily/{{league.id}}/game/{{game.id}}">{{game.gameDate | date:'yyyy-MM-dd'}}</a></td>
 					<td gameteam="game.getWinner()"></td>
 					<td>vs</td>
 					<td gameteam="game.getLoser()"></td>

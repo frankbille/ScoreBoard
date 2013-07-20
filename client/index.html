@@ -6,12 +6,17 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/scoreboard.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.0/select2.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.0.2/css/bootstrap-datepicker.min.css">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-resource.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.4/angular-strap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.0/select2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.0.2/js/bootstrap-datepicker.min.js"></script>
+    <script src="/js/ui-select2.js"></script>
 
     <script src="/js/scoreboard.js"></script>
 </head>
@@ -23,7 +28,7 @@
             <a class="brand" href="#">ScoreBoard</a>
             <ul class="nav" data-ng-controller="MenuController">
                 <li data-match-route="/addgame.*">
-                    <a href="#/addgame"><i class="icon-plus"></i> Add Game</a>
+                    <a href="#/game/new"><i class="icon-plus"></i> Add Game</a>
                 </li>
                 <li class="dropdown"  data-match-route="/daily.*">
                     <a id="menu-daily-drop" role="button" class="dropdown-toggle" data-toggle="dropdown">Daily

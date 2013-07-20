@@ -1,0 +1,73 @@
+<h1>{{editGame}} Game</h1>
+
+<form class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label" for="gameDate">Date</label>
+		<div class="controls">
+			<div class="input-append">
+				<input type="text" id="gameDate" ng-model="game.gameDate" ng-disabled="saving" data-date-format="yyyy-mm-dd" bs-datepicker/>
+				<button type="button" class="btn" data-toggle="datepicker" ng-disabled="saving"><i class="icon-calendar"></i></button>
+			</div>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label for="leagueField" class="control-label">League</label>
+		<div class="controls">
+			<select ui-select2 ng-model="game.league" data-placeholder="League" class="span4" ng-disabled="saving">
+				<option data-ng-repeat="league in leagues" value="{{league.id}}">{{league.name}}</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<h3>Team 1</h3>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label for="team1Score" class="control-label">Score</label>
+		<div class="controls">
+			<input type="number" id="team1Score" min="0" ng-disabled="saving" required ng-model="game.team1.score" class="span1" />
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label for="team1Players" class="control-label">Players</label>
+		<div class="controls">
+			<select ui-select2 multiple ng-model="game.team1.players" data-placeholder="Players" class="span4" ng-disabled="saving">
+				<option data-ng-repeat="player in players" value="{{player.id}}">{{player.name}}</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<h3>Team 2</h3>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label for="team2Score" class="control-label">Score</label>
+		<div class="controls">
+			<input type="number" id="team2Score" min="0" ng-disabled="saving" required ng-model="game.team2.score" class="span1" />
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label for="team2Players" class="control-label">Players</label>
+		<div class="controls">
+			<select ui-select2 multiple ng-model="game.team2.players" data-placeholder="Players" class="span4" ng-disabled="saving">
+				<option data-ng-repeat="player in players" value="{{player.id}}">{{player.name}}</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary" ng-click="save()" ng-hide="saving">Save</button>
+		<div class="progress progress-striped active" ng-show="saving" style="width: 300px">
+		  <div class="bar" style="width: 100%;">Saving game... can take a couple of seconds</div>
+		</div>
+	</div>
+</form>

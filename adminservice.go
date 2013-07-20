@@ -323,6 +323,10 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			i++
 		}
 		sort.Sort(Games{games})
+		for index := 0; index < len(games); index++ {
+			game := games[index].(*Game)
+			game.ChangeDate = time.Now().UnixNano()
+		}
 		persistObjects(c, "game", games)
 
 		channel.SendJSON(c, string(blobKey), ImportStatus{

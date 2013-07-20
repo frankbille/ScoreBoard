@@ -1,4 +1,4 @@
-var scoreBoardApp = angular.module("ScoreBoard", ["ngResource", "$strap.directives"])
+var scoreBoardApp = angular.module("ScoreBoard", ["ngResource", "$strap.directives", "ui.select2"])
 
 scoreBoardApp.config(function($routeProvider) {
 	$routeProvider.
@@ -25,6 +25,14 @@ scoreBoardApp.config(function($routeProvider) {
 		when('/daily/:leagueId/:currentPage', {
 			templateUrl: '/partials/daily.html',
 			controller: DailyController
+		}).
+		when('/game/new', {
+			templateUrl: '/partials/editgame.html',
+			controller: EditGameController
+		}).
+		when('/daily/:leagueId/game/:gameId', {
+			templateUrl: '/partials/editgame.html',
+			controller: EditGameController
 		}).
 		otherwise({
 			redirectTo: '/players'
@@ -61,6 +69,23 @@ scoreBoardApp.factory("ServiceFactory", function($q) {
 	return {
 		create : function(resource, enhanceEntity) {
 			return {
+				save : function(params, entity) {
+					if (angular.isUndefined(entity)) {
+						entity = params;
+						params = null;
+					}
+					if (angular.isUndefined(params)) {
+						params = null;
+					}
+					
+					var savePromise = resource.save(entity);
+					var entityService = this;
+					
+					return savePromise.$then(function(result) {
+						entityService._putEntity(params, result.data);
+						return result.data;
+					});
+				},
 				get : function(params, entityId) {
 					if (angular.isUndefined(entityId)) {
 						entityId = params;
@@ -111,11 +136,7 @@ scoreBoardApp.factory("ServiceFactory", function($q) {
 					    var entities = resource.query(params, function() {
 							entityService._entities[dataKey] = {};
 							for (i = 0; i < entities.length; i++) {
-								var entity = entities[i];
-								if (angular.isFunction(enhanceEntity)) {
-									enhanceEntity(entity);
-								}
-								entityService._entities[dataKey][entity.id] = entity;
+								entityService._putEntity(params, entities[i]);
 							}
 							deferredEntityMap.resolve(entityService._entities[dataKey]);					
 					    });
@@ -124,6 +145,18 @@ scoreBoardApp.factory("ServiceFactory", function($q) {
 					}
 			
 					return deferredEntityMap.promise;
+				},
+				
+				_putEntity : function(params, entity) {
+					var dataKey = "empty";
+					if (params != null) {
+						dataKey = params.dataKey;
+					}
+					
+					if (angular.isFunction(enhanceEntity)) {
+						enhanceEntity(entity);
+					}
+					this._entities[dataKey][entity.id] = entity;
 				}
 			}
 		}
@@ -326,4 +359,52 @@ function DailyController($scope, LeagueService, PlayerService, GameService, $rou
 			$scope.players = playerList;
 		});
 	});
+}
+
+function EditGameController($scope, LeagueService, PlayerService, GameService, $routeParams, $location) {
+	if (angular.isUndefined($routeParams.gameId)) {
+		$scope.editGame = "Add";
+		$scope.game = {
+			gameDate: new Date(),
+			team1: {
+				score: 0
+			},
+			team2: {
+				score: 0
+			}
+		};
+	} else {
+		$scope.editGame = "Edit";
+		GameService.get({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}, $routeParams.gameId).then(function(game) {
+			$scope.game = {
+				id: +$routeParams.gameId,
+				gameDate: new Date(game.gameDate),
+				league: $routeParams.leagueId,
+				team1: {
+					score: game.team1.score,
+					players: $.map(game.team1.players, function(k, v) {return k.player})
+				},
+				team2: {
+					score: game.team2.score,
+					players: $.map(game.team2.players, function(k, v) {return k.player})
+				}
+			};
+		});
+	}
+	
+	LeagueService.getAll().then(function(leagues) {
+		$scope.leagues = leagues;
+	});
+	
+	PlayerService.getAll().then(function(players) {
+		$scope.players = players;
+	});
+	
+	$scope.save = function() {
+		$scope.saving = true;
+		
+		GameService.save({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}, $scope.game).then(function(game) {
+			$location.path("/daily/"+$routeParams.leagueId);
+		});
+	};
 }
