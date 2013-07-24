@@ -21,7 +21,7 @@ func CalculateRating(winnerRating, loserRating float64, winnerScore, loserScore 
 
 	if winnerScore > loserScore {
 		// Max rating point that can be earned (Highest win margin will give 100% of K_FACTOR)
-		winMargin := float64((winnerScore - loserScore) / winnerScore)
+		winMargin := float64((float64(winnerScore) - float64(loserScore)) / float64(winnerScore))
 		maxRatingPoints = winMargin*K_FACTOR*(SCORE_PERCENT/100) + K_FACTOR*(100-SCORE_PERCENT)/100
 	} else {
 		//The game was drawn, give 25% of the max score to the lowest rated team
