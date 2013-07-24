@@ -75,7 +75,7 @@ func (g Games) Less(i, j int) bool {
 var adminTemplates = template.Must(template.ParseFiles("templates/admin/importoldversionform.html", "templates/admin/importoldversionformprogress.html"))
 
 func importOldVersion(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
+	c := GetContext(r)
 	uploadURL, err := blobstore.UploadURL(c, "/api/admin/doimport", nil)
 	if err != nil {
 		return
@@ -353,7 +353,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		})
 	})
 
-	c := appengine.NewContext(r)
+	c := GetContext(r)
 
 	blobs, _, err := blobstore.ParseUpload(r)
 

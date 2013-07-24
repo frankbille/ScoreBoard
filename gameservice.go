@@ -7,7 +7,7 @@ import (
 )
 
 func (r ScoreBoardService) HandleGetLeagueGames() []Game {
-	c := appengine.NewContext(r.Request())
+	c := GetContext(r.Request())
 	return LoadLeagueGames(c, r.Vars()["leagueId"])
 }
 
@@ -25,7 +25,7 @@ type EditGameTeam struct {
 }
 
 func (r ScoreBoardService) HandleSaveGame(editGame EditGame) Game {
-	c := appengine.NewContext(r.Request())
+	c := GetContext(r.Request())
 
 	// Zero out the time
 	year, month, day := editGame.GameDate.Date()

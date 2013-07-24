@@ -1,10 +1,6 @@
 package scoreboard
 
-import (
-	"appengine"
-)
-
 func (r ScoreBoardService) HandleGetAllLeagues() []League {
-	c := appengine.NewContext(r.Request())
+	c := GetContext(r.Request())
 	return LoadAllLeagues(c)
 }
