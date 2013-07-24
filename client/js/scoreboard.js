@@ -317,6 +317,12 @@ function DailyController($scope, LeagueService, PlayerService, GameService, $rou
 	GameService.getAll({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}).then(function(games) {
 		// Ensure that players has been loaded
 		PlayerService.getAll().then(function(players) {
+			games.sort(function(p1, p2) {
+				var d1 = new Date(p1.gameDate);
+				var d2 = new Date(p2.gameDate);
+				return d2 < d1 ? -1 : d1 < d2 ? 1 : 0;
+			});
+
 			$scope.games = games;
 			$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
 			$scope.pages = [];
