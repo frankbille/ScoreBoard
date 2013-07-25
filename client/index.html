@@ -24,10 +24,10 @@
 
 <div class="navbar navbar-fixed-top navbar-inverse" bs-navbar>
     <div class="navbar-inner">
-        <div class="container-fluid">
+        <div class="container-fluid" data-ng-controller="MenuController">
             <a class="brand" href="#">ScoreBoard</a>
-            <ul class="nav" data-ng-controller="MenuController">
-                <li data-match-route="/addgame.*">
+            <ul class="nav">
+                <li data-ng-show="loggedIn" data-match-route="/addgame.*">
                     <a href="#/game/new"><i class="icon-plus"></i> Add Game</a>
                 </li>
                 <li class="dropdown"  data-match-route="/daily.*">
@@ -45,6 +45,14 @@
                 </li>
                 <li data-match-route="/leagues.*">
                     <a href="#/leagues">Leagues</a>
+                </li>
+            </ul>
+            <ul class="nav pull-right">
+                <li data-ng-show="loggedIn">
+                    <a href="#">{{userEmail}}</a>
+                </li>
+                <li data-ng-show="userInfoReceived">
+                    <a href="{{loginLogoutUrl}}">{{loginLogoutText}}</a>
                 </li>
             </ul>
         </div>

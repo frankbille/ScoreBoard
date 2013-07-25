@@ -43,11 +43,11 @@ scoreBoardApp.factory("ScoreBoardCache", function($cacheFactory) {
 	return $cacheFactory("ScoreBoard");
 });
 
-scoreBoardApp.factory("PlayerResource", function($resource, ScoreBoardCache) {
+scoreBoardApp.factory("PlayerResource", function($resource) {
     return $resource("/api/players");
 });
 
-scoreBoardApp.factory("LeagueResource", function($resource, ScoreBoardCache) {
+scoreBoardApp.factory("LeagueResource", function($resource) {
     return $resource("/api/leagues");
 });
 
@@ -63,6 +63,10 @@ scoreBoardApp.factory("GameResource", function($resource, ScoreBoardCache) {
 			isArray : true
 		}
 	});
+});
+
+scoreBoardApp.factory("UserResource", function($resource) {
+    return $resource("/api/user");
 });
 
 scoreBoardApp.factory("ServiceFactory", function($q) {
@@ -245,8 +249,18 @@ scoreBoardApp.directive("gameteam", function() {
 	}
 });
 
-function MenuController($scope, $location) {
-    $scope.location = $location;
+function MenuController($rootScope, $scope, UserResource) {
+	var userInfo = UserResource.get(function() {
+		$scope.userInfoReceived = true;
+		$rootScope.loggedIn = userInfo.loggedIn;
+		$scope.loginLogoutUrl = userInfo.loginLogoutUrl;
+		$scope.userEmail = userInfo.email;
+		if (userInfo.loggedIn) {
+			$scope.loginLogoutText = "Logout";
+		} else {
+			$scope.loginLogoutText = "Login";
+		}
+	});
 }
 
 function DailyMenuController($scope, LeagueResource) {
