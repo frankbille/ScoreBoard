@@ -36,7 +36,7 @@
                     <ul class="dropdown-menu" role="menu" aria-labelledby="menu-daily-drop"
                         data-ng-controller="DailyMenuController">
                         <li role="presentation" data-ng-repeat="league in leagues |orderBy:'name'">
-                            <a role="menuitem" href="#/daily/{{league.id}}">{{league.name}}</a>
+                            <a role="menuitem" data-ng-href="#/daily/{{league.id}}">{{league.name}}</a>
                         </li>
                     </ul>
                 </li>
@@ -52,7 +52,7 @@
                     <a href="#">{{userEmail}}</a>
                 </li>
                 <li data-ng-show="userInfoReceived">
-                    <a href="{{loginLogoutUrl}}">{{loginLogoutText}}</a>
+                    <a data-ng-href="{{loginLogoutUrl}}">{{loginLogoutText}}</a>
                 </li>
             </ul>
         </div>

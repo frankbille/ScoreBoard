@@ -13,7 +13,7 @@
 			</thead>
 			<tbody>
 				<tr data-ng-repeat="game in games | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
-					<td class="nowrap"><a href="#/daily/{{league.id}}/game/{{game.id}}">{{game.gameDate | date:'yyyy-MM-dd'}}</a></td>
+					<td class="nowrap"><a data-ng-href="#/daily/{{league.id}}/game/{{game.id}}">{{game.gameDate | date:'yyyy-MM-dd'}}</a></td>
 					<td gameteam="game.getWinner()"></td>
 					<td>vs</td>
 					<td gameteam="game.getLoser()"></td>
@@ -26,7 +26,7 @@
 						<div class="pagination pagination-small">
 							<ul>
 								<li data-ng-repeat="page in pages" data-ng-class="(page.number == currentPage && 'active')">
-									<a href="#/daily/{{league.id}}/{{page.number}}" ng-click="currentPage = page.number">{{page.number}}</a>
+									<a data-ng-href="#/daily/{{league.id}}/{{page.number}}" ng-click="currentPage = page.number">{{page.number}}</a>
 								</li>
 							</ul>
 						</div>
@@ -51,7 +51,7 @@
 			<tbody>
 				<tr data-ng-repeat="player in players">
 					<td style="text-align: right"><i data-ng-class="player.medal"></i> {{$index+1}}</td>
-					<td><a href="#/players/{{player.id}}">{{player.name}}</a></td>
+					<td><a data-ng-href="#/players/{{player.id}}">{{player.name}}</a></td>
 					<td>{{player.gamesWon + player.gamesLost}}</td>
 					<td><div bs-tooltip="('Won: '+player.gamesWon+' Lost: '+player.gamesLost)" data-placement="top">{{player.gamesWon / (player.gamesWon+player.gamesLost) * 100 | number:0}}%</div></td>
 					<td>{{player.rating | number:0}}</td>

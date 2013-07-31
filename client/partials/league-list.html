@@ -25,7 +25,7 @@
     </thead>
     <tbody>
     <tr data-ng-repeat="league in leagues | orderBy:'name'">
-        <td class="nopad"><a href="#/leagues/{{league.id}}">{{league.name}}</a></td>
+        <td class="nopad"><a data-ng-href="#/leagues/{{league.id}}">{{league.name}}</a></td>
         <td>{{league.active | yesno}}</td>
     </tr>
     </tbody>

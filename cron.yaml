@@ -1,5 +1,5 @@
 cron:
 - description: Full Backup every 12 hour
-  url: /_ah/datastore_admin/backup.create?name=BackupToCloud&kind=game&kind=league&kind=player&filesystem=gs&gs_bucket_name=scoreboardbackup
+  url: /_ah/datastore_admin/backup.create?name=Backup12h&kind=game&kind=league&kind=player&filesystem=blobstore
   schedule: every 12 hours
   target: ah-builtin-python-bundle
