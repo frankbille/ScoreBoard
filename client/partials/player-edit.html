@@ -1,0 +1,48 @@
+<h1>{{editPlayer}} Player</h1>
+
+<form name="form" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label" for="id">ID</label>
+		<div class="controls">
+			<input type="text" id="id" ng-model="viewid" ng-disabled="{{true}}" />
+			<span class="help-inline" ng-show="checkingId"><i class="icon-spinner icon-spin"></i></span>
+			<span class="help-inline" ng-show="validId"><span class="text-success"><i class="icon-ok"></i></span></span>
+			<span class="help-inline" ng-show="invalidId"><span class="text-error"><i class="icon-warning-sign"></i> Another player already exists with that id. Change the name until it is unique.</span></span>
+			<span class="help-block">
+				The ID can not be changes after the player is created. It is constructed based on the
+				name of the player, so make sure that the name is correct before saving the first time.
+			</span>
+			<span class="help-block" ng-hide="creating"><span class="text-warning">
+				You are editing an existing player. The ID will not be changed.
+			</span></span>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="name">Name</label>
+		<div class="controls">
+			<input type="text" id="name" ng-model="player.name" ng-blur="checkId()" ng-disabled="saving || loading" required />
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="fullName">Full Name</label>
+		<div class="controls">
+			<input type="text" id="fullName" ng-model="player.fullName" ng-disabled="saving || loading" />
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="groupName">Group Name</label>
+		<div class="controls">
+			<input type="text" id="groupName" ng-model="player.groupName" ng-disabled="saving || loading" />
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary" data-ng-click="save()" data-ng-hide="saving" data-ng-disabled="form.$invalid">Save</button>
+		<div class="progress progress-striped active" data-ng-show="saving" style="width: 300px">
+		  <div class="bar" style="width: 100%;">Saving player...</div>
+		</div>
+	</div>
+</form>

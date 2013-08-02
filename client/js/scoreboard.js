@@ -10,6 +10,14 @@ scoreBoardApp.config(function($routeProvider) {
 			templateUrl: '/partials/player-detail.html',
 			controller: PlayerDetailController
 		}).
+		when('/players/:playerId/edit', {
+			templateUrl: '/partials/player-edit.html',
+			controller: PlayerEditController
+		}).
+		when('/addplayer', {
+			templateUrl: '/partials/player-edit.html',
+			controller: PlayerEditController
+		}).
 		when('/leagues', {
             templateUrl: '/partials/league-list.html',
             controller: LeagueListController
@@ -248,6 +256,17 @@ scoreBoardApp.directive("gameteam", function() {
 		}
 	}
 });
+ 
+scoreBoardApp.directive('ngBlur', ['$parse', function($parse) {
+  return function(scope, element, attr) {
+    var fn = $parse(attr['ngBlur']);
+    element.bind('blur', function(event) {
+      scope.$apply(function() {
+        fn(scope, {$event:event});
+      });
+    });
+  }
+}]);
 
 function MenuController($rootScope, $scope, UserResource) {
 	var userInfo = UserResource.get(function() {
@@ -279,6 +298,46 @@ function PlayerDetailController($scope, PlayerService, $routeParams) {
 	PlayerService.get($routeParams.playerId).then(function(player) {
 		$scope.player = player;
 	});
+}
+
+function PlayerEditController($scope, PlayerService, $routeParams, $http, $location) {
+	$scope.player = {};
+	
+	if (angular.isUndefined($routeParams.playerId)) {
+		$scope.creating = true;
+	} else {
+		$scope.creating = false;
+		$scope.loading = true;
+		PlayerService.get($routeParams.playerId).then(function(player) {
+			$scope.player = player;
+			$scope.viewid = player.id;
+			
+			$scope.loading = false;
+		});	
+	}
+	
+	$scope.checkId = function() {
+		if ($scope.creating && angular.isString($scope.player.name) && $scope.player.name.length > 0) {
+			$scope.validId = false;
+			$scope.invalidId = false;
+			$scope.checkingId = true;
+			$http.get("/api/players/generateid/"+$scope.player.name).success(function(data) {
+				$scope.viewid = data.generatedId;
+				$scope.validId = !data.alreadyExists;
+				$scope.invalidId = data.alreadyExists;
+				$scope.checkingId = false;
+			});
+		}
+	};
+	
+	$scope.save = function() {
+		$scope.saving = true;
+		PlayerService.save($scope.player).then(function(player) {
+			$scope.saving = false;
+			console.log(player);
+			$location.path("/players/"+player.id);
+		});
+	};
 }
 
 function LeagueListController($scope, LeagueService) {
