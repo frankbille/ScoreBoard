@@ -1,0 +1,26 @@
+<h1>{{editLeague}} League</h1>
+
+<form name="form" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label" for="name">Name</label>
+		<div class="controls">
+			<input type="text" id="name" ng-model="league.name" ng-disabled="saving || loading" required />
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<div class="controls">
+			<label class="checkbox">
+				<input type="checkbox" ng-model="league.active" ng-disabled="saving || loading" />
+				Active
+			</label>
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary" data-ng-click="save()" data-ng-hide="saving" data-ng-disabled="form.$invalid">Save</button>
+		<div class="progress progress-striped active" data-ng-show="saving" style="width: 300px">
+		  <div class="bar" style="width: 100%;">Saving league...</div>
+		</div>
+	</div>
+</form>

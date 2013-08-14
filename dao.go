@@ -49,6 +49,10 @@ func LoadAllLeagues(c appengine.Context) []League {
 
 	query(c, ENTITY_LEAGUE, &leagues, sort)
 
+	if leagues == nil {
+		leagues = []League{}
+	}
+
 	return leagues
 }
 

@@ -26,6 +26,14 @@ scoreBoardApp.config(function($routeProvider) {
 			templateUrl: '/partials/league-detail.html',
 			controller: LeagueDetailController
 		}).
+		when('/leagues/:leagueId/edit', {
+			templateUrl: '/partials/league-edit.html',
+			controller: LeagueEditController
+		}).
+		when('/addleague', {
+			templateUrl: '/partials/league-edit.html',
+			controller: LeagueEditController
+		}).
 		when('/daily/:leagueId', {
 			templateUrl: '/partials/daily.html',
 			controller: DailyController
@@ -334,7 +342,6 @@ function PlayerEditController($scope, PlayerService, $routeParams, $http, $locat
 		$scope.saving = true;
 		PlayerService.save($scope.player).then(function(player) {
 			$scope.saving = false;
-			console.log(player);
 			$location.path("/players/"+player.id);
 		});
 	};
@@ -350,6 +357,32 @@ function LeagueDetailController($scope, LeagueService, $routeParams) {
 	LeagueService.get($routeParams.leagueId).then(function(league) {
 		$scope.league = league;
 	});
+}
+
+function LeagueEditController($scope, LeagueService, $routeParams, $http, $location) {
+	$scope.league = {
+		active: true
+	};
+	
+	if (angular.isUndefined($routeParams.leagueId)) {
+		$scope.creating = true;
+	} else {
+		$scope.creating = false;
+		$scope.loading = true;
+		LeagueService.get($routeParams.leagueId).then(function(league) {
+			$scope.league = league;
+			
+			$scope.loading = false;
+		});	
+	}
+	
+	$scope.save = function() {
+		$scope.saving = true;
+		LeagueService.save($scope.league).then(function(league) {
+			$scope.saving = false;
+			$location.path("/leagues/"+league.id);
+		});
+	};
 }
 
 function handleTeam(team, playerStatMap, playerMap, winner) {
