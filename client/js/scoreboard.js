@@ -226,6 +226,44 @@ scoreBoardApp.filter("startFrom", function() {
     }
 });
 
+scoreBoardApp.directive("gamelist", function() {
+	return {
+		restrict: 'A',
+		templateUrl: '/partials/game-list.html',
+		replace: false,
+		transclude: false,
+		scope: {
+			loadGames: "&",
+			location: "@",
+			currentPage: "="
+		},
+		controller: function($scope, $element, $attrs, $transclude, PlayerService) {
+			$scope.currentPage = $scope.currentPage || 1;
+			$scope.pageSize = 20;
+
+			$scope.loadGames({
+				callback: function(games, players) {
+					games.sort(function(p1, p2) {
+						var d1 = new Date(p1.gameDate);
+						var d2 = new Date(p2.gameDate);
+						return d2 < d1 ? -1 : d1 < d2 ? 1 : 0;
+					});
+
+					$scope.games = games;
+
+					$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
+					$scope.pages = [];
+					for (var i = 1; i <= $scope.pageCount; i++) {
+						$scope.pages.push({
+							number: i
+						});
+					}
+				}
+			});
+		}
+	}
+});
+
 scoreBoardApp.directive("gameteam", function() {
 	return {
 		restrict: 'A',
@@ -417,60 +455,48 @@ function DailyController($scope, LeagueService, PlayerService, GameService, $rou
 	LeagueService.get($routeParams.leagueId).then(function(league) {
 		$scope.league = league;
 	});
+	
+	$scope.currentPage = $routeParams.currentPage;
+	
+	$scope.allGames = function(callback) {
+		GameService.getAll({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}).then(function(games) {
+			PlayerService.getAll().then(function(players) {
+				callback(games, players);
+				
+				var playerMap = {};
+				for (var i = 0; i < players.length; i++) {
+					playerMap[players[i].id] = players[i];
+				}
 
-	$scope.currentPage = $routeParams.currentPage || 1;
-	$scope.pageSize = 20;
-	GameService.getAll({leagueId : $routeParams.leagueId, dataKey : $routeParams.leagueId}).then(function(games) {
-		// Ensure that players has been loaded
-		PlayerService.getAll().then(function(players) {
-			games.sort(function(p1, p2) {
-				var d1 = new Date(p1.gameDate);
-				var d2 = new Date(p2.gameDate);
-				return d2 < d1 ? -1 : d1 < d2 ? 1 : 0;
-			});
+				var playerStatMap = {};
+				for (var i = 0; i < games.length; i++) {
+					var game = games[i];
+					handleTeam(game.getWinner(), playerStatMap, playerMap, true);
+					handleTeam(game.getLoser(), playerStatMap, playerMap, false);
+				}
 
-			$scope.games = games;
-			$scope.pageCount = Math.ceil($scope.games.length / $scope.pageSize);
-			$scope.pages = [];
-			for (var i = 1; i <= $scope.pageCount; i++) {
-				$scope.pages.push({
-					number: i
+				var playerList = $.map(playerStatMap, function(k, v) {
+					return k;
 				});
-			}
-			
-			var playerMap = {};
-			for (var i = 0; i < players.length; i++) {
-				playerMap[players[i].id] = players[i];
-			}
-		
-			var playerStatMap = {};
-			for (var i = 0; i < $scope.games.length; i++) {
-				var game = $scope.games[i];
-				handleTeam(game.getWinner(), playerStatMap, playerMap, true);
-				handleTeam(game.getLoser(), playerStatMap, playerMap, false);
-			}
-			
-			var playerList = $.map(playerStatMap, function(k, v) {
-				return k;
+
+				playerList.sort(function(p1, p2) {
+					return p2.rating-p1.rating;
+				});
+
+				if (playerList.length > 0) {
+					playerList[0].medal = "icon-trophy icon-large gold";
+				}
+				if (playerList.length > 1) {
+					playerList[1].medal = "icon-trophy icon-large silver";
+				}
+				if (playerList.length > 2) {
+					playerList[2].medal = "icon-trophy icon-large bronze";
+				}
+
+				$scope.players = playerList;
 			});
-			
-			playerList.sort(function(p1, p2) {
-				return p2.rating-p1.rating;
-			});
-			
-			if (playerList.length > 0) {
-				playerList[0].medal = "icon-trophy icon-large gold";
-			}
-			if (playerList.length > 1) {
-				playerList[1].medal = "icon-trophy icon-large silver";
-			}
-			if (playerList.length > 2) {
-				playerList[2].medal = "icon-trophy icon-large bronze";
-			}
-			
-			$scope.players = playerList;
 		});
-	});
+	};
 }
 
 function EditGameController($scope, LeagueService, PlayerService, GameService, $routeParams, $location) {
