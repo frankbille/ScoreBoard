@@ -56,10 +56,12 @@ type ScoreBoardService struct {
 	GetAllPlayers          rest.Processor `method:"GET" path:"/players"`
 	SavePlayer             rest.Processor `method:"POST" path:"/players"`
 	GenerateIdForNewPlayer rest.Processor `method:"GET" path:"/players/generateid/:playerName"`
+	GetPlayerGames         rest.Processor `method:"GET" path:"/players/:playerId/games"`
 	GetAllLeagues          rest.Processor `method:"GET" path:"/leagues"`
 	SaveLeague             rest.Processor `method:"POST" path:"/leagues"`
 	GetLeagueGames         rest.Processor `method:"GET" path:"/leagues/:leagueId/games"`
-	SaveGame               rest.Processor `method:"POST" path:"/leagues/:leagueId/games"`
+	UpdateGame             rest.Processor `method:"POST" path:"/leagues/:leagueId/games"`
+	CreateGame             rest.Processor `method:"POST" path:"/leagues/games"`
 	GetUserInfo            rest.Processor `method:"GET" path:"/user"`
 
 	post map[string]string

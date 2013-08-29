@@ -1,3 +1,7 @@
 <h1>{{player.name}}</h1>
 
-<a data-ng-href="#/players/{{player.id}}/edit" class="btn">Edit</a>
+<p>
+	<a data-ng-href="#/players/{{player.id}}/edit" class="btn">Edit</a>
+</p>
+
+<div gamelist load-games="playerGames(callback)" location="#/player/{{player.id}}" current-page="currentPage" player-id="playerId"></div>

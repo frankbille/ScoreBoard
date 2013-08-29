@@ -63,6 +63,20 @@ scoreBoardApp.factory("PlayerResource", function($resource) {
     return $resource("/api/players");
 });
 
+scoreBoardApp.factory("PlayerGameResource", function($resource, ScoreBoardCache) {
+    return $resource("/api/players/:playerId/games", {playerId: '@id'}, {
+		"get"   : {
+			method : "GET",
+			cache  : ScoreBoardCache
+		},
+		"query" : {
+			method  : "GET",
+			cache   : ScoreBoardCache,
+			isArray : true
+		}
+	});
+});
+
 scoreBoardApp.factory("LeagueResource", function($resource) {
     return $resource("/api/leagues");
 });
@@ -183,8 +197,49 @@ scoreBoardApp.factory("ServiceFactory", function($q) {
 	};
 });
 
+function gameEnhancer(game) {
+	game.getWinner = function() {
+		if (game.team1.score >= game.team2.score) {
+			return game.team1;
+		} else {
+			return game.team2;
+		}
+	};
+	
+	game.getLoser = function() {
+		if (game.team1.score < game.team2.score) {
+			return game.team1;
+		} else {
+			return game.team2;
+		}
+		
+	};
+	
+	game.team1.containsPlayer = function(playerId) {
+		for (var i = 0; i < game.team1.players.length; i++) {
+			if (game.team1.players[i].player == playerId) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	game.team2.containsPlayer = function(playerId) {
+		for (var i = 0; i < game.team2.players.length; i++) {
+			if (game.team2.players[i].player == playerId) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
 scoreBoardApp.factory("PlayerService", function(PlayerResource, ServiceFactory) {
 	return ServiceFactory.create(PlayerResource);
+});
+
+scoreBoardApp.factory("PlayerGameService", function(PlayerGameResource, ServiceFactory) {
+	return ServiceFactory.create(PlayerGameResource, gameEnhancer);
 });
 
 scoreBoardApp.factory("LeagueService", function(LeagueResource, ServiceFactory) {
@@ -192,24 +247,7 @@ scoreBoardApp.factory("LeagueService", function(LeagueResource, ServiceFactory) 
 });
 
 scoreBoardApp.factory("GameService", function(GameResource, ServiceFactory) {
-	return ServiceFactory.create(GameResource, function(game) {
-		game.getWinner = function() {
-			if (game.team1.score >= game.team2.score) {
-				return game.team1;
-			} else {
-				return game.team2;
-			}
-		};
-		
-		game.getLoser = function() {
-			if (game.team1.score < game.team2.score) {
-				return game.team1;
-			} else {
-				return game.team2;
-			}
-			
-		};
-	});
+	return ServiceFactory.create(GameResource, gameEnhancer);
 });
 
 scoreBoardApp.filter("yesno", function() {
@@ -233,6 +271,7 @@ scoreBoardApp.directive("gamelist", function() {
 		replace: false,
 		transclude: false,
 		scope: {
+			playerId: "=",
 			loadGames: "&",
 			location: "@",
 			currentPage: "="
@@ -248,6 +287,19 @@ scoreBoardApp.directive("gamelist", function() {
 						var d2 = new Date(p2.gameDate);
 						return d2 < d1 ? -1 : d1 < d2 ? 1 : 0;
 					});
+
+					for (var i = 0; i < games.length; i++) {
+						var game = games[i];
+						delete game.rowClass;
+						
+						if (angular.isUndefined($scope.playerId) == false) {
+							if (game.getWinner().containsPlayer($scope.playerId)) {
+								game.rowClass = "success";
+							} else {
+								game.rowClass = "error";
+							}
+						}
+					}
 
 					$scope.games = games;
 
@@ -340,10 +392,22 @@ function PlayerListController($scope, PlayerService) {
 	});
 }
 
-function PlayerDetailController($scope, PlayerService, $routeParams) {
+function PlayerDetailController($scope, PlayerService, PlayerGameService, $routeParams) {
 	PlayerService.get($routeParams.playerId).then(function(player) {
 		$scope.player = player;
+		
+		$scope.currentPage = $routeParams.currentPage;
 	});
+	
+	$scope.playerId = $routeParams.playerId;
+
+	$scope.playerGames = function(callback) {
+		PlayerGameService.getAll({playerId : $routeParams.playerId, dataKey : $routeParams.playerId}).then(function(games) {
+			PlayerService.getAll().then(function(players) {
+				callback(games, players);
+			});
+		});
+	};
 }
 
 function PlayerEditController($scope, PlayerService, $routeParams, $http, $location) {

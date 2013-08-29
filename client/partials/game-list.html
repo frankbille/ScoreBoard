@@ -7,8 +7,8 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr data-ng-repeat="game in games | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
-			<td class="nowrap"><a data-ng-href="#/daily/{{league.id}}/game/{{game.id}}">{{game.gameDate | date:'yyyy-MM-dd'}}</a></td>
+		<tr data-ng-repeat="game in games | startFrom:(currentPage-1)*pageSize | limitTo:pageSize" data-ng-class="game.rowClass">
+			<td class="nowrap"><a data-ng-href="#/daily/{{game.leagueId}}/game/{{game.id}}">{{game.gameDate | date:'yyyy-MM-dd'}}</a></td>
 			<td gameteam="game.getWinner()"></td>
 			<td>vs</td>
 			<td gameteam="game.getLoser()"></td>

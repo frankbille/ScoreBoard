@@ -6,10 +6,11 @@ import (
 )
 
 const (
-	ENTITY_GAME   string = "game"
-	ENTITY_PLAYER string = "player"
-	ENTITY_LEAGUE string = "league"
-	ENTITY_RATING string = "rating"
+	ENTITY_GAME       string = "game"
+	ENTITY_PLAYER     string = "player"
+	ENTITY_LEAGUE     string = "league"
+	ENTITY_RATING     string = "rating"
+	ENTITY_GAMEPLAYER string = "gameplayer"
 )
 
 type queryEnhancer func(query *datastore.Query) *datastore.Query
@@ -22,6 +23,28 @@ func query(c appengine.Context, entity string, result interface{}, queryEnhancer
 	}
 
 	return query.GetAll(c, result)
+}
+
+func PersistObjects(c appengine.Context, keys []*datastore.Key, entities []PersistableObject) []*datastore.Key {
+	for i := 0; i < len(entities); i += 500 {
+		start := i
+		end := i + 500
+		if end > len(entities) {
+			end = len(entities)
+		}
+		persistedKeys, err := datastore.PutMulti(c, keys[start:end], entities[start:end])
+		if err != nil {
+			c.Errorf("Error: %v", err)
+			return nil
+		}
+		
+		k := 0
+		for j := start; j < end; j++ {
+			keys[j] = persistedKeys[k]
+			k++
+		}
+	}
+	return keys
 }
 
 func LoadAllPlayers(c appengine.Context) []Player {
@@ -68,7 +91,7 @@ func LoadLeagueGames(c appengine.Context, leagueId string) []Game {
 	if err != nil {
 		c.Errorf("%v", err)
 	}
-	
+
 	if games == nil {
 		games = make([]Game, 0)
 	}
@@ -77,6 +100,52 @@ func LoadLeagueGames(c appengine.Context, leagueId string) []Game {
 		game := &games[i]
 		key := keys[i]
 		game.Id = key.IntID()
+		game.LeagueId = leagueId
+	}
+
+	return games
+}
+
+func LoadPlayerGames(c appengine.Context, playerId string) []Game {
+	var gamePlayers []GamePlayer
+	gpq := datastore.NewQuery(ENTITY_GAMEPLAYER)
+	gpq = gpq.Filter("Player =", playerId)
+	gpq.GetAll(c, &gamePlayers)
+	
+	var keys = map[string][]*datastore.Key{}
+	
+	for i := 0; i < len(gamePlayers); i++ {
+		gameKey := gamePlayers[i].Game
+		leagueGameKeys := keys[gameKey.Parent().StringID()]
+		if leagueGameKeys == nil {
+			leagueGameKeys = make([]*datastore.Key, 0, len(gamePlayers))
+		}
+		keys[gameKey.Parent().StringID()] = append(leagueGameKeys, gameKey)
+	}
+
+	var games []Game = make([]Game, len(gamePlayers))
+		
+	pos := 0
+	for _, gameKeys := range keys {
+		var leagueGames []Game = make([]Game, len(gameKeys))
+		err := datastore.GetMulti(c, gameKeys, leagueGames)
+		if err != nil {
+			c.Errorf("%v", err)
+		}
+			
+		for i := 0; i < len(leagueGames); i++ {
+			game := &leagueGames[i]
+			key := gameKeys[i]
+			game.Id = key.IntID()
+			game.LeagueId = key.Parent().StringID()
+		}
+
+		copy(games[pos:], leagueGames)	
+		pos += len(gameKeys)
+	}
+	
+	if games == nil {
+		games = make([]Game, 0)
 	}
 
 	return games

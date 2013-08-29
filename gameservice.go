@@ -11,6 +11,11 @@ func (r ScoreBoardService) HandleGetLeagueGames() []Game {
 	return LoadLeagueGames(c, r.Vars()["leagueId"])
 }
 
+func (r ScoreBoardService) HandleGetPlayerGames() []Game {
+	c := GetContext(r.Request())
+	return LoadPlayerGames(c, r.Vars()["playerId"])
+}
+
 type EditGame struct {
 	Id       int64        `json:"id"`
 	GameDate time.Time    `json:"gameDate"`
@@ -24,9 +29,17 @@ type EditGameTeam struct {
 	Players []string `json:"players"`
 }
 
-func (r ScoreBoardService) HandleSaveGame(editGame EditGame) Game {
+func (r ScoreBoardService) HandleCreateGame(editGame EditGame) Game {
 	c := GetContext(r.Request())
+	return SaveGame(c, editGame)
+}
 
+func (r ScoreBoardService) HandleUpdateGame(editGame EditGame) Game {
+	c := GetContext(r.Request())
+	return SaveGame(c, editGame)
+}
+
+func SaveGame(c appengine.Context, editGame EditGame) Game {
 	// Zero out the time
 	year, month, day := editGame.GameDate.Date()
 	editGame.GameDate = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
@@ -84,9 +97,57 @@ func (r ScoreBoardService) HandleSaveGame(editGame EditGame) Game {
 		c.Errorf("%v", err)
 	}
 	
+	// Delete gameplayer table before inserting into it
+	var gamePlayers []GamePlayer
+	
+	q := datastore.NewQuery(ENTITY_GAMEPLAYER)
+	q = q.Ancestor(key).KeysOnly()
+	keys, err := q.GetAll(c, &gamePlayers)
+	if err != nil {
+		c.Errorf("%v", err)
+	}
+	c.Infof("%v", keys)
+	err = datastore.DeleteMulti(c, keys)
+	if err != nil {
+		c.Errorf("%v", err)
+	}
+	
 	game.Id = key.IntID()
+	game.LeagueId = editGame.League
+	
+	// Insert GamePlayers
+	InsertGamePlayers(c, []Game{game})
 	
 	return game
+}
+
+func InsertGamePlayers(c appengine.Context, games []Game) {
+	numGamePlayers := 0
+	for i := 0; i < len(games); i++ {
+		numGamePlayers += countPlayers(games[i])
+	}
+	var gamePlayers = make([]PersistableObject, 0, numGamePlayers)
+	var gamePlayerKeys = make([]*datastore.Key, numGamePlayers)
+	for i := 0; i < len(games); i++ {
+		gameKey := datastore.NewKey(c, ENTITY_GAME, "", games[i].Id, games[i].League)
+		gamePlayers = copyGamePlayers(gameKey, games[i].Team1, gamePlayers)
+		gamePlayers = copyGamePlayers(gameKey, games[i].Team2, gamePlayers)
+	}
+	for i := 0; i < len(gamePlayers); i++ {
+		gamePlayerKeys[i] = datastore.NewIncompleteKey(c, ENTITY_GAMEPLAYER, gamePlayers[i].(*GamePlayer).Game)
+	}
+	
+	PersistObjects(c, gamePlayerKeys, gamePlayers)
+}
+
+func copyGamePlayers(gameKey *datastore.Key, gameTeam GameTeam, gamePlayers []PersistableObject) []PersistableObject {
+	for i := 0; i < len(gameTeam.Players); i++ {
+		gamePlayers = append(gamePlayers, &GamePlayer{
+			Game: gameKey,
+			Player: gameTeam.Players[i].Player,
+		})
+	}
+	return gamePlayers
 }
 
 func copyGameTeam(gameTeam *GameTeam, editGameTeam EditGameTeam) {
@@ -97,6 +158,10 @@ func copyGameTeam(gameTeam *GameTeam, editGameTeam EditGameTeam) {
 			Player: player,
 		}
 	}
+}
+
+func countPlayers(game Game) int {
+	return len(game.Team1.Players) + len(game.Team2.Players)
 }
 
 func RecalculateLeagueRatings(c appengine.Context, leagueId string) error {

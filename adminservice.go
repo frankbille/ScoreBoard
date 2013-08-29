@@ -101,7 +101,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		v := MysqlDump{}
 
 		step := 1
-		total := 7
+		total := 8
 
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
@@ -327,7 +327,22 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			game := games[index].(*Game)
 			game.ChangeDate = time.Now().UnixNano()
 		}
-		persistObjects(c, "game", games)
+		gameKeys := persistObjects(c, "game", games)
+
+		channel.SendJSON(c, string(blobKey), ImportStatus{
+			Step:   step,
+			Total:  total,
+			Status: "Inserting references from players to games",
+		})
+		step++
+		gameArray := make([]Game, len(games))
+		for i = 0; i < len(games); i++ {
+			g := games[i].(*Game)
+			gameArray[i] = *g
+			gameArray[i].Id = gameKeys[i].IntID()
+			i++
+		}
+		InsertGamePlayers(c, gameArray)
 
 		channel.SendJSON(c, string(blobKey), ImportStatus{
 			Step:   step,
@@ -397,7 +412,7 @@ func createGameTeam(c appengine.Context, score int32, players []int64, allPlayer
 	}
 }
 
-func persistObjects(c appengine.Context, entityName string, entities []PersistableObject) {
+func persistObjects(c appengine.Context, entityName string, entities []PersistableObject) []*datastore.Key {
 	keys := make([]*datastore.Key, len(entities))
 
 	for i := 0; i < len(entities); i++ {
@@ -411,17 +426,7 @@ func persistObjects(c appengine.Context, entityName string, entities []Persistab
 		keys[i] = key
 	}
 
-	for i := 0; i < len(entities); i += 500 {
-		start := i
-		end := i + 500
-		if end > len(entities) {
-			end = len(entities)
-		}
-		_, err := datastore.PutMulti(c, keys[start:end], entities[start:end])
-
-		if err != nil {
-			c.Errorf("Error: %v", err)
-			return
-		}
-	}
+	keys = PersistObjects(c, keys, entities)
+	
+	return keys
 }
