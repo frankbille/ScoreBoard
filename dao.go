@@ -3,6 +3,7 @@ package scoreboard
 import (
 	"appengine"
 	"appengine/datastore"
+	"sort"
 )
 
 const (
@@ -147,6 +148,8 @@ func LoadPlayerGames(c appengine.Context, playerId string) []Game {
 	if games == nil {
 		games = make([]Game, 0)
 	}
+	
+	sort.Sort(sort.Reverse(SortableGames{games}))
 
 	return games
 }

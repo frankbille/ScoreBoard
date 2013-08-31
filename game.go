@@ -8,7 +8,7 @@ import (
 type Game struct {
 	Id         int64          `datastore:"-" json:"id"`
 	GameDate   time.Time      `json:"gameDate"`
-	ChangeDate int64          `json:"-"`
+	ChangeDate int64          `json:"changeDate"`
 	Team1      GameTeam       `json:"team1"`
 	Team2      GameTeam       `json:"team2"`
 	League     *datastore.Key `json:"-"`
@@ -61,4 +61,33 @@ func (gp GamePlayer) GetId() string {
 
 func (gp GamePlayer) GetParent() *datastore.Key {
 	return gp.Game
+}
+
+// Sorting
+type SortableGames struct {
+	games []Game
+}
+
+func (g SortableGames) Len() int {
+	return len(g.games)
+}
+
+func (g SortableGames) Swap(i, j int) {
+	g.games[i], g.games[j] = g.games[j], g.games[i]
+}
+
+func (g SortableGames) Less(i, j int) bool {
+	game1 := g.games[i]
+	game2 := g.games[j]
+	
+	if game1.GameDate.Before(game2.GameDate) {
+		return true
+	}
+	if game1.GameDate.Equal(game2.GameDate) {
+		if game1.ChangeDate < game2.ChangeDate {
+			return true
+		}
+	}
+	
+	return false
 }

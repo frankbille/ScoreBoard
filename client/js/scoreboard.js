@@ -10,6 +10,10 @@ scoreBoardApp.config(function($routeProvider) {
 			templateUrl: '/partials/player-detail.html',
 			controller: PlayerDetailController
 		}).
+		when('/players/:playerId/:currentPage', {
+			templateUrl: '/partials/player-detail.html',
+			controller: PlayerDetailController
+		}).
 		when('/players/:playerId/edit', {
 			templateUrl: '/partials/player-edit.html',
 			controller: PlayerEditController
@@ -283,9 +287,26 @@ scoreBoardApp.directive("gamelist", function() {
 			$scope.loadGames({
 				callback: function(games, players) {
 					games.sort(function(p1, p2) {
+						var c = 0;
+						
 						var d1 = new Date(p1.gameDate);
 						var d2 = new Date(p2.gameDate);
-						return d2 < d1 ? -1 : d1 < d2 ? 1 : 0;
+						
+						if (d2 < d1) {
+							c = -1;
+						} else if (d1 < d2) {
+							c = 1;
+						}
+						
+						if (c == 0) {
+							if (p2.changeDate < p1.changeDate) {
+								c = -1;
+							} else if (p1.changeDate < p2.changeDate) {
+								c = 1;
+							}
+						}
+						
+						return c;
 					});
 
 					for (var i = 0; i < games.length; i++) {
@@ -393,13 +414,12 @@ function PlayerListController($scope, PlayerService) {
 }
 
 function PlayerDetailController($scope, PlayerService, PlayerGameService, $routeParams) {
+	$scope.currentPage = $routeParams.currentPage;
+	$scope.playerId = $routeParams.playerId;
+	
 	PlayerService.get($routeParams.playerId).then(function(player) {
 		$scope.player = player;
-		
-		$scope.currentPage = $routeParams.currentPage;
 	});
-	
-	$scope.playerId = $routeParams.playerId;
 
 	$scope.playerGames = function(callback) {
 		PlayerGameService.getAll({playerId : $routeParams.playerId, dataKey : $routeParams.playerId}).then(function(games) {

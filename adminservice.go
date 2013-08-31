@@ -326,6 +326,7 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 		for index := 0; index < len(games); index++ {
 			game := games[index].(*Game)
 			game.ChangeDate = time.Now().UnixNano()
+			time.Sleep(1 * time.Millisecond)
 		}
 		gameKeys := persistObjects(c, "game", games)
 
@@ -340,7 +341,6 @@ func doImportOldVersion(w http.ResponseWriter, r *http.Request) {
 			g := games[i].(*Game)
 			gameArray[i] = *g
 			gameArray[i].Id = gameKeys[i].IntID()
-			i++
 		}
 		InsertGamePlayers(c, gameArray)
 
