@@ -219,6 +219,13 @@ function gameEnhancer(game) {
 		
 	};
 	
+	game.getPlayers = function() {
+		var players = [];
+		players = players.concat(game.team1.players);
+		players = players.concat(game.team2.players);
+		return players;
+	};
+	
 	game.team1.containsPlayer = function(playerId) {
 		for (var i = 0; i < game.team1.players.length; i++) {
 			if (game.team1.players[i].player == playerId) {
@@ -578,6 +585,71 @@ function DailyController($scope, LeagueService, PlayerService, GameService, $rou
 				}
 
 				$scope.players = playerList;
+				
+				var gamesForGraph = games;
+				gamesForGraph.sort(function(p1, p2) {
+					var c = 0;
+					
+					var d1 = new Date(p1.gameDate);
+					var d2 = new Date(p2.gameDate);
+					
+					if (d1 < d2) {
+						c = -1;
+					} else if (d2 < d1) {
+						c = 1;
+					}
+					
+					if (c == 0) {
+						if (p1.changeDate < p2.changeDate) {
+							c = -1;
+						} else if (p2.changeDate < p1.changeDate) {
+							c = 1;
+						}
+					}
+					
+					return c;
+				});
+				
+				var data = "Game";
+				var playerColumns = [];
+				for (var i = 0; i < playerList.length; i++) {
+					var player = playerList[i];
+					data += ","+player.name;
+					playerColumns.push(player.id);
+				}
+				data += "\n";
+				for (var i = 0; i < gamesForGraph.length; i++) {
+					var game = gamesForGraph[i];
+					data += ""+(i+1);
+					
+					var gamePlayers = {};
+					var gp = game.getPlayers();
+					for (var j = 0; j < gp.length; j++) {
+						var p = gp[j];
+						gamePlayers[p.player] = p;
+					}
+					for (var j = 0; j < playerColumns.length; j++) {
+						var playerId = playerColumns[j];
+						
+						data += ",";
+						var player = gamePlayers[playerId];
+						if (angular.isUndefined(player) == false) {
+							data += player.endRating;
+						}
+					}
+					
+					data += "\n";
+				}
+				
+				var g = new Dygraph(
+					document.getElementById("gamegraph"),
+					data,
+					{
+						connectSeparatedPoints: true,
+						labelsDivWidth: 768,
+						digitsAfterDecimal: 0
+					}
+				);
 			});
 		});
 	};
