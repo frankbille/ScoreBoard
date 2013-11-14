@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/frankbille/ScoreBoard.png?label=ready)](https://waffle.io/frankbille/ScoreBoard)  
 ScoreBoard [![Build Status](https://secure.travis-ci.org/frankbille/ScoreBoard.png)](http://travis-ci.org/frankbille/ScoreBoard)
 ==========
 
