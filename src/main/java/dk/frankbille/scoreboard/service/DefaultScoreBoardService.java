@@ -190,7 +190,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 				if (winCount > looseCount) {
 					cache.get(player).setTrend(Trend.WINNING);
 				} else if (winCount < looseCount) {
-					cache.get(player).setTrend(Trend.LOOSING);
+					cache.get(player).setTrend(Trend.LOSING);
 				} else {
 					cache.get(player).setTrend(Trend.EVEN);
 				}
@@ -247,7 +247,7 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 				if (winCount > looseCount) {
 					cache.get(teamId).setTrend(Trend.WINNING);
 				} else if (winCount < looseCount) {
-					cache.get(teamId).setTrend(Trend.LOOSING);
+					cache.get(teamId).setTrend(Trend.LOSING);
 				} else {
 					cache.get(teamId).setTrend(Trend.EVEN);
 				}

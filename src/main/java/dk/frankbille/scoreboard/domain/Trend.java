@@ -2,7 +2,7 @@ package dk.frankbille.scoreboard.domain;
 
 public enum Trend {
 	WINNING,
-	LOOSING,
+	LOSING,
 	EVEN,
 	NOT_DEFINED
 }
