@@ -88,7 +88,7 @@ public class ELORatingCalculator implements RatingCalculator {
 
 		//Check that we have 2 teams
 		if (winner==null ||loser==null)
-			throw new RatingException("ELORatingCalculator needs a winning and a loosing team");
+			throw new RatingException("ELORatingCalculator needs a winning and a losing team");
 
 		//Calculate the rating change for the teams
 		double change = ELOCalculator.calculate(winnerRating, winnerScore, loserRating, loserScore);
