@@ -2,10 +2,14 @@ package scoreboard
 
 import (
 	"appengine/user"
+	"github.com/emicklei/go-restful"
 )
 
-func (r ScoreBoardService) HandleGetUserInfo() UserInfo {
-	c := GetContext(r.Request())
+type UserService struct {
+}
+
+func (us UserService) GetUserInfo(request *restful.Request, response *restful.Response) {
+	c := GetContext(request.Request)
 
 	userInfo := UserInfo{}
 	u := user.Current(c)
@@ -20,6 +24,6 @@ func (r ScoreBoardService) HandleGetUserInfo() UserInfo {
 		userInfo.Email = u.Email
 		userInfo.UserID = u.ID
 	}
-	
-	return userInfo
+
+	response.WriteEntity(userInfo)
 }

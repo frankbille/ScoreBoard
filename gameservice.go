@@ -3,17 +3,12 @@ package scoreboard
 import (
 	"appengine"
 	"appengine/datastore"
+	"github.com/emicklei/go-restful"
 	"time"
+	"net/http"
 )
 
-func (r ScoreBoardService) HandleGetLeagueGames() []Game {
-	c := GetContext(r.Request())
-	return LoadLeagueGames(c, r.Vars()["leagueId"])
-}
-
-func (r ScoreBoardService) HandleGetPlayerGames() []Game {
-	c := GetContext(r.Request())
-	return LoadPlayerGames(c, r.Vars()["playerId"])
+type GameService struct {
 }
 
 type EditGame struct {
@@ -29,14 +24,28 @@ type EditGameTeam struct {
 	Players []string `json:"players"`
 }
 
-func (r ScoreBoardService) HandleCreateGame(editGame EditGame) Game {
-	c := GetContext(r.Request())
-	return SaveGame(c, editGame)
+func (gs GameService) GetLeagueGames(request *restful.Request, response *restful.Response) {
+	c := GetContext(request.Request)
+	leagueId := request.PathParameter("league-id")
+	response.WriteEntity(LoadLeagueGames(c, leagueId))
 }
 
-func (r ScoreBoardService) HandleUpdateGame(editGame EditGame) Game {
-	c := GetContext(r.Request())
-	return SaveGame(c, editGame)
+func (gs GameService) GetPlayerGames(request *restful.Request, response *restful.Response) {
+	c := GetContext(request.Request)
+	playerId := request.PathParameter("player-id")
+	response.WriteEntity(LoadPlayerGames(c, playerId))
+}
+
+func (gs GameService) SaveGame(request *restful.Request, response *restful.Response) {
+	c := GetContext(request.Request)
+
+	editGame := EditGame{}
+	err := request.ReadEntity(&editGame)
+	if err == nil {
+		response.WriteEntity(SaveGame(c, editGame))
+	} else {
+		response.WriteError(http.StatusInternalServerError, err)
+	}
 }
 
 func SaveGame(c appengine.Context, editGame EditGame) Game {
@@ -45,12 +54,12 @@ func SaveGame(c appengine.Context, editGame EditGame) Game {
 	editGame.GameDate = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 
 	var key *datastore.Key
-	
+
 	err := datastore.RunInTransaction(c, func(c appengine.Context) error {
 		leagueKey := datastore.NewKey(c, ENTITY_LEAGUE, editGame.League, 0, nil)
 
 		var game Game
-		
+
 		if editGame.Id == 0 {
 			key = datastore.NewIncompleteKey(c, ENTITY_GAME, leagueKey)
 
@@ -89,17 +98,17 @@ func SaveGame(c appengine.Context, editGame EditGame) Game {
 	if err != nil {
 		c.Errorf("%v", err)
 	}
-	
+
 	var game Game
-	
+
 	err = datastore.Get(c, key, &game)
 	if err != nil {
 		c.Errorf("%v", err)
 	}
-	
+
 	// Delete gameplayer table before inserting into it
 	var gamePlayers []GamePlayer
-	
+
 	q := datastore.NewQuery(ENTITY_GAMEPLAYER)
 	q = q.Ancestor(key).KeysOnly()
 	keys, err := q.GetAll(c, &gamePlayers)
@@ -111,13 +120,13 @@ func SaveGame(c appengine.Context, editGame EditGame) Game {
 	if err != nil {
 		c.Errorf("%v", err)
 	}
-	
+
 	game.Id = key.IntID()
 	game.LeagueId = editGame.League
-	
+
 	// Insert GamePlayers
 	InsertGamePlayers(c, []Game{game})
-	
+
 	return game
 }
 
@@ -136,14 +145,14 @@ func InsertGamePlayers(c appengine.Context, games []Game) {
 	for i := 0; i < len(gamePlayers); i++ {
 		gamePlayerKeys[i] = datastore.NewIncompleteKey(c, ENTITY_GAMEPLAYER, gamePlayers[i].(*GamePlayer).Game)
 	}
-	
+
 	PersistObjects(c, gamePlayerKeys, gamePlayers)
 }
 
 func copyGamePlayers(gameKey *datastore.Key, gameTeam GameTeam, gamePlayers []PersistableObject) []PersistableObject {
 	for i := 0; i < len(gameTeam.Players); i++ {
 		gamePlayers = append(gamePlayers, &GamePlayer{
-			Game: gameKey,
+			Game:   gameKey,
 			Player: gameTeam.Players[i].Player,
 		})
 	}
@@ -248,3 +257,22 @@ func applyResultRating(c appengine.Context, gameTeam *GameTeam, playerRatings ma
 		teamPlayer.EndRating = endRating
 	}
 }
+
+/*import (
+	"appengine"
+	"appengine/datastore"
+	"time"
+)
+
+func (r ScoreBoardService) HandleCreateGame(editGame EditGame) Game {
+	c := GetContext(r.Request())
+	return SaveGame(c, editGame)
+}
+
+func (r ScoreBoardService) HandleUpdateGame(editGame EditGame) Game {
+	c := GetContext(r.Request())
+	return SaveGame(c, editGame)
+}
+
+
+*/
