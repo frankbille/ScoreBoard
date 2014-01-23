@@ -15,9 +15,9 @@ handlers:
   upload: client/admin/(.*\.html)
   login: admin
 
-- url: /(.*\.css)
+- url: /css/(.*\.css)
   mime_type: text/css; charset=utf-8
-  static_files: client/\1
+  static_files: client/css/\1
   upload: client/(.*\.css)
 
 - url: /partials/(.*\.html)
@@ -30,15 +30,21 @@ handlers:
   static_files: client/\1
   upload: client/(.*\.ico)
 
-- url: /(.*\.js)
+- url: /js/(.*\.js)
   mime_type: text/javascript; charset=utf-8
-  static_files: client/\1
+  static_files: client/js/\1
   upload: client/(.*\.js)
+  
+#
+# Regex for all swagger files to make as static content.
+# You should create the folder static/swagger and copy
+# swagger-ui into it.
+#
+- url: /apidocs
+  static_dir: static/swagger
 
-- url: /(.*\.woff)
-  mime_type: application/font-woff
-  static_files: client/\1
-  upload: client/(.*\.woff)
+- url: /apidocs.json.*
+  script: _go_app
 
 - url: /api/.*
   script: _go_app
