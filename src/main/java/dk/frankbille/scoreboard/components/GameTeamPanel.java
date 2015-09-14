@@ -91,16 +91,19 @@ public class GameTeamPanel extends Panel {
 
                 // Player ratings
                 for (Player player : players) {
-                    b.append(player.getName()).append(" (");
+                    b.append(player.getName()).append(": ");
 
                     GamePlayerRatingInterface playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
                     b.append(RATING_VALUE.format(playerRating.getRating()));
 
-                    b.append(")<br>");
+                    b.append(" <sup>");
+                    b.append(RATING_CHANGE.format(playerRating.getChange()));
+                    b.append("</sup><br>");
                 }
 
                 // Team rating
                 GameRatingInterface gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
+                b.append("<strong>");
                 b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
                 b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
                 b.append(" ");
@@ -110,9 +113,10 @@ public class GameTeamPanel extends Panel {
                 if (playerCount > 0) {
                     change /= playerCount;
                 }
+                b.append(" <sup>");
                 b.append(RATING_CHANGE.format(change));
 
-                b.append("</small>");
+                b.append("</sup></strong></small>");
 
                 return b;
             }
