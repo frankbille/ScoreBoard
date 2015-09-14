@@ -70,14 +70,12 @@ public class PlayerStatisticsPanel extends Panel {
 				Collections.sort(playerResults, new Comparator<PlayerResult>() {
 					@Override
 					public int compare(PlayerResult o1, PlayerResult o2) {
-						int compare = 0;
-
 						double rating1 = rating.getPlayerRating(o1.getPlayer().getId()).getRating();
 						Double rating2 = rating.getPlayerRating(o2.getPlayer().getId()).getRating();
-						compare = rating2.compareTo(rating1);
+						int compare = rating2.compareTo(rating1);
 
 						if (compare == 0) {
-							new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
+							compare = new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
 						}
 
 						if (compare == 0) {

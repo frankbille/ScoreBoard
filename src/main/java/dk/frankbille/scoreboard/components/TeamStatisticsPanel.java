@@ -23,30 +23,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import dk.frankbille.scoreboard.domain.*;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Localizer;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import dk.frankbille.scoreboard.domain.League;
-import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.PlayerResult;
-import dk.frankbille.scoreboard.domain.TeamResult;
-import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
@@ -71,14 +63,12 @@ public class TeamStatisticsPanel extends Panel {
 				Collections.sort(teamResults, new Comparator<TeamResult>() {
 					@Override
 					public int compare(TeamResult o1, TeamResult o2) {
-						int compare = 0;
-
 						double rating1 = rating.getTeamRating(o1.getTeam()).getRating();
 						Double rating2 = rating.getTeamRating(o2.getTeam()).getRating();
-						compare = rating2.compareTo(rating1);
+						int compare = rating2.compareTo(rating1);
 
 						if (compare == 0) {
-							new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
+							compare = new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
 						}
 
 						if (compare == 0) {
