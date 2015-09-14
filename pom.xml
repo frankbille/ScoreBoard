@@ -155,6 +155,13 @@
 			<version>2.2.9</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- TrueSkill/JSkills DEPENDENCIES -->
+		<dependency>
+			<groupId>org.ejml</groupId>
+			<artifactId>simple</artifactId>
+			<version>0.28</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>scoreboard</finalName>
