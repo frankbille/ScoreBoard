@@ -1,6 +1,6 @@
 /*
  * ScoreBoard
- * Copyright (C) 2012-2013 Frank Bille
+ * Copyright (C) 2012-2015 Frank Bille
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.ratings;
+package dk.frankbille.scoreboard.domain;
 
-import java.util.List;
+public enum RatingCalculatorType {
+    ELO("ELO"),
+    TRUESKILL("TrueSkill");
 
-import dk.frankbille.scoreboard.domain.Game;
-import dk.frankbille.scoreboard.domain.RatingCalculatorType;
-import dk.frankbille.scoreboard.domain.TeamId;
+    private final String name;
 
-public interface RatingCalculator {
-	RatingInterface getPlayerRating(long playerId);
-	GamePlayerRatingInterface getGamePlayerRating(long gameId, long playerId);
-	void setGames(List<Game> games);
-	GameRatingInterface getGameRatingChange(Long id);
-	RatingInterface getTeamRating(TeamId team);
-	double getDefaultRating();
-	RatingCalculatorType getType();
+    RatingCalculatorType(String name) {
+        this.name = name;
+    }
+
+    public String getLongName() {
+        return name;
+    }
+
 }

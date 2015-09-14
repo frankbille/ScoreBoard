@@ -18,13 +18,27 @@
 
 package dk.frankbille.scoreboard.ratings;
 
+import dk.frankbille.scoreboard.ScoreBoardSession;
+import dk.frankbille.scoreboard.domain.RatingCalculatorType;
+import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.ratings.elo.ELORatingCalculator;
+import dk.frankbille.scoreboard.ratings.trueskill.TrueSkillRatingCalculator;
 
 public class RatingProvider {
 	public static RatingCalculator ratings;
 	public static RatingCalculator getRatings() {
-		if (ratings==null)
-			ratings = new ELORatingCalculator();
+		RatingCalculatorType ratingCalculator = RatingCalculatorType.ELO;
+		if (ScoreBoardSession.get().isAuthenticated()) {
+			User user = ScoreBoardSession.get().getUser();
+			ratingCalculator = user.getRatingCalculator();
+		}
+		if (ratings==null || ratings.getType() != ratingCalculator) {
+			if (ratingCalculator == RatingCalculatorType.TRUESKILL){
+				ratings = new TrueSkillRatingCalculator();
+			} else {
+				ratings = new ELORatingCalculator();
+			}
+		}
 		return ratings;
 	}
 }

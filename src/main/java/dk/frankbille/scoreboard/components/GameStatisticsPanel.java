@@ -85,13 +85,15 @@ public class GameStatisticsPanel extends Panel {
         // Game zero
         int gameIndex = 0;
 
+        RatingCalculator rating = RatingProvider.getRatings();
+
         javascript.append(", ['").append(gameIndex++).append("'");
         for (int i = 0; i < sortedPlayers.size(); i++) {
-            javascript.append(", 1000");
+            javascript.append(", ");
+            javascript.append(rating.getDefaultRating());
         }
         javascript.append("]\n");
 
-        RatingCalculator rating = RatingProvider.getRatings();
 
         for (Game game : games) {
             javascript.append(", ['").append(gameIndex++).append("'");

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ ScoreBoard
-  ~ Copyright (C) 2012-2013 Frank Bille
+  ~ Copyright (C) 2012-2015 Frank Bille
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -18,13 +17,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-	<include file="db/db-changelog-baseline.xml"/>
-	<include file="db/db-changelog-old-db-cleanup.xml"/>
-	<include file="db/db-changelog-league.xml"/>
-    <include file="db/db-changelog-calculators.xml"/>
-
-</databaseChangeLog>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+    <select wicket:id="select">
+        <wicket:container wicket:id="selectOptions"><option wicket:id="option"></option></wicket:container>
+    </select>
+</wicket:panel>
+</body>
+</html>

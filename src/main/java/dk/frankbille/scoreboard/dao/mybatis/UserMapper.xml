@@ -42,7 +42,8 @@
 			systemuser
 		SET
 			player_id = #{player.id},
-			default_league_id = #{defaultLeague.id}
+			default_league_id = #{defaultLeague.id},
+			rating_calculator = #{ratingCalculator}
 		WHERE
 			username = #{username}
 	</update>
@@ -50,6 +51,7 @@
 	<select id="getUserWithUsername" resultMap="User">
 		SELECT
 			username,
+			rating_calculator,
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
@@ -70,6 +72,7 @@
 	<select id="getUserForPlayer" resultMap="User">
 		SELECT
 			username,
+			rating_calculator,
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
@@ -90,6 +93,7 @@
 	<select id="authenticate" resultMap="User">
 		SELECT
 			username,
+			rating_calculator,
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
@@ -112,6 +116,7 @@
 	<resultMap id="User" type="dk.frankbille.scoreboard.domain.User">
 		<result property="username" column="username"/>
 		<result property="password" column="password"/>
+		<result property="ratingCalculator" column="rating_calculator"/>
 		<association property="player" resultMap="Player"/>
 		<association property="defaultLeague" resultMap="League"/>
 	</resultMap>

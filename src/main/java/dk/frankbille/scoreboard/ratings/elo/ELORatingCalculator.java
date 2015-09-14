@@ -24,11 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import dk.frankbille.scoreboard.comparators.GameComparator;
-import dk.frankbille.scoreboard.domain.Game;
-import dk.frankbille.scoreboard.domain.GameTeam;
-import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.TeamId;
-import dk.frankbille.scoreboard.domain.TeamResult;
+import dk.frankbille.scoreboard.domain.*;
 import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
 import dk.frankbille.scoreboard.ratings.GameRatingInterface;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
@@ -142,6 +138,16 @@ public class ELORatingCalculator implements RatingCalculator {
 		}
 
 		return team;
+	}
+
+	@Override
+	public double getDefaultRating() {
+		return ELOCalculator.DEFAULT_RATING;
+	}
+
+	@Override
+	public RatingCalculatorType getType() {
+		return RatingCalculatorType.ELO;
 	}
 
 	private void setRatingChange(GameTeam team, double teamChange) {
