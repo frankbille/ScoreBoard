@@ -24,7 +24,7 @@
 
 	<changeSet id="add_rating_calculator_to_systemuser_table" author="Allan Mørk Christensen &lt;allanmc@gmail.com&gt;">
 		<addColumn tableName="systemuser">
-			<column name="rating_calculator" type="ENUM ('ELO','TRUESKILL')" defaultValue="ELO">
+			<column name="rating_calculator" type="varchar(20)" defaultValue="ELO">
               <constraints nullable="false" />
             </column>
 		</addColumn>
