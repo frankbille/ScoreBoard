@@ -56,18 +56,7 @@ public class TrueSkillRatingCalculator implements RatingCalculator {
         this.gamePlayers.clear();
 
         //Order the games by date
-        Collections.sort(games, new GameComparator() {
-            @Override
-            public int compare(Game o1, Game o2) {
-                int compare = o1.getDate().compareTo(o2.getDate());
-
-                if (compare == 0) {
-                    compare = o1.getId().compareTo(o2.getId());
-                }
-
-                return compare;
-            }
-        });
+        Collections.sort(games, new GameComparator());
 
         //Go through the games one-by-one
         for (Game game : games) {
@@ -79,15 +68,19 @@ public class TrueSkillRatingCalculator implements RatingCalculator {
     private void addTeamRatings(Game game) throws RatingException {
         GameTeam winner = game.getWinnerTeam();
         GameTeam loser = game.getLoserTeam();
+
+        // We let each team be a single player in order to get team ratings,
+        // since TrueSkill does not provide a rating metric for teams, only players
         jskills.Player<Integer> team1player = new jskills.Player<Integer>(1);
         Team team1 = new Team().addPlayer(team1player, getTeamTrueSkillRating(new TeamId(winner.getTeam())));
         jskills.Player<Integer> team2player = new jskills.Player<Integer>(2);
         Team team2 = new Team().addPlayer(team2player, getTeamTrueSkillRating(new TeamId(loser.getTeam())));
 
+        // Calculate the new ratings for the two teams
         Collection<ITeam> teamsCol = Team.concat(team1, team2);
         Map<IPlayer, Rating> ratings = calculator.calculateNewRatings(gameInfo, teamsCol, 1, winner.getScore()==loser.getScore() ? 1 : 2);
 
-        //Add the rating change to the teams and game
+        //Add the new ratings and rating-change to the teams and game
         Rating team1Rating = ratings.get(team1player);
         Rating team2Rating = ratings.get(team2player);
         double team1Change = team1Rating.getMean() - getTeamTrueSkillRating(new TeamId(winner.getTeam())).getMean();
@@ -97,19 +90,21 @@ public class TrueSkillRatingCalculator implements RatingCalculator {
         games.put(game.getId(), new TrueSkillGameRating(winner.getId(), team1Rating.getMean(), team1Change, loser.getId(), team2Rating.getMean(), team2Change));
     }
     private void addPlayerRatings(Game game) throws RatingException {
-        //Calculate the teams before-ratings
         GameTeam winner = game.getWinnerTeam();
         GameTeam loser = game.getLoserTeam();
 
+        //Keep a list of all the TrueSkill Players
         List<jskills.Player<Long>> players = new ArrayList<jskills.Player<Long>>();
+
+        //Place players in TrueSkill teams 1 and 2
         Team team1 = new Team();
-        Team team2 = new Team();
         for (Player player : winner.getTeam().getPlayers()) {
             Long playerId = player.getId();
             jskills.Player<Long> iPlayer = new jskills.Player<Long>(playerId);
             players.add(iPlayer);
             team1.addPlayer(iPlayer, getPlayerTrueSkillRating(playerId));
         }
+        Team team2 = new Team();
         for (Player player : loser.getTeam().getPlayers()) {
             Long playerId = player.getId();
             jskills.Player<Long> iPlayer = new jskills.Player<Long>(playerId);
@@ -117,10 +112,11 @@ public class TrueSkillRatingCalculator implements RatingCalculator {
             team2.addPlayer(iPlayer, getPlayerTrueSkillRating(playerId));
         }
 
+        // Calculate the new ratings for all the players in the game
         Collection<ITeam> teamsCol = Team.concat(team1, team2);
         Map<IPlayer, Rating> newRatingsWinLose = calculator.calculateNewRatings(gameInfo, teamsCol, 1, winner.getScore()==loser.getScore() ? 1 : 2);
 
-        //Add the rating change to the players
+        //Add the new ratings and rating-change to the players
         for (jskills.Player player : players) {
             Long id = (Long) player.getId();
             Rating rating = newRatingsWinLose.get(player);

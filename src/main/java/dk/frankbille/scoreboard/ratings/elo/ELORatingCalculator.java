@@ -52,20 +52,7 @@ public class ELORatingCalculator implements RatingCalculator {
 		gamePlayers.clear();
 
 		//Order the games by date
-		Collections.sort(games, new GameComparator() {
-			@Override
-			public int compare(Game o1, Game o2) {
-				int compare = 0;
-
-				compare = o1.getDate().compareTo(o2.getDate());
-
-				if (compare == 0) {
-					compare = o1.getId().compareTo(o2.getId());
-				}
-
-				return compare;
-			}
-		});
+		Collections.sort(games, new GameComparator());
 
 		//Go through the games one-by-one
 		for (Game game : games) {
