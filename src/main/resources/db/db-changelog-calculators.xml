@@ -22,12 +22,12 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-	<changeSet id="add_rating_calculator_to_systemuser_table" author="Allan Mørk Christensen &lt;allanmc@gmail.com&gt;">
-		<addColumn tableName="systemuser">
-			<column name="rating_calculator" type="varchar(20)" defaultValue="ELO">
-              <constraints nullable="false" />
+    <changeSet id="add_rating_calculator_to_systemuser_table" author="Allan Mørk Christensen &lt;allanmc@gmail.com&gt;">
+        <addColumn tableName="systemuser">
+            <column name="rating_calculator" type="varchar(20)" defaultValue="ELO">
+                <constraints nullable="false" />
             </column>
-		</addColumn>
-	</changeSet>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
