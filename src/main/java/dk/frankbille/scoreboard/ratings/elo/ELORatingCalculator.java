@@ -51,8 +51,8 @@ public class ELORatingCalculator implements RatingCalculator {
 		teams.clear();
 		gamePlayers.clear();
 
-		//Order the games by date
-		Collections.sort(games, new GameComparator());
+		//Order the games by date, ascending
+		Collections.sort(games, Collections.reverseOrder(new GameComparator()));
 
 		//Go through the games one-by-one
 		for (Game game : games) {
