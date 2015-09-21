@@ -32,7 +32,7 @@ import org.apache.wicket.model.Model;
 import java.util.Arrays;
 import java.util.List;
 
-public class RatingCalculatorSelector extends GenericPanel<RatingCalculatorType> implements ILabelProvider<String> {
+public class RatingCalculatorSelector extends GenericPanel<RatingCalculatorType> {
 
     public RatingCalculatorSelector(String id, IModel<RatingCalculatorType> model) {
         super(id, model);
@@ -61,12 +61,6 @@ public class RatingCalculatorSelector extends GenericPanel<RatingCalculatorType>
                 return new Model<RatingCalculatorType>(type);
             }
 
-
         }));
-    }
-
-    @Override
-    public IModel<String> getLabel() {
-        return null;
     }
 }
