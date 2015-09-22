@@ -25,8 +25,6 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.form.select.IOptionRenderer;
 import org.apache.wicket.extensions.markup.html.form.select.Select;
 import org.apache.wicket.extensions.markup.html.form.select.SelectOptions;
-import org.apache.wicket.markup.html.form.FormComponentPanel;
-import org.apache.wicket.markup.html.form.ILabelProvider;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.GenericPanel;
@@ -36,7 +34,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import java.io.Serializable;
 import java.util.*;
 
-public class LeagueSelector extends GenericPanel<League> implements ILabelProvider<String> {
+public class LeagueSelector extends GenericPanel<League> {
 
     @SpringBean
     private ScoreBoardService scoreBoardService;
@@ -105,10 +103,5 @@ public class LeagueSelector extends GenericPanel<League> implements ILabelProvid
                 }));
             }
         });
-    }
-
-    @Override
-    public IModel<String> getLabel() {
-        return new StringResourceModel("league", null);
     }
 }
