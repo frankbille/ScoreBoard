@@ -30,31 +30,18 @@ import java.util.*;
 
 public class TrueSkillRatingCalculator implements RatingCalculator {
 
-    private Map<Long, Rating> players;
-    private Map<TeamId, Rating> teams;
-    private Map<Long, TrueSkillGameRating> games;
-    private Map<String, TrueSkillPlayerRating> gamePlayers;
+    private Map<Long, Rating> players = new HashMap<Long, Rating>();
+    private Map<TeamId, Rating> teams= new HashMap<TeamId, Rating>();
+    private Map<Long, TrueSkillGameRating> games = new HashMap<Long, TrueSkillGameRating>();
+    private Map<String, TrueSkillPlayerRating> gamePlayers = new HashMap<String, TrueSkillPlayerRating>();
     private GameInfo gameInfo = GameInfo.getDefaultGameInfo();
-    private SkillCalculator calculator;
+    private SkillCalculator calculator = new FactorGraphTrueSkillCalculator();
 
-    public TrueSkillRatingCalculator() {
-        players = new HashMap<Long, Rating>();
-        teams = new HashMap<TeamId, Rating>();
-        games = new HashMap<Long, TrueSkillGameRating>();
-        gamePlayers = new HashMap<String, TrueSkillPlayerRating>();
-
-        gameInfo = GameInfo.getDefaultGameInfo();
-        calculator = new FactorGraphTrueSkillCalculator();
+    public TrueSkillRatingCalculator(List<Game> games) {
+        setGames(games);
     }
 
-    @Override
-    public void setGames(List<Game> games) {
-        //Clear the current ratings
-        this.players.clear();
-        this.teams.clear();
-        this.games.clear();
-        this.gamePlayers.clear();
-
+    private void setGames(List<Game> games) {
         //Order the games by date, ascending
         Collections.sort(games, Collections.reverseOrder(new GameComparator()));
 

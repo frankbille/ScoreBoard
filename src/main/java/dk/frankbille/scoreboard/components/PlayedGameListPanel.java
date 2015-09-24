@@ -21,6 +21,7 @@ package dk.frankbille.scoreboard.components;
 import java.util.Date;
 import java.util.List;
 
+import dk.frankbille.scoreboard.ratings.RatingCalculator;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -45,7 +46,7 @@ import dk.frankbille.scoreboard.security.SecureExecutionBookmarkablePageLink;
 public class PlayedGameListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	
-	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel) {
+	public PlayedGameListPanel(String id, IModel<List<Game>> gamesModel, final IModel<Player> selectedPlayerModel, final RatingCalculator rating) {
 		super(id);
 		
 		setOutputMarkupId(true);
@@ -68,8 +69,8 @@ public class PlayedGameListPanel extends Panel {
 				//Add the winning and losing team
 				Game game = item.getModelObject();
 				List<GameTeam> teamsSortedByScore = game.getTeamsSortedByScore();
-				item.add(new GameTeamPanel("team1", new Model<GameTeam>(teamsSortedByScore.get(0)), selectedPlayerModel));
-				item.add(new GameTeamPanel("team2", new Model<GameTeam>(teamsSortedByScore.get(1)), selectedPlayerModel));
+				item.add(new GameTeamPanel("team1", new Model<GameTeam>(teamsSortedByScore.get(0)), selectedPlayerModel, rating));
+				item.add(new GameTeamPanel("team2", new Model<GameTeam>(teamsSortedByScore.get(1)), selectedPlayerModel, rating));
 
 				//Add the game score
 				item.add(new Label("score", new AbstractReadOnlyModel<String>() {

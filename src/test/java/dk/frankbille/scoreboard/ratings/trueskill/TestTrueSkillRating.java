@@ -31,7 +31,7 @@ public class TestTrueSkillRating extends RatingsTestCase {
 
 	@Before
 	public void setupRating() {
-		rating = new TrueSkillRatingCalculator();
+		rating = new TrueSkillRatingCalculator(getScoreBoardService().getAllGames(league));
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class TestTrueSkillRating extends RatingsTestCase {
 		getScoreBoardService().saveGame(game);
 
 		List<Game> games = getScoreBoardService().getAllGames(league);
-		rating.setGames(games);
+		rating = new TrueSkillRatingCalculator(games);
 		assertGreaterChange(game.getId(), player1.getId(), player2.getId()); // Player 1 had the greatest victory
 		assertGreaterChange(game.getId(), player4.getId(), player3.getId()); // Player 3 had the greatest loss
 	}

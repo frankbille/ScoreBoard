@@ -40,7 +40,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
-import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class TeamStatisticsPanel extends Panel {
@@ -49,7 +48,7 @@ public class TeamStatisticsPanel extends Panel {
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
 
-	public TeamStatisticsPanel(String id, final League league) {
+	public TeamStatisticsPanel(String id, final League league, final RatingCalculator rating) {
 		super(id);
 
 		IModel<List<TeamResult>> teamResultsModel = new LoadableDetachableModel<List<TeamResult>>() {
@@ -58,7 +57,6 @@ public class TeamStatisticsPanel extends Panel {
 			@Override
 			protected List<TeamResult> load() {
 				List<TeamResult> teamResults = scoreBoardService.getTeamResults(league);
-				final RatingCalculator rating = RatingProvider.getRatings();
 
 				Collections.sort(teamResults, new Comparator<TeamResult>() {
 					@Override
@@ -142,7 +140,7 @@ public class TeamStatisticsPanel extends Panel {
 				item.add(medal);
 				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("winRatio", new FormatModel(new DecimalFormat("0.00"), new PropertyModel<Double>(item.getModel(), "gamesWonRatio"))));
-				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), new PropertyModel<Double>(item.getModel(), "rating"))));
+				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), rating.getTeamRating(teamResult.getTeam()).getRating())));
 				item.add(new Label("trend", new StringResourceModel(item.getModelObject().getTrend().name().toLowerCase(), null)));
 			}
 		});

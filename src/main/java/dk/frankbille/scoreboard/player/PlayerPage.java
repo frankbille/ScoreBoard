@@ -52,6 +52,9 @@ public class PlayerPage extends BasePage {
 		Long playerId = parameters.get(0).toLongObject();
 		playerModel = new PlayerModel(playerId);
 
+		final List<Game> playerGames = scoreBoardService.getPlayerGames(playerModel.getObject());
+		Collections.sort(playerGames, new GameComparator());
+
 		// Name
 		add(new Label("name", new PropertyModel<String>(playerModel, "name")));
 
@@ -83,13 +86,11 @@ public class PlayerPage extends BasePage {
 
 			@Override
 			protected List<Game> load() {
-				List<Game> playerGames = scoreBoardService.getPlayerGames(playerModel.getObject());
-				Collections.sort(playerGames, new GameComparator());
 				return playerGames;
 			}
 		};
 
-		add(new PlayedGameListPanel("playedGameList", gamesModel, playerModel));
+		add(new PlayedGameListPanel("playedGameList", gamesModel, playerModel, null));
 	}
 
 	@Override

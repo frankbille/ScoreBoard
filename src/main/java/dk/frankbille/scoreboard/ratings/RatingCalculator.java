@@ -18,16 +18,12 @@
 
 package dk.frankbille.scoreboard.ratings;
 
-import java.util.List;
-
-import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.RatingCalculatorType;
 import dk.frankbille.scoreboard.domain.TeamId;
 
 public interface RatingCalculator {
 	RatingInterface getPlayerRating(long playerId);
 	GamePlayerRatingInterface getGamePlayerRating(long gameId, long playerId);
-	void setGames(List<Game> games);
 	GameRatingInterface getGameRatingChange(Long id);
 	RatingInterface getTeamRating(TeamId team);
 	double getDefaultRating();

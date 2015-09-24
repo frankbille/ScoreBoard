@@ -25,7 +25,7 @@ public class TestELORating extends RatingsTestCase {
 
 	@Before
 	public void setupRating() {
-		rating = new ELORatingCalculator();
+		rating = new ELORatingCalculator(getScoreBoardService().getAllGames(league));
 	}
 
 }

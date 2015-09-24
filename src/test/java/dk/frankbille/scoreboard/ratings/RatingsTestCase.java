@@ -38,7 +38,6 @@ public abstract class RatingsTestCase extends WicketSpringTestCase {
 	protected List<Player> players = new ArrayList<Player>();
 	protected List<Long> games = new ArrayList<Long>();
 
-
 	@Before
 	public void setupTeams() {
 		// League
@@ -91,9 +90,6 @@ public abstract class RatingsTestCase extends WicketSpringTestCase {
 
 	@Test
 	public void testGeneralRating() {
-		List<Game> leagueGames = getScoreBoardService().getAllGames(league);
-		rating.setGames(leagueGames);
-
 		// Assert player scores after 10th game
 		Long game = games.get(9);
 		Long player1 = players.get(0).getId();

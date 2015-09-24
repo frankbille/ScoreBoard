@@ -23,7 +23,6 @@ import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.Player;
 import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
-import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -38,12 +37,14 @@ public class GameStatisticsPanel extends Panel {
     private static final long serialVersionUID = 1L;
     private final IModel<List<Game>> gameModel;
     private final WebComponent chart;
+    private final RatingCalculator rating;
     @SpringBean
     private ScoreBoardService scoreBoardService;
 
-    public GameStatisticsPanel(String id, IModel<List<Game>> gameModel) {
+    public GameStatisticsPanel(String id, IModel<List<Game>> gameModel, RatingCalculator rating) {
         super(id);
         this.gameModel = gameModel;
+        this.rating = rating;
 
         chart = new WebComponent("chart");
         chart.setOutputMarkupId(true);
@@ -84,8 +85,6 @@ public class GameStatisticsPanel extends Panel {
 
         // Game zero
         int gameIndex = 0;
-
-        RatingCalculator rating = RatingProvider.getRatings();
 
         javascript.append(", ['").append(gameIndex++).append("'");
         for (int i = 0; i < sortedPlayers.size(); i++) {

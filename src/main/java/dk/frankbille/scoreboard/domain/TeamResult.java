@@ -26,8 +26,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import dk.frankbille.scoreboard.ratings.RatingProvider;
-
 public class TeamResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -77,10 +75,6 @@ public class TeamResult implements Serializable {
 
 	public double getGamesWonRatio() {
 		return gamesWon+gamesLost > 0 ? (double) gamesWon / ((double)gamesWon+(double)gamesLost) : 0.0;
-	}
-
-	public double getRating() {
-		return RatingProvider.getRatings().getTeamRating(team).getRating();
 	}
 
 	public Trend getTrend() {

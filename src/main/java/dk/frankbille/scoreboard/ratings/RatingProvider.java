@@ -19,25 +19,26 @@
 package dk.frankbille.scoreboard.ratings;
 
 import dk.frankbille.scoreboard.ScoreBoardSession;
+import dk.frankbille.scoreboard.domain.Game;
 import dk.frankbille.scoreboard.domain.RatingCalculatorType;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.ratings.elo.ELORatingCalculator;
 import dk.frankbille.scoreboard.ratings.trueskill.TrueSkillRatingCalculator;
 
+import java.util.List;
+
 public class RatingProvider {
-	public static RatingCalculator ratings;
-	public static RatingCalculator getRatings() {
+	public static RatingCalculator getRatings(List<Game> games) {
+		RatingCalculator ratings;
 		RatingCalculatorType ratingCalculator = RatingCalculatorType.ELO;
 		if (ScoreBoardSession.get().isAuthenticated()) {
 			User user = ScoreBoardSession.get().getUser();
 			ratingCalculator = user.getRatingCalculator();
 		}
-		if (ratings==null || ratings.getType() != ratingCalculator) {
-			if (ratingCalculator == RatingCalculatorType.TRUESKILL){
-				ratings = new TrueSkillRatingCalculator();
-			} else {
-				ratings = new ELORatingCalculator();
-			}
+		if (ratingCalculator == RatingCalculatorType.TRUESKILL){
+			ratings = new TrueSkillRatingCalculator(games);
+		} else {
+			ratings = new ELORatingCalculator(games);
 		}
 		return ratings;
 	}

@@ -32,25 +32,16 @@ import dk.frankbille.scoreboard.ratings.RatingException;
 import dk.frankbille.scoreboard.ratings.RatingInterface;
 
 public class ELORatingCalculator implements RatingCalculator {
-	private Map<Long,RatingInterface> players;
-	private Map<TeamId,RatingInterface> teams;
-	private Map<Long,ELOGameRating> games;
-	private Map<String,ELOGamePlayerRating> gamePlayers;
+	private Map<Long,RatingInterface> players = new HashMap<Long,RatingInterface>();
+	private Map<TeamId,RatingInterface> teams = new HashMap<TeamId,RatingInterface>();
+	private Map<Long,ELOGameRating> games = new HashMap<Long,ELOGameRating>();
+	private Map<String,ELOGamePlayerRating> gamePlayers = new HashMap<String,ELOGamePlayerRating>();
 
-	public ELORatingCalculator() {
-		players = new HashMap<Long,RatingInterface>();
-		teams = new HashMap<TeamId,RatingInterface>();
-		games = new HashMap<Long,ELOGameRating>();
-		gamePlayers = new HashMap<String,ELOGamePlayerRating>();
+	public ELORatingCalculator(List<Game> games) {
+		setGames(games);
 	}
 
-	@Override
-	public void setGames(List<Game> games) {
-		//Clear the current ratings
-		players.clear();
-		teams.clear();
-		gamePlayers.clear();
-
+	private void setGames(List<Game> games) {
 		//Order the games by date, ascending
 		Collections.sort(games, Collections.reverseOrder(new GameComparator()));
 

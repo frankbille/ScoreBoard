@@ -46,7 +46,6 @@ import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
 import dk.frankbille.scoreboard.ratings.GameRatingInterface;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
-import dk.frankbille.scoreboard.ratings.RatingProvider;
 
 public class GameTeamPanel extends Panel {
 	private static final long serialVersionUID = 1L;
@@ -54,7 +53,7 @@ public class GameTeamPanel extends Panel {
 	private static final DecimalFormat RATING_VALUE = new DecimalFormat("#,##0");
 	private static final DecimalFormat RATING_CHANGE = new DecimalFormat("+0.0;-0.0");
 
-	public GameTeamPanel(String id, final IModel<GameTeam> model, final IModel<Player> selectedPlayerModel) {
+	public GameTeamPanel(String id, final IModel<GameTeam> model, final IModel<Player> selectedPlayerModel, final RatingCalculator rating) {
 		super(id, model);
 
 		final IModel<List<Player>> playersModel = new LoadableDetachableModel<List<Player>>() {
@@ -73,54 +72,55 @@ public class GameTeamPanel extends Panel {
         WebMarkupContainer gameTeamPanel = new WebMarkupContainer("gameTeamPanel");
         add(gameTeamPanel);
 
-		// Popover
-		gameTeamPanel.add(new PopoverBehavior(new StringResourceModel("rating", null), new AbstractReadOnlyModel<CharSequence>() {
-            private static final long serialVersionUID = 1L;
+		// Popover - Only show if RatingCalculator is available
+        if (rating != null) {
+            gameTeamPanel.add(new PopoverBehavior(new StringResourceModel("rating", null), new AbstractReadOnlyModel<CharSequence>() {
+                private static final long serialVersionUID = 1L;
 
-            @Override
-            public CharSequence getObject() {
-                StringBuilder b = new StringBuilder();
+                @Override
+                public CharSequence getObject() {
+                    StringBuilder b = new StringBuilder();
 
-                b.append("<small>");
+                    b.append("<small>");
 
-                GameTeam gameTeam = model.getObject();
-                List<Player> players = playersModel.getObject();
+                    GameTeam gameTeam = model.getObject();
+                    List<Player> players = playersModel.getObject();
 
-                RatingCalculator rating = RatingProvider.getRatings();
-                Localizer localizer = Application.get().getResourceSettings().getLocalizer();
+                    Localizer localizer = Application.get().getResourceSettings().getLocalizer();
 
-                // Player ratings
-                for (Player player : players) {
-                    b.append(player.getName()).append(": ");
+                    // Player ratings
+                    for (Player player : players) {
+                        b.append(player.getName()).append(": ");
 
-                    GamePlayerRatingInterface playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
-                    b.append(RATING_VALUE.format(playerRating.getRating()));
+                        GamePlayerRatingInterface playerRating = rating.getGamePlayerRating(gameTeam.getGame().getId(), player.getId());
+                        b.append(RATING_VALUE.format(playerRating.getRating()));
 
+                        b.append(" <sup>");
+                        b.append(RATING_CHANGE.format(playerRating.getChange()));
+                        b.append("</sup><br>");
+                    }
+
+                    // Team rating
+                    GameRatingInterface gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
+                    b.append("<strong>");
+                    b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
+                    b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
+                    b.append(" ");
+                    double change = gameRatingChange.getChange(gameTeam.getId());
+
+                    int playerCount = players.size();
+                    if (playerCount > 0) {
+                        change /= playerCount;
+                    }
                     b.append(" <sup>");
-                    b.append(RATING_CHANGE.format(playerRating.getChange()));
-                    b.append("</sup><br>");
+                    b.append(RATING_CHANGE.format(change));
+
+                    b.append("</sup></strong></small>");
+
+                    return b;
                 }
-
-                // Team rating
-                GameRatingInterface gameRatingChange = rating.getGameRatingChange(gameTeam.getGame().getId());
-                b.append("<strong>");
-                b.append(localizer.getString("team", GameTeamPanel.this)).append(": ");
-                b.append(RATING_VALUE.format(gameRatingChange.getRating(gameTeam.getId())));
-                b.append(" ");
-                double change = gameRatingChange.getChange(gameTeam.getId());
-
-                int playerCount = players.size();
-                if (playerCount > 0) {
-                    change /= playerCount;
-                }
-                b.append(" <sup>");
-                b.append(RATING_CHANGE.format(change));
-
-                b.append("</sup></strong></small>");
-
-                return b;
-            }
-        }));
+            }));
+        }
 
 		// Players
 		gameTeamPanel.add(new ListView<Player>("players", playersModel) {
