@@ -107,9 +107,10 @@ public class TrueSkillRatingCalculator implements RatingCalculator {
         for (jskills.Player player : players) {
             Long id = (Long) player.getId();
             Rating rating = newRatingsWinLose.get(player);
-            double change = rating.getMean() - getPlayerTrueSkillRating(id).getMean();
+            double oldRating = getPlayerTrueSkillRating(id).getMean();
+            double change = rating.getMean() - oldRating;
             this.players.put(id, rating);
-            gamePlayers.put(game.getId() + "-" + id, new TrueSkillPlayerRating(rating.getMean(), change));
+            gamePlayers.put(game.getId() + "-" + id, new TrueSkillPlayerRating(oldRating, change));
         }
     }
 
