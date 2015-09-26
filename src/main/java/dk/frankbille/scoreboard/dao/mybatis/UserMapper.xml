@@ -42,8 +42,7 @@
 			systemuser
 		SET
 			player_id = #{player.id},
-			default_league_id = #{defaultLeague.id},
-			rating_calculator = #{ratingCalculator}
+			default_league_id = #{defaultLeague.id}
 		WHERE
 			username = #{username}
 	</update>
@@ -51,7 +50,6 @@
 	<select id="getUserWithUsername" resultMap="User">
 		SELECT
 			username,
-			rating_calculator,
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
@@ -72,14 +70,13 @@
 	<select id="getUserForPlayer" resultMap="User">
 		SELECT
 			username,
-			rating_calculator,
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
 			player.group_name AS playerGroupName,
 			league.id AS leagueId,
 			league.name AS leagueName,
-        league.active AS leagueActive
+			league.active AS leagueActive
 		FROM
 			systemuser
 			LEFT JOIN
@@ -93,7 +90,6 @@
 	<select id="authenticate" resultMap="User">
 		SELECT
 			username,
-			rating_calculator,
 			player.id AS playerId,
 			player.name AS playerName,
 			player.full_name AS playerFullName,
@@ -116,7 +112,6 @@
 	<resultMap id="User" type="dk.frankbille.scoreboard.domain.User">
 		<result property="username" column="username"/>
 		<result property="password" column="password"/>
-		<result property="ratingCalculator" column="rating_calculator"/>
 		<association property="player" resultMap="Player"/>
 		<association property="defaultLeague" resultMap="League"/>
 	</resultMap>

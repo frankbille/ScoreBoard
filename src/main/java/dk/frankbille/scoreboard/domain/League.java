@@ -28,6 +28,7 @@ public class League implements Serializable {
     private Long id;
     private String name;
     private boolean active;
+    private RatingCalculatorType ratingCalculator = RatingCalculatorType.ELO;
 
     public Long getId() {
         return id;
@@ -51,6 +52,10 @@ public class League implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public RatingCalculatorType getRatingCalculator() {
+        return this.ratingCalculator;
     }
 
     @Override

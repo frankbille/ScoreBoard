@@ -66,6 +66,7 @@ public class LeagueListPage extends BasePage {
                 item.add(link);
 
                 item.add(new Label("active", new StringResourceModel("active.${active}", item.getModel())));
+                item.add(new Label("ratingCalculator",new PropertyModel<String>(item.getModel(), "ratingCalculator.name")));
             }
         });
     }

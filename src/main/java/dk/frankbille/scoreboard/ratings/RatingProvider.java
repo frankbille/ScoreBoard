@@ -18,23 +18,18 @@
 
 package dk.frankbille.scoreboard.ratings;
 
-import dk.frankbille.scoreboard.ScoreBoardSession;
 import dk.frankbille.scoreboard.domain.Game;
+import dk.frankbille.scoreboard.domain.League;
 import dk.frankbille.scoreboard.domain.RatingCalculatorType;
-import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.ratings.elo.ELORatingCalculator;
 import dk.frankbille.scoreboard.ratings.trueskill.TrueSkillRatingCalculator;
 
 import java.util.List;
 
 public class RatingProvider {
-	public static RatingCalculator getRatings(List<Game> games) {
+	public static RatingCalculator getRatings(League league, List<Game> games) {
 		RatingCalculator ratings;
-		RatingCalculatorType ratingCalculator = RatingCalculatorType.ELO;
-		if (ScoreBoardSession.get().isAuthenticated()) {
-			User user = ScoreBoardSession.get().getUser();
-			ratingCalculator = user.getRatingCalculator();
-		}
+		RatingCalculatorType ratingCalculator = league.getRatingCalculator();
 		if (ratingCalculator == RatingCalculatorType.TRUESKILL){
 			ratings = new TrueSkillRatingCalculator(games);
 		} else {

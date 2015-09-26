@@ -40,7 +40,8 @@
 			league
 		SET
 			name = #{name},
-            active = #{active}
+            active = #{active},
+            rating_calculator = #{ratingCalculator}
 		WHERE
 			id = #{id}
 	</update>
@@ -49,7 +50,8 @@
 		SELECT
 			id,
 			name,
-            active
+            active,
+            rating_calculator AS ratingCalculator
 		FROM
 			league
 		ORDER BY
@@ -60,7 +62,8 @@
 		SELECT
 			id,
 			name,
-            active
+            active,
+            rating_calculator AS ratingCalculator
 		FROM
 			league
 		WHERE

@@ -26,7 +26,6 @@ public class User implements Serializable {
 	private String username;
 	private Player player;
 	private League defaultLeague;
-	private RatingCalculatorType ratingCalculator;
 
 	public String getUsername() {
 		return username;
@@ -50,9 +49,5 @@ public class User implements Serializable {
 	
 	public void setDefaultLeague(League defaultLeague) {
 		this.defaultLeague = defaultLeague;
-	}
-
-	public RatingCalculatorType getRatingCalculator() {
-		return ratingCalculator;
 	}
 }

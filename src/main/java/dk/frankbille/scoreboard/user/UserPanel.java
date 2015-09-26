@@ -19,9 +19,7 @@
 package dk.frankbille.scoreboard.user;
 
 import dk.frankbille.scoreboard.components.LeagueSelector;
-import dk.frankbille.scoreboard.components.RatingCalculatorSelector;
 import dk.frankbille.scoreboard.domain.League;
-import dk.frankbille.scoreboard.domain.RatingCalculatorType;
 import dk.frankbille.scoreboard.domain.User;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 import org.apache.wicket.markup.html.form.TextField;
@@ -45,9 +43,6 @@ public class UserPanel extends Panel {
 
         IModel<League> defaultLeagueModel = new PropertyModel<League>(model, "defaultLeague");
         add(new LeagueSelector("defaultLeagueField", defaultLeagueModel));
-
-        IModel<RatingCalculatorType> ratingCalculatorModel = new PropertyModel<RatingCalculatorType>(model, "ratingCalculator");
-        add(new RatingCalculatorSelector("ratingCalculatorField", ratingCalculatorModel));
     }
 
 }
