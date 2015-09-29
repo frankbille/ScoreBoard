@@ -5,3 +5,7 @@ branches:
   only:
     - master
     - stable
+sudo: false
+cache:
+  directories:
+  - $HOME/.m2
