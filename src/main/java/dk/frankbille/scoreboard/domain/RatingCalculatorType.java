@@ -1,6 +1,6 @@
 /*
  * ScoreBoard
- * Copyright (C) 2012-2013 Frank Bille
+ * Copyright (C) 2012-2015 Frank Bille
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,36 +18,18 @@
 
 package dk.frankbille.scoreboard.domain;
 
-import java.io.Serializable;
+public enum RatingCalculatorType {
+    ELO("ELO"),
+    TRUESKILL("TrueSkill");
 
-public class User implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private final String name;
 
-	private String username;
-	private Player player;
-	private League defaultLeague;
+    RatingCalculatorType(String name) {
+        this.name = name;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getLongName() {
+        return name;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-	
-	public League getDefaultLeague() {
-		return defaultLeague;
-	}
-	
-	public void setDefaultLeague(League defaultLeague) {
-		this.defaultLeague = defaultLeague;
-	}
 }

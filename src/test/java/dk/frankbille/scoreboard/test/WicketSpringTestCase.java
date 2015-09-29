@@ -70,7 +70,7 @@ public abstract class WicketSpringTestCase {
 	@Before
 	public void setupWicket() {
 		insertTestData();
-		
+
 		ScoreBoardApplication application = new ScoreBoardApplication() {
 			@Override
 			public Session newSession(Request request, Response response) {
@@ -81,7 +81,7 @@ public abstract class WicketSpringTestCase {
 		};
 		tester = new WicketTester(application, servletContext);
 	}
-	
+
 	private void insertTestData() {
 		/*
 		 * Leagues
@@ -104,7 +104,7 @@ public abstract class WicketSpringTestCase {
 			player.setFullName("Player Full Name "+i);
 			getScoreBoardService().savePlayer(player);
 			players.add(player);
-			
+
 			User user = new User();
 			user.setUsername("username"+i);
 			user.setDefaultLeague(getRandomLeague(leagues));
@@ -120,7 +120,7 @@ public abstract class WicketSpringTestCase {
 			for (League league : leagues) {
 				Game game = new Game();
 				game.setDate(date.toDate());
-				
+
 				GameTeam gameTeam1 = new GameTeam();
 				gameTeam1.setScore(getRandomScore(-1));
 				gameTeam1.setGame(game);
@@ -132,7 +132,7 @@ public abstract class WicketSpringTestCase {
 				team1.addPlayer(player2);
 				gameTeam1.setTeam(team1);
 				game.setTeam1(gameTeam1);
-				
+
 				GameTeam gameTeam2 = new GameTeam();
 				gameTeam2.setScore(getRandomScore(gameTeam1.getScore()));
 				gameTeam2.setGame(game);
@@ -145,14 +145,14 @@ public abstract class WicketSpringTestCase {
 				gameTeam2.setTeam(team2);
 				game.setTeam2(gameTeam2);
 				game.setLeague(league);
-				
+
 				getScoreBoardService().saveGame(game);
 			}
-			
+
 			date = date.plusDays(1);
 		}
 	}
-	
+
 	private int getRandomScore(int disallowedScore) {
 		int score = -1;
 		do {
@@ -160,7 +160,7 @@ public abstract class WicketSpringTestCase {
 		} while(score == disallowedScore);
 		return score;
 	}
-	
+
 	private Player getRandomPlayer(List<Player> players, Player... disallowedPlayers) {
 		Player player = null;
 		Set<Player> disallowedPlayerSet = new HashSet<Player>();
@@ -173,7 +173,7 @@ public abstract class WicketSpringTestCase {
 		} while(disallowedPlayerSet.contains(player));
 		return player;
 	}
-	
+
 	private League getRandomLeague(List<League> leagues) {
 		return leagues.get(RandomUtils.nextInt(leagues.size()));
 	}
@@ -189,7 +189,7 @@ public abstract class WicketSpringTestCase {
 		testMapper.clearUsers();
 	}
 
-	protected ScoreBoardService getScoreBoardService() {
+	protected static ScoreBoardService getScoreBoardService() {
 		return applicationContext.getBean("scoreBoardService", ScoreBoardService.class);
 	}
 

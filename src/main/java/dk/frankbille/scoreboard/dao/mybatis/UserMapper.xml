@@ -76,7 +76,7 @@
 			player.group_name AS playerGroupName,
 			league.id AS leagueId,
 			league.name AS leagueName,
-        league.active AS leagueActive
+			league.active AS leagueActive
 		FROM
 			systemuser
 			LEFT JOIN

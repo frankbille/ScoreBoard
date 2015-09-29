@@ -1,6 +1,6 @@
 /*
  * ScoreBoard
- * Copyright (C) 2012-2013 Frank Bille
+ * Copyright (C) 2012-2015 Frank Bille
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.comparators;
+package dk.frankbille.scoreboard.ratings.trueskill;
 
-import java.util.Comparator;
+import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
 
-import dk.frankbille.scoreboard.domain.Game;
+public class TrueSkillPlayerRating implements GamePlayerRatingInterface {
+    private double rating;
+    private double change;
 
-public class GameComparator implements Comparator<Game> {
-	@Override
-	public int compare(Game o1, Game o2) {
-		int compare = o2.getDate().compareTo(o1.getDate());
+    public TrueSkillPlayerRating(double rating, double change) {
+        this.rating = rating;
+        this.change = change;
+    }
 
-		if (compare == 0) {
-			compare = o2.getId().compareTo(o1.getId());
-		}
+    @Override
+    public double getRating() {
+        return rating;
+    }
 
-		return compare;
-	}
+    @Override
+    public double getChange() {
+        return change;
+    }
 }
+

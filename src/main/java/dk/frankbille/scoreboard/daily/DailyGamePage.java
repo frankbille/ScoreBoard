@@ -21,6 +21,8 @@ package dk.frankbille.scoreboard.daily;
 import java.util.Collections;
 import java.util.List;
 
+import dk.frankbille.scoreboard.ratings.RatingCalculator;
+import dk.frankbille.scoreboard.ratings.RatingProvider;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -66,8 +68,10 @@ public class DailyGamePage extends BasePage {
 	private League league;
 
 	private WebMarkupContainer chartContainer;
+	private final RatingCalculator ratings;
+	private final List<Game> games;
 
-    public DailyGamePage(final PageParameters parameters) {
+	public DailyGamePage(final PageParameters parameters) {
     	long leagueId = parameters.get("league").toLong(-1);
     	if (leagueId < 1) {
     		goToDefaultLeague();
@@ -77,6 +81,10 @@ public class DailyGamePage extends BasePage {
     	if (league == null) {
     		goToDefaultLeague();
     	}
+
+		games = scoreBoardService.getAllGames(league);
+		ratings = RatingProvider.getRatings(league, games);
+		Collections.sort(games, new GameComparator());
 
     	add(new Label("leagueName", league.getName()));
 
@@ -131,13 +139,13 @@ public class DailyGamePage extends BasePage {
     }
 
 	private void addPlayerStatistics() {
-		playersContainer = new PlayerStatisticsPanel("playersContainer", loggedInPlayerModel, league);
+		playersContainer = new PlayerStatisticsPanel("playersContainer", loggedInPlayerModel, league, ratings);
 		playersContainer.setOutputMarkupId(true);
 		add(playersContainer);
 	}
 
 	private void addTeamsStatistics() {
-		teamsContainer = new TeamStatisticsPanel("teamsContainer", league);
+		teamsContainer = new TeamStatisticsPanel("teamsContainer", league, ratings);
 		teamsContainer.setOutputMarkupId(true);
 		add(teamsContainer);
 	}
@@ -148,18 +156,16 @@ public class DailyGamePage extends BasePage {
 
 			@Override
 			protected List<Game> load() {
-				List<Game> allGames = scoreBoardService.getAllGames(league);
-				Collections.sort(allGames, new GameComparator());
-				return allGames;
+				return games;
 			}
 		};
 
 		chartContainer = new WebMarkupContainer("chartContainer");
 		chartContainer.setOutputMarkupId(true);
 		add(chartContainer);
-		chartContainer.add(new GameStatisticsPanel("charts", gamesModel));
+		chartContainer.add(new GameStatisticsPanel("charts", gamesModel, ratings));
 
-		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel);
+		playedGameList = new PlayedGameListPanel("playedGameList", gamesModel, loggedInPlayerModel, ratings);
 		playedGameList.setOutputMarkupId(true);
 		add(playedGameList);
 	}

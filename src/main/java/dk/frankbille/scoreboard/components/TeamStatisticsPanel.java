@@ -23,32 +23,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import dk.frankbille.scoreboard.domain.*;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Localizer;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import dk.frankbille.scoreboard.domain.League;
-import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.PlayerResult;
-import dk.frankbille.scoreboard.domain.TeamResult;
-import dk.frankbille.scoreboard.player.PlayerPage;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
-import dk.frankbille.scoreboard.ratings.RatingProvider;
 import dk.frankbille.scoreboard.service.ScoreBoardService;
 
 public class TeamStatisticsPanel extends Panel {
@@ -57,7 +48,7 @@ public class TeamStatisticsPanel extends Panel {
 	@SpringBean
 	private ScoreBoardService scoreBoardService;
 
-	public TeamStatisticsPanel(String id, final League league) {
+	public TeamStatisticsPanel(String id, final League league, final RatingCalculator rating) {
 		super(id);
 
 		IModel<List<TeamResult>> teamResultsModel = new LoadableDetachableModel<List<TeamResult>>() {
@@ -66,19 +57,16 @@ public class TeamStatisticsPanel extends Panel {
 			@Override
 			protected List<TeamResult> load() {
 				List<TeamResult> teamResults = scoreBoardService.getTeamResults(league);
-				final RatingCalculator rating = RatingProvider.getRatings();
 
 				Collections.sort(teamResults, new Comparator<TeamResult>() {
 					@Override
 					public int compare(TeamResult o1, TeamResult o2) {
-						int compare = 0;
-
 						double rating1 = rating.getTeamRating(o1.getTeam()).getRating();
 						Double rating2 = rating.getTeamRating(o2.getTeam()).getRating();
-						compare = rating2.compareTo(rating1);
+						int compare = rating2.compareTo(rating1);
 
 						if (compare == 0) {
-							new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
+							compare = new Double(o2.getGamesWonRatio()).compareTo(o1.getGamesWonRatio());
 						}
 
 						if (compare == 0) {
@@ -152,7 +140,7 @@ public class TeamStatisticsPanel extends Panel {
 				item.add(medal);
 				item.add(new Label("gamesCount", new PropertyModel<Integer>(item.getModel(), "gamesCount")));
 				item.add(new Label("winRatio", new FormatModel(new DecimalFormat("0.00"), new PropertyModel<Double>(item.getModel(), "gamesWonRatio"))));
-				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), new PropertyModel<Double>(item.getModel(), "rating"))));
+				item.add(new Label("rating", new FormatModel(new DecimalFormat("#"), rating.getTeamRating(teamResult.getTeam()).getRating())));
 				item.add(new Label("trend", new StringResourceModel(item.getModelObject().getTrend().name().toLowerCase(), null)));
 			}
 		});

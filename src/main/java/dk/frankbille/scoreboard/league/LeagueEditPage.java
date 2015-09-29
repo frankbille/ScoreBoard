@@ -18,6 +18,8 @@
 
 package dk.frankbille.scoreboard.league;
 
+import dk.frankbille.scoreboard.components.RatingCalculatorSelector;
+import dk.frankbille.scoreboard.domain.RatingCalculatorType;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -78,6 +80,11 @@ public class LeagueEditPage extends SecureBasePage {
             CheckBox activeField = new CheckBox("activeField", new PropertyModel<Boolean>(leagueModel, "active"));
             playerForm.add(activeField);
         }
+
+		{
+			IModel<RatingCalculatorType> ratingCalculatorModel = new PropertyModel<RatingCalculatorType>(leagueModel, "ratingCalculator");
+			playerForm.add(new RatingCalculatorSelector("ratingCalculatorField", ratingCalculatorModel));
+		}
 	}
 
 	@Override

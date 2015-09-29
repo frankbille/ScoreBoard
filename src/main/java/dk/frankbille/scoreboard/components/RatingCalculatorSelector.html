@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ ScoreBoard
-  ~ Copyright (C) 2012-2013 Frank Bille
+  ~ Copyright (C) 2012-2015 Frank Bille
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -16,18 +17,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<div class="control-group">
-		<label wicket:for="usernameField" class="control-label"><wicket:message key="username"/></label>
-		<div class="controls">
-			<input type="text" wicket:id="usernameField" class="span4" wicket:message="placeholder:username"/>
-		</div>
-	</div>
-	
-	<div class="control-group">
-		<label wicket:for="defaultLeagueField:select" class="control-label"><wicket:message key="defaultLeague"/></label>
-		<div class="controls">
-			<span wicket:id="defaultLeagueField" class="span4"></span>
-		</div>
-	</div>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+    <select wicket:id="select">
+        <wicket:container wicket:id="selectOptions"><option wicket:id="option"></option></wicket:container>
+    </select>
 </wicket:panel>
+</body>
+</html>

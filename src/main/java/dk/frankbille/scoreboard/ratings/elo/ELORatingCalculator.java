@@ -24,11 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import dk.frankbille.scoreboard.comparators.GameComparator;
-import dk.frankbille.scoreboard.domain.Game;
-import dk.frankbille.scoreboard.domain.GameTeam;
-import dk.frankbille.scoreboard.domain.Player;
-import dk.frankbille.scoreboard.domain.TeamId;
-import dk.frankbille.scoreboard.domain.TeamResult;
+import dk.frankbille.scoreboard.domain.*;
 import dk.frankbille.scoreboard.ratings.GamePlayerRatingInterface;
 import dk.frankbille.scoreboard.ratings.GameRatingInterface;
 import dk.frankbille.scoreboard.ratings.RatingCalculator;
@@ -36,40 +32,18 @@ import dk.frankbille.scoreboard.ratings.RatingException;
 import dk.frankbille.scoreboard.ratings.RatingInterface;
 
 public class ELORatingCalculator implements RatingCalculator {
-	private Map<Long,RatingInterface> players;
-	private Map<TeamId,RatingInterface> teams;
-	private Map<Long,ELOGameRating> games;
-	private Map<String,ELOGamePlayerRating> gamePlayers;
+	private Map<Long,RatingInterface> players = new HashMap<Long,RatingInterface>();
+	private Map<TeamId,RatingInterface> teams = new HashMap<TeamId,RatingInterface>();
+	private Map<Long,ELOGameRating> games = new HashMap<Long,ELOGameRating>();
+	private Map<String,ELOGamePlayerRating> gamePlayers = new HashMap<String,ELOGamePlayerRating>();
 
-	public ELORatingCalculator() {
-		players = new HashMap<Long,RatingInterface>();
-		teams = new HashMap<TeamId,RatingInterface>();
-		games = new HashMap<Long,ELOGameRating>();
-		gamePlayers = new HashMap<String,ELOGamePlayerRating>();
+	public ELORatingCalculator(List<Game> games) {
+		setGames(games);
 	}
 
-	@Override
-	public void setGames(List<Game> games) {
-		//Clear the current ratings
-		players.clear();
-		teams.clear();
-		gamePlayers.clear();
-
-		//Order the games by date
-		Collections.sort(games, new GameComparator() {
-			@Override
-			public int compare(Game o1, Game o2) {
-				int compare = 0;
-
-				compare = o1.getDate().compareTo(o2.getDate());
-
-				if (compare == 0) {
-					compare = o1.getId().compareTo(o2.getId());
-				}
-
-				return compare;
-			}
-		});
+	private void setGames(List<Game> games) {
+		//Order the games by date, ascending
+		Collections.sort(games, Collections.reverseOrder(new GameComparator()));
 
 		//Go through the games one-by-one
 		for (Game game : games) {
@@ -142,6 +116,16 @@ public class ELORatingCalculator implements RatingCalculator {
 		}
 
 		return team;
+	}
+
+	@Override
+	public double getDefaultRating() {
+		return ELOCalculator.DEFAULT_RATING;
+	}
+
+	@Override
+	public RatingCalculatorType getType() {
+		return RatingCalculatorType.ELO;
 	}
 
 	private void setRatingChange(GameTeam team, double teamChange) {

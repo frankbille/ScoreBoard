@@ -44,8 +44,6 @@ import dk.frankbille.scoreboard.domain.TeamId;
 import dk.frankbille.scoreboard.domain.TeamResult;
 import dk.frankbille.scoreboard.domain.Trend;
 import dk.frankbille.scoreboard.domain.User;
-import dk.frankbille.scoreboard.ratings.RatingCalculator;
-import dk.frankbille.scoreboard.ratings.RatingProvider;
 
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
@@ -97,19 +95,13 @@ public class DefaultScoreBoardService implements ScoreBoardService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<Game> getAllGames() {
-		List<Game> games = gameDao.getAllGames();
-		RatingCalculator rating = RatingProvider.getRatings();
-		rating.setGames(games);
-		return games;
+		return gameDao.getAllGames();
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public List<Game> getAllGames(League league) {
-		List<Game> games = gameDao.getAllGames(league);
-		RatingCalculator rating = RatingProvider.getRatings();
-		rating.setGames(games);
-		return games;
+		return gameDao.getAllGames(league);
 	}
 
 	@Transactional(readOnly = true)

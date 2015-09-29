@@ -1,6 +1,6 @@
 /*
  * ScoreBoard
- * Copyright (C) 2012-2013 Frank Bille
+ * Copyright (C) 2012-2015 Frank Bille
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dk.frankbille.scoreboard.comparators;
+package dk.frankbille.scoreboard.ratings.elo;
 
-import java.util.Comparator;
+import dk.frankbille.scoreboard.ratings.RatingsTestCase;
+import org.junit.Before;
 
-import dk.frankbille.scoreboard.domain.Game;
+public class TestELORating extends RatingsTestCase {
 
-public class GameComparator implements Comparator<Game> {
-	@Override
-	public int compare(Game o1, Game o2) {
-		int compare = o2.getDate().compareTo(o1.getDate());
-
-		if (compare == 0) {
-			compare = o2.getId().compareTo(o1.getId());
-		}
-
-		return compare;
+	@Before
+	public void setupRating() {
+		rating = new ELORatingCalculator(getScoreBoardService().getAllGames(league));
 	}
+
 }
