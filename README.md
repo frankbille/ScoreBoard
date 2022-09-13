@@ -1,4 +1,5 @@
 ScoreBoard [![Build Status](https://secure.travis-ci.org/frankbille/ScoreBoard.png)](http://travis-ci.org/frankbille/ScoreBoard) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/frankbille/scoreboard/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffrankbille%2FScoreBoard.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffrankbille%2FScoreBoard?ref=badge_shield)
 ==========
 
 ScoreBoard is a web based system, to keep track of game results and player stats for small office games. It is initially designed to keep track of [Foosball][foosball] scores.
@@ -44,3 +45,7 @@ Build instructions (for developers using Eclipse)
 [issues]: https://github.com/frankbille/ScoreBoard/issues
 [license]: http://www.gnu.org/licenses/gpl.html
 [idea]: http://www.jetbrains.com/idea/
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffrankbille%2FScoreBoard.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffrankbille%2FScoreBoard?ref=badge_large)
